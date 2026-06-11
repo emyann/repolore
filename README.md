@@ -212,7 +212,10 @@ page-budget warning could never fire).
 v0.3.1 (this) — the glossary feeding loop: init seeds 3–8 cited terms, the
 page-writing/refresh workflows must record every term they coin, check
 reports an empty glossary as a smell and offers a backfill.
-v0.3.x — post-commit hook + `install-hook`; Copilot `applyTo` / Cursor `.mdc`
+v0.3.x — flows v1 per [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md):
+flow-meta/v1 (line-parseable) + flow template + honesty-gradient text +
+structural/anchored checks + `wiki-flow-render.mjs` + two dogfood flow pages;
+post-commit hook + `install-hook`; Copilot `applyTo` / Cursor `.mdc`
 emitter; read-side consumption eval; dangling-reference and link lints;
 `audit` workflow (LLM pass for wrongness/duplication — what hashes can't
 catch).
