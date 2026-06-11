@@ -1,7 +1,7 @@
 {
   "tool": "repolore",
   "schemaVersion": 1,
-  "pluginVersion": "0.4.1",
+  "pluginVersion": "0.4.2",
   "wikiRoot": "docs/wiki",
   "scriptsDir": ".repolore/scripts",
   "initializedAt": "2026-06-11",
@@ -20,7 +20,7 @@
     },
     {
       "path": ".repolore/scripts/wiki-stamp.mjs",
-      "sha": "670c72deed77d68517c5a55951bf946627c32038"
+      "sha": "51cdb749812f88969357d126eea3c63b01d3a2cc"
     },
     {
       "path": ".repolore/scripts/wiki-index.mjs",

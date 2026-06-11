@@ -6,8 +6,15 @@
  * `git hash-object` for every covered file. For each given page it:
  *
  *   1. re-hashes every `covers:` path and writes the current blob SHA,
- *   2. sets `generated_at_commit:` to the current short HEAD SHA,
- *   3. sets `last_refreshed:` to today.
+ *   2. re-hashes every inline flow `*_sha` (anchor_sha / call_anchor_sha /
+ *      handler_sha / cite_sha) from its sibling `*_path` in the same list item,
+ *   3. sets `generated_at_commit:` to the current short HEAD SHA,
+ *   4. sets `last_refreshed:` to today.
+ *
+ * Step 2 is what makes the flow-authoring loop work end-to-end: a freshly
+ * authored flow page carries `*_sha: WRITTEN-BY-wiki-stamp` placeholders, and
+ * this fills them from the same `git hash-object` it uses for `covers` (the
+ * template + references/flow.md promise exactly this).
  *
  *   node wiki-stamp.mjs <page.md> [<page.md> ...]   # stamp specific pages
  *   node wiki-stamp.mjs --all                       # stamp every page (see warning)
@@ -62,6 +69,40 @@ function setScalar(fm, key, value) {
   return fm + `${key}: ${value}\n`;
 }
 
+/** Each inline flow SHA field is filled from the sibling *_path in its item. */
+const SHA_FIELD_TO_PATH = {
+  anchor_sha: 'anchor_path',
+  call_anchor_sha: 'call_anchor_path',
+  handler_sha: 'handler_path',
+  cite_sha: 'cite_path',
+};
+
+/**
+ * Fill inline flow `*_sha` fields from their sibling `*_path` (same list item).
+ * Line-oriented and reset at every `- ` item boundary, so a SHA only ever
+ * adopts the path declared above it within the same step/edge/branch. Pages
+ * with no flow-meta have no such fields, so this is a no-op for them.
+ */
+function stampFlowShas(fm, root, missing) {
+  const lines = fm.split('\n');
+  let changed = 0;
+  let pathByField = {};
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    if (/^\s*-\s/.test(line)) pathByField = {}; // new list item: drop prior siblings
+    const pm = line.match(/^\s*(?:-\s+)?(anchor_path|call_anchor_path|handler_path|cite_path):\s*(.+?)\s*$/);
+    if (pm) { pathByField[pm[1]] = pm[2]; continue; }
+    const sm = line.match(/^(\s*)(anchor_sha|call_anchor_sha|handler_sha|cite_sha):\s*(.+?)\s*$/);
+    if (!sm) continue;
+    const p = pathByField[SHA_FIELD_TO_PATH[sm[2]]];
+    if (!p) continue; // a *_sha with no sibling *_path — leave it for flow-check to flag
+    const actual = blobSha(root, p);
+    if (actual === null) { if (!missing.includes(p)) missing.push(p); continue; }
+    if (actual !== sm[3]) { lines[i] = `${sm[1]}${sm[2]}: ${actual}`; changed++; }
+  }
+  return { fm: lines.join('\n'), changed };
+}
+
 /** Rewrite the covers block with fresh SHAs, preserving entry order. */
 function setCovers(fm, covers) {
   const block = ['covers:', ...covers.map((c) => `  - path: ${c.path}\n    sha: ${c.sha}`)].join('\n');
@@ -93,6 +134,8 @@ for (const file of pages) {
   }
 
   let fm = setCovers(parts.fm, covers);
+  const flow = stampFlowShas(fm, root, missing); // fill inline flow *_sha from sibling *_path
+  fm = flow.fm; changed += flow.changed;
   fm = setScalar(fm, 'generated_at_commit', shortHead);
   fm = setScalar(fm, 'last_refreshed', today);
   if (!fm.endsWith('\n')) fm += '\n';
