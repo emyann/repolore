@@ -23,7 +23,9 @@
  * block); CI may choose to consume it.
  */
 import { readFileSync } from 'node:fs';
-import { relative } from 'node:path';
+import { relative, dirname, join } from 'node:path';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import {
   repoRoot, findWikiRoot, walkPages, splitFrontmatter, parseCovers, blobSha,
   loadConfig, configScalar, parsePagePlan,
@@ -40,10 +42,13 @@ const pageBudget = Number(configScalar(raw, 'wiki', 'page_budget') ?? 50);
 
 const results = [];
 const legacyPages = [];
+const flowPages = [];
 for (const file of walkPages(wikiRoot)) {
   const rel = relative(root, file);
   const parts = splitFrontmatter(readFileSync(file, 'utf8'));
   if (!parts) { results.push({ page: rel, status: 'malformed' }); continue; }
+  // Flow pages additionally get their verification ladder checked below.
+  if (/^flow_schema:/m.test(parts.fm)) flowPages.push(file);
   // Legacy tooling-owned fields (decisions/ legitimately use `status:` for
   // their lifecycle — proposed/accepted/superseded — so only flag the old
   // computed freshness values).
@@ -66,7 +71,23 @@ const stale = results.filter((r) => r.status === 'stale');
 const malformed = results.filter((r) => r.status === 'malformed');
 const unmanaged = results.filter((r) => r.status === 'unmanaged');
 const overBudget = results.length > pageBudget;
-const clean = stale.length === 0 && malformed.length === 0;
+
+// Flow pages: run the verification ladder (structural→branch-audited, plus any
+// user-space set-validated extractor). Errors here fail the check like a stale
+// page; tiers/warnings are informational.
+let flows = [];
+if (flowPages.length) {
+  const flowCheck = join(dirname(fileURLToPath(import.meta.url)), 'wiki-flow-check.mjs');
+  try {
+    const out = execFileSync('node', [flowCheck, ...flowPages, '--json'], { encoding: 'utf8' });
+    flows = JSON.parse(out);
+  } catch (e) {
+    if (e.stdout) { try { flows = JSON.parse(e.stdout); } catch { /* leave empty */ } }
+  }
+  flows = flows.map((f) => ({ ...f, page: relative(root, f.file) }));
+}
+const flowFailed = flows.filter((f) => f.errors && f.errors.length);
+const clean = stale.length === 0 && malformed.length === 0 && flowFailed.length === 0;
 
 // Page-plan reconciliation: surface the backlog (planned, not yet written)
 // and flag plan↔reality drift. Informational — never changes the exit code.
@@ -92,6 +113,7 @@ if (JSON_OUT) {
     over_budget: overBudget,
     legacy_fields: legacyPages,
     plan: { total: plan.length, written, backlog: backlog.map((p) => p.slug), drift: planDrift },
+    flows: flows.map((f) => ({ page: f.page, tier: f.tier, errors: f.errors, warnings: f.warnings })),
   }, null, 2));
   process.exit(clean ? 0 : 1);
 }
@@ -112,6 +134,15 @@ if (!(QUIET && clean && !overBudget && legacyPages.length === 0 && planDrift.len
   if (planDrift.length) {
     console.log(`\n  ⚠ page plan drift (pages: in wiki.config.yml disagrees with reality):`);
     for (const d of planDrift) console.log(`     - ${d}`);
+  }
+  if (flows.length) {
+    console.log(`\n  Flows — ${flows.length} page(s), verification ladder:`);
+    for (const f of flows) {
+      const mark = (f.errors && f.errors.length) ? 'FAIL' : 'ok  ';
+      console.log(`     ${mark} ${f.page} — tier: ${f.tier}`);
+      for (const e of (f.errors || [])) console.log(`          ERROR  ${e}`);
+      for (const w of (f.warnings || [])) console.log(`          warn   ${w}`);
+    }
   }
   if (!QUIET && backlog.length) {
     console.log(`\n  Plan: ${written}/${plan.length} written — ${backlog.length} page(s) waiting to be drafted:`);

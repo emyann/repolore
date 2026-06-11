@@ -12,6 +12,7 @@ import { execFileSync } from 'node:child_process';
 /** Special wiki files that are never pages (any level). */
 export const SKIP_FILES = new Set([
   'index.md', 'AGENTS.md', 'CLAUDE.md', 'README.md', 'GLOSSARY.md', 'log.md',
+  'FINDINGS.md',
 ]);
 /** Directories inside the wiki that never hold pages. */
 export const SKIP_DIRS = new Set(['_templates', '_audit']);
@@ -25,7 +26,7 @@ export const DEFAULT_CATEGORIES = [
  *  update refreshes. Order matters to no one; completeness does. */
 export const VENDORED_SCRIPTS = [
   'lib.mjs', 'wiki-check.mjs', 'wiki-coverage.mjs', 'wiki-stamp.mjs', 'wiki-index.mjs',
-  'wiki-hook.mjs', 'wiki-install-hook.mjs',
+  'wiki-hook.mjs', 'wiki-install-hook.mjs', 'wiki-flow-render.mjs', 'wiki-flow-check.mjs',
 ];
 
 export function fail(msg) {
@@ -155,6 +156,75 @@ export function parseCovers(fm) {
     else if (shaM && cur) { cur.sha = shaM[1]; }
   }
   return covers;
+}
+
+// --- flow-meta (flows/ pages) — schema in references/flow.md ----------------
+// A flow page carries a structured flow-meta record in its frontmatter, from
+// which the Mermaid diagram + step tables are GENERATED (never hand-authored).
+// The encoding is line-parseable in exactly the parseCovers shape (lists of
+// one-level maps, scalar fields) so the vendored parser stays stdlib-only
+// (ADR-003): no nested YAML, no inline maps.
+
+export const FLOW_EDGE_KINDS = new Set(['call', 'async', 'queue', 'http', 'db', 'event']);
+export const FLOW_TWO_ANCHOR_KINDS = new Set(['async', 'queue', 'event']);
+export const FLOW_EVIDENCE = new Set(['verified', 'inferred']);
+export const FLOW_TRIGGER_KINDS = new Set(['http', 'command', 'cron', 'queue', 'event', 'call']);
+export const FLOW_BRANCH_KINDS = new Set(['error', 'guard', 'alt', 'normal']);
+
+/** Strip a single matched pair of surrounding quotes (mismatched quotes kept). */
+function stripQuotes(v) {
+  const t = v.trim();
+  if (t.length >= 2 && ((t[0] === '"' && t.endsWith('"')) || (t[0] === "'" && t.endsWith("'")))) {
+    return t.slice(1, -1);
+  }
+  return t;
+}
+
+/**
+ * A list of one-level maps — `parseCovers` generalised. Each item is a
+ * `  - firstKey: value` line plus deeper-indented `key: value` continuation
+ * lines, yielding `[{firstKey, ...}, ...]`. This is the SINGLE structural
+ * primitive every flow list (steps/edges/branches) is built from, proving one
+ * parseCovers-shaped reader covers the whole flow-meta schema.
+ */
+export function listOfMaps(fm, key) {
+  const items = [];
+  let cur = null;
+  for (const raw of blockLines(fm, key)) {
+    if (raw.trim() === '') continue;
+    const head = raw.match(/^\s*-\s*([\w-]+):\s*(.*)$/);
+    if (head) { cur = {}; cur[head[1]] = stripQuotes(head[2]); items.push(cur); continue; }
+    const kv = raw.match(/^\s+([\w-]+):\s*(.*)$/);
+    if (kv && cur) cur[kv[1]] = stripQuotes(kv[2]);
+  }
+  return items;
+}
+
+/**
+ * Parse a flow page's frontmatter into a typed, TOTAL flow-meta record. Never
+ * throws — arrays are always present and unplaceable lines land in `_parse`
+ * rather than failing (well-formedness is the structural tier's job in
+ * wiki-flow-check.mjs). Underscore keys (`flow_*`) so `fmScalar` matches the
+ * literal key with no dotted-regex hazard.
+ */
+export function parseFlowMeta(fm) {
+  const diag = [];
+  const meta = {
+    schema: fmScalar(fm, 'flow_schema'),
+    scenario: fmScalar(fm, 'flow_scenario'),
+    trigger_kind: fmScalar(fm, 'flow_trigger_kind'),
+    trigger_anchor: fmScalar(fm, 'flow_trigger_anchor'),
+    validator: fmScalar(fm, 'flow_validator'),
+    asserts_complete: fmScalar(fm, 'flow_asserts_complete') === 'true',
+    steps: listOfMaps(fm, 'flow_steps'),
+    edges: listOfMaps(fm, 'flow_edges'),
+    branches: listOfMaps(fm, 'flow_branches'),
+    _parse: diag,
+  };
+  meta.steps.forEach((s, i) => { if (!s.id) diag.push(`step[${i}] has no id`); });
+  meta.edges.forEach((e, i) => { if (!e.from || !e.to) diag.push(`edge[${i}] missing from/to`); });
+  meta.branches.forEach((b, i) => { if (!b.at) diag.push(`branch[${i}] missing at`); });
+  return meta;
 }
 
 /**
