@@ -45,6 +45,7 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import {
   repoRoot, blobSha, fail, collectInScopeSources, DEFAULT_CATEGORIES, localToday,
+  VENDORED_SCRIPTS,
 } from './lib.mjs';
 
 const PLUGIN_SCRIPTS = dirname(fileURLToPath(import.meta.url));
@@ -56,8 +57,6 @@ const pluginVersion = (() => {
     return JSON.parse(readFileSync(join(PLUGIN_SCRIPTS, '..', '.claude-plugin', 'plugin.json'), 'utf8')).version ?? null;
   } catch { return null; }
 })();
-const VENDORED_SCRIPTS = ['lib.mjs', 'wiki-check.mjs', 'wiki-coverage.mjs', 'wiki-stamp.mjs', 'wiki-index.mjs'];
-
 const argv = process.argv.slice(2);
 const DRY_RUN = argv.includes('--dry-run');
 const JSON_OUT = argv.includes('--json');

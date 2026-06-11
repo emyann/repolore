@@ -93,9 +93,10 @@ their source repos.
 **The vendored layer is updated separately, on purpose.** Updating the
 plugin/skill does not touch the `.repolore/scripts/` copies committed to your
 repos — your wiki tooling never changes under you silently. The check
-workflow compares the vendored SHAs against the installed version's masters
-and offers the re-vendor when something newer is available; a dedicated
-`update` workflow (hash-safe regeneration) is on the roadmap.
+workflow detects newer tooling and offers `/repolore:update`, which applies
+it safely: pristine files are regenerated, your locally-edited ones are
+skipped and reported (overwritten only with explicit `--force` consent), and
+the manifest SHAs stay truthful.
 
 ## Use
 
@@ -104,6 +105,7 @@ and offers the re-vendor when something newer is available; a dedicated
 | `/repolore:init` | One-time bootstrap: detect the stack → agree scope (with the in-scope file count shown up front) + a page plan with you → vendor the wiki skeleton, schema doc (`AGENTS.md`), check scripts and templates in one mechanical shot (`bootstrap.mjs`) → seed `architecture/overview.md` (default, declinable) → append pointer blocks to whichever agent context files already exist → optionally wire team auto-update into `.claude/settings.json` (see *Updating*) → finish with a single `docs:` commit (with your consent, asked once up front). |
 | `/repolore:check` | Health report: stale pages, uncovered «page-worthy» code clusters, index drift, page budget. Read-only, never blocks. |
 | `/repolore:refresh` | Bring stale pages back in line with the code: diff-driven triage, citation re-verification, re-stamp, regenerate index, reviewable commit. |
+| `/repolore:update` | Bring the repo's vendored tooling up to the installed repolore version: deterministic classification (up-to-date / outdated-pristine / locally modified / missing / new), safe regeneration, manifest SHAs + version refreshed. Never overwrites your local edits without explicit `--force` consent. |
 
 With the standalone skill the same three workflows are invoked in plain words
 ("set up a repolore wiki", "run repolore check/refresh") instead of slash
@@ -189,11 +191,17 @@ v0.2.2 (this) — the page plan made visible: backlog section in the generated
 `.repolore/manifest.json`).
 v0.2.3 (this) — init optionally wires team auto-update (the *Updating*
 settings recipe) into `.claude/settings.json`.
-v0.3 — post-commit hook + `install-hook`; dangling-reference and link lints;
-`wiki-index.json` connector contract + llms.txt emitter; `update` skill
-(manifest-hash safe regeneration); flow-validator plugin harness; `audit`
-skill (LLM pass for wrongness/duplication — what hashes can't catch); Quartz
-site + MCP connector recipes; GitHub Action recipe.
+v0.3.0 (this) — the `update` workflow: manifest-hash safe regeneration of the
+vendored layer (`scripts/update.mjs` + `/repolore:update`); fixed a latent
+bug it uncovered (unquoted config values kept trailing comments, so the
+page-budget warning could never fire).
+v0.3.x — post-commit hook + `install-hook`; Copilot `applyTo` / Cursor `.mdc`
+emitter; read-side consumption eval; dangling-reference and link lints;
+`audit` workflow (LLM pass for wrongness/duplication — what hashes can't
+catch).
+v0.4+ — `wiki-index.json` connector contract + llms.txt emitter;
+flow-validator plugin harness; Quartz site + MCP connector recipes; GitHub
+Action recipe.
 This section is the single roadmap home; the numbering in the report's §7 is
 the original point-in-time plan and has diverged (§7 says so too).
 

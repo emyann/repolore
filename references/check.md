@@ -31,22 +31,15 @@ Then summarize for the user, in this order of importance:
    the bottom of the generated `index.md`.
 4. **Hygiene** — malformed pages, unmanaged pages (no `covers:`), index drift
    (regenerate with `wiki-index.mjs`), page-budget warnings, legacy fields.
-5. **Tooling updates** — the manifest's `generatedFiles` records the blob SHA
-   each vendored file had when written. Compare against the installed
-   repolore's masters: for each `<scriptsDir>/*.mjs` entry, `git hash-object
-   <SKILL_ROOT>/scripts/<name>` and diff the two readings:
-   - manifest SHA ≠ repolore master SHA → **a newer repolore is installed**
-     than what this repo vendored (for friendly version numbers, compare
-     `pluginVersion` in the manifest against
-     `<SKILL_ROOT>/.claude-plugin/plugin.json`, when that file is present).
-     One line, last in the report: "repolore vX is installed; this repo
-     vendored its tooling at vY — to update, copy `<SKILL_ROOT>/scripts/*.mjs`
-     over `<scriptsDir>/` and refresh those SHAs in `.repolore/manifest.json`
-     (a dedicated update workflow is on the roadmap)." Offer to do it; don't
-     do it unasked.
-   - vendored file's current SHA ≠ its manifest SHA → the repo **edited** that
-     vendored file locally; name it and warn that updates would overwrite the
-     local change.
+5. **Tooling updates** — run the deterministic classifier:
+   `node <SKILL_ROOT>/scripts/update.mjs --dry-run`. It compares every
+   tracked vendored file against the installed masters (up-to-date /
+   outdated-pristine / locally modified / missing / new) and prints the
+   from→to versions. If anything is outdated: one line, last in the report
+   ("repolore vX is installed; this repo's tooling is at vY") and offer the
+   update workflow (`/repolore:update` in the Claude Code plugin) — don't
+   apply it unasked. Relay any locally-modified warnings verbatim: those
+   files will never be overwritten without explicit consent.
 
 Rules:
 
