@@ -1,0 +1,40 @@
+# Validates the plugin manifest + skill frontmatter on every push.
+# `claude plugin validate` needs no API key — it is a local schema check.
+name: validate
+on:
+  push:
+  pull_request:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install -g @anthropic-ai/claude-code
+      # no --strict: plugin.json deliberately omits `version` (commit-SHA mode)
+      # until the frontmatter schema stabilizes; --strict flags that as an error.
+      - run: claude plugin validate .
+      - name: smoke-test vendored scripts on a fixture repo
+        run: |
+          set -e
+          FIX=$(mktemp -d)
+          git -C "$FIX" init -q
+          mkdir -p "$FIX/src" "$FIX/wiki/concepts" "$FIX/wiki/_templates"
+          echo "export const a = 1;" > "$FIX/src/a.ts"
+          cp templates/wiki.config.yml "$FIX/wiki/wiki.config.yml.tpl"
+          printf 'wiki:\n  title: Fixture\n  page_budget: 50\nscope:\n  include:\n    - "src/**"\n  exclude: []\n' > "$FIX/wiki/wiki.config.yml"
+          printf -- '---\ntitle: A\nsummary: about a\ncategory: concepts\ncovers:\n  - path: src/a.ts\n    sha: x\n---\n# A\n' > "$FIX/wiki/concepts/a.md"
+          git -C "$FIX" add -A && git -C "$FIX" -c user.email=ci@x -c user.name=ci commit -qm init
+          mkdir -p "$FIX/.repolore" && printf '{"wikiRoot":"wiki","scriptsDir":"scripts/repolore"}' > "$FIX/.repolore/manifest.json"
+          cp -r scripts "$FIX/scripts-repolore"
+          cd "$FIX"
+          node scripts-repolore/wiki-stamp.mjs wiki/concepts/a.md
+          node scripts-repolore/wiki-check.mjs       # must be fresh right after stamping
+          node scripts-repolore/wiki-coverage.mjs
+          node scripts-repolore/wiki-index.mjs && node scripts-repolore/wiki-index.mjs --check
+          echo "export const a = 2;" > src/a.ts
+          if node scripts-repolore/wiki-check.mjs; then
+            echo "expected exit 1: page must go stale when a covered file changes"; exit 1
+          fi

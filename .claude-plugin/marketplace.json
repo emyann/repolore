@@ -1,0 +1,14 @@
+{
+  "name": "repolore",
+  "owner": {
+    "name": "Yann Renaudin"
+  },
+  "description": "Code-derived LLM wikis: cited, drift-checked, human-editable orientation layers for any repository.",
+  "plugins": [
+    {
+      "name": "repolore",
+      "source": "./",
+      "description": "Bootstrap and maintain a code-derived LLM wiki: cited claims, blob-SHA drift checking, coverage auditing, generated index."
+    }
+  ]
+}

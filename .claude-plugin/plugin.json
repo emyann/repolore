@@ -1,0 +1,10 @@
+{
+  "name": "repolore",
+  "displayName": "repolore",
+  "description": "Make your agent write down your repo's lore — a code-derived wiki with cited claims, blob-SHA drift checking, coverage auditing, and a generated index. Karpathy's llm-wiki pattern where the source layer is the codebase itself.",
+  "author": {
+    "name": "Yann Renaudin"
+  },
+  "license": "MIT",
+  "keywords": ["wiki", "documentation", "knowledge-base", "lore", "llm-wiki", "docs-as-code", "agents"]
+}
