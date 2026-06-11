@@ -11,7 +11,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  writeFileSync, existsSync, readFileSync, lstatSync, readlinkSync, copyFileSync,
+  writeFileSync, existsSync, readFileSync, lstatSync, copyFileSync,
 } from 'node:fs';
 import { join } from 'node:path';
 import { PLUGIN, BOOTSTRAP, makeFixture, writeConfig, node, nodeFail, git } from './_helpers.mjs';
@@ -53,9 +53,10 @@ test('bootstrap vendors everything, verified, with no leftover placeholders', (t
     '.repolore/scripts/wiki-index.mjs',
   ]) assert.ok(existsSync(join(dir, rel)), `missing ${rel}`);
 
-  const link = join(dir, 'docs/wiki/CLAUDE.md');
-  assert.ok(lstatSync(link).isSymbolicLink(), 'CLAUDE.md must be a symlink');
-  assert.equal(readlinkSync(link), 'AGENTS.md');
+  const bridge = join(dir, 'docs/wiki/CLAUDE.md');
+  assert.ok(existsSync(bridge), 'in-wiki CLAUDE.md bridge missing');
+  assert.ok(!lstatSync(bridge).isSymbolicLink(), 'CLAUDE.md should be a regular file, not a symlink');
+  assert.equal(readFileSync(bridge, 'utf8').trim(), '@AGENTS.md', 'CLAUDE.md must import AGENTS.md');
 
   for (const cat of ['architecture', 'concepts', 'features', 'flows', 'decisions', 'gotchas', 'howto']) {
     assert.ok(existsSync(join(dir, 'docs/wiki', cat)), `missing category dir ${cat}`);

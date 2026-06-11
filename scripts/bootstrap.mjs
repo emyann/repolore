@@ -5,7 +5,7 @@
  * The init skill makes the judgment calls (stack detection, scope, the page
  * manifest, prose) and encodes them in a single JSON config; this script does
  * every mechanical step in one deterministic shot — directories, vendored
- * scripts, instantiated templates, the symlink, `.repolore/manifest.json`
+ * scripts, instantiated templates, the CLAUDE.md import, `.repolore/manifest.json`
  * with blob SHAs, the generated index, and verification. Keeping the
  * mechanical work out of the LLM makes init faster and removes the
  * transcription-error surface.
@@ -38,7 +38,7 @@
  * Exit code: 0 on success, 2 on any validation or verification failure.
  */
 import {
-  readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync, symlinkSync,
+  readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync,
 } from 'node:fs';
 import { join, dirname, isAbsolute } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -184,7 +184,13 @@ for (const s of VENDORED_SCRIPTS) {
   written.push(rel);
 }
 
-// 3. AGENTS.md + the CLAUDE.md symlink so Claude Code auto-loads it in-tree.
+// 3. AGENTS.md + a CLAUDE.md that imports it, so Claude Code auto-loads the
+// same guidance in-tree. An `@AGENTS.md` import (not a symlink) keeps AGENTS.md
+// the one canonical file while staying portable: no Windows dev-mode or CI
+// symlink-following caveat, and no copy-fallback that could drift. The bridge
+// is written raw (not via write()) so it stays out of the manifest — it has no
+// master to regenerate from, exactly like the symlink it replaces.
+// See decisions/adr-008-per-harness-entry-point-bridging.
 write(join(wikiRoot, 'AGENTS.md'), instantiate('AGENTS.md', {
   WIKI_DIR: wikiRoot,
   PROJECT_NAME: cfg.projectName,
@@ -192,14 +198,9 @@ write(join(wikiRoot, 'AGENTS.md'), instantiate('AGENTS.md', {
   SCOPE_SUMMARY: cfg.scopeSummary.trim(),
   PAGE_BUDGET: String(pageBudget),
 }));
-const symlinkPath = join(root, wikiRoot, 'CLAUDE.md');
-if (!existsSync(symlinkPath)) {
-  try {
-    symlinkSync('AGENTS.md', symlinkPath);
-  } catch {
-    copyFileSync(join(root, wikiRoot, 'AGENTS.md'), symlinkPath);
-    console.log('  ⚠ symlinks unavailable — wrote CLAUDE.md as a copy of AGENTS.md');
-  }
+const claudeBridge = join(root, wikiRoot, 'CLAUDE.md');
+if (!existsSync(claudeBridge)) {
+  writeFileSync(claudeBridge, '@AGENTS.md\n');
 }
 
 // 4. wiki.config.yml — globs at 4-space indent, repo notes folded into the
@@ -269,7 +270,7 @@ if (JSON_OUT) {
   }, null, 2));
 } else {
   console.log('\nrepolore bootstrap — complete\n');
-  console.log(`  Wiki:      ${wikiRoot}/ (AGENTS.md + CLAUDE.md link, wiki.config.yml, templates, glossary, log, generated index)`);
+  console.log(`  Wiki:      ${wikiRoot}/ (AGENTS.md + CLAUDE.md import, wiki.config.yml, templates, glossary, log, generated index)`);
   console.log(`  Tooling:   ${scriptsDir}/ (${VENDORED_SCRIPTS.length} scripts) + .repolore/manifest.json (${trackedRels.length} files tracked by blob SHA)`);
   console.log(`  Verified:  ${verified.join(', ')}`);
   console.log(`  Page plan: ${pages.length} page(s) (soft budget ${pageBudget})`);

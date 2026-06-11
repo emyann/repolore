@@ -181,23 +181,42 @@ mechanical and delegated:
 
 ## Phase 6 — Wire entry points (least-invasive: never create files uninvited)
 
-Append a pointer block (≤10 lines, **pointer, not content** — never inline
-wiki material into always-loaded files) to each root context file that
-**already exists**: `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`,
-`.github/copilot-instructions.md`.
+Goal: every agent the team uses sees the wiki pointer at startup. The pointer
+is a ≤10-line block (**pointer, not content** — never inline wiki material into
+always-loaded files). `AGENTS.md` is its canonical cross-tool home (Codex and
+the cross-tool default read it directly); every other harness's native file
+links to that one copy by the cheapest faithful means rather than carrying a
+duplicate (see `decisions/adr-008-per-harness-entry-point-bridging`):
 
-- When appending, ensure exactly one blank line separates the block from the
-  existing content (files missing a trailing newline are common — fix it silently, without
-  narrating). String-replacement editors cannot control the file's final
-  byte: verify with `tail -c1` after the edit and append the newline if
-  missing — that check is mandatory, not optional.
+- **`AGENTS.md`** — append the block verbatim; it is the source of truth.
+- **`CLAUDE.md` / `CLAUDE.local.md`** — Claude Code auto-loads these and
+  **never** `AGENTS.md`. When `AGENTS.md` exists, wire the bridge `@AGENTS.md`
+  (a Claude Code import) instead of a second copy of the block; when it does
+  not, this file *is* canonical — append the literal block here.
+- **`.github/copilot-instructions.md`** — append the literal block (Copilot
+  has no import; the path-scoped `applyTo` emitter that would beat a root block
+  is a later rung — see `gotchas/cross-tool-depth-untested`).
+
+Apply to each root context file that **already exists**. Then:
+
+- **Idempotency.** Skip any file that already carries the block or already
+  imports `AGENTS.md` — re-running init must never double-wire.
+- **Trailing newline.** Ensure exactly one blank line separates an appended
+  block from existing content (files missing a trailing newline are common —
+  fix it silently, without narrating). String-replacement editors cannot
+  control the file's final byte: verify with `tail -c1` after the edit and
+  append the newline if missing — that check is mandatory, not optional. (A
+  fresh `CLAUDE.md` bridge is just `@AGENTS.md` plus a trailing newline.)
 - **Never create a new context file without asking.** If none exists, ask the
-  user (one extra question): create a root `AGENTS.md` with just the block, or
-  skip wiring entirely. In a non-interactive run, skip — and include the
-  ready-to-paste block in the phase 7 report instead.
+  user (one extra question): create a root `AGENTS.md` with the block — plus,
+  if they use Claude Code, a one-line `CLAUDE.md` containing `@AGENTS.md` so it
+  loads at startup — or skip wiring entirely. In a non-interactive run, skip
+  and include the ready-to-paste block in the phase-7 report instead.
 - If the **only** context file is `CLAUDE.local.md` (typically gitignored and
-  personal), append there, but note in the report that teammates' agents won't
-  see the pointer and suggest — don't create — a committed alternative.
+  personal), it reaches one machine. Wire it there, but note in the report that
+  teammates' agents won't see it and **offer** — don't create — a committed
+  `CLAUDE.md` (importing `AGENTS.md` when present) as the team-visible
+  alternative.
 - If the user opted into team auto-update (phase 2 Q6): deep-merge the
   `extraKnownMarketplaces` + `enabledPlugins` keys from Q6 into
   `.claude/settings.json`, preserving every existing key. It ships in the

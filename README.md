@@ -226,6 +226,11 @@ v0.3.5 (this) — check offers a clean tooling update interactively (a one-tap
 question when no local edits and no stale pages outrank it), not just a prose
 pointer; overview now covers the check/update procedures so edits to them trip
 the freshness nudge.
+v0.3.6 (this) — Claude-aware entry-point wiring: `AGENTS.md` stays the one
+canonical pointer and each harness links to it by its native mechanism — an
+`@AGENTS.md` import for `CLAUDE.md` (Claude Code never auto-loads `AGENTS.md`),
+the literal block for Copilot. The in-wiki bridge switches from symlink to
+import (portable — no Windows/CI symlink caveat). See `adr-008`.
 v0.3.x — flows v1 per [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md):
 flow-meta/v1 (line-parseable) + flow template + honesty-gradient text +
 structural/anchored checks + `wiki-flow-render.mjs` + two dogfood flow pages;

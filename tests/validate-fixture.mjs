@@ -11,7 +11,7 @@
  * workflow's judge stage grades the *experience* (report framing, ordering,
  * gates) which no file inspection can see.
  */
-import { readFileSync, existsSync, lstatSync, readlinkSync } from 'node:fs';
+import { readFileSync, existsSync, lstatSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
@@ -62,10 +62,11 @@ check('vendored layout exists', () => {
   ]) expect(existsSync(join(fixture, rel)), `missing ${rel}`);
 });
 
-check('CLAUDE.md → AGENTS.md symlink inside the wiki', () => {
-  const link = join(fixture, 'docs/wiki/CLAUDE.md');
-  expect(lstatSync(link).isSymbolicLink(), 'not a symlink');
-  expect(readlinkSync(link) === 'AGENTS.md', `points at ${readlinkSync(link)}`);
+check('in-wiki CLAUDE.md imports AGENTS.md (portable bridge, not a symlink)', () => {
+  const bridge = join(fixture, 'docs/wiki/CLAUDE.md');
+  expect(existsSync(bridge), 'missing');
+  expect(!lstatSync(bridge).isSymbolicLink(), 'still a symlink — should be a regular file');
+  expect(read('docs/wiki/CLAUDE.md').trim() === '@AGENTS.md', 'does not import AGENTS.md');
 });
 
 check('manifest SHAs match the working tree (no hand-retyped files)', () => {
