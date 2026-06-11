@@ -180,7 +180,7 @@ if (JSON_OUT) {
   for (const f of report.needsReview) console.log(`  REVIEW   ${f.path}\n           ${f.reason}`);
   if (!DRY && changed) console.log(`\n  Now: regenerate the index (node ${scriptsDir}/wiki-index.mjs), re-run wiki-check, and commit.`);
   if (DRY && (changed || attention)) console.log(`\n  Apply with: node <SKILL_ROOT>/scripts/update.mjs`);
-  if (!changed && !attention) console.log('\n  Nothing to do — vendored layer matches the installed version.');
+  if (!changed && !attention) console.log(`\n  Nothing to do — vendored layer matches the installed plugin (v${report.toVersion ?? 'unknown'}).\n  Expected a newer release? The plugin/skill itself may be outdated — refresh\n  it first (claude plugin marketplace update <name> / npx skills update), then re-run.`);
   console.log('');
 }
 process.exit(attention ? 1 : 0);
