@@ -7,12 +7,12 @@ audience: [dev]
 read_when: "deciding how the wiki reaches non-Claude agents, prioritizing emitters/hooks, or evaluating pointer-block effectiveness"
 covers:
   - path: references/init.md
-    sha: ce557bfe7776c5f31c17d5f59fc7fcab9bfe64dd
+    sha: 3f231716382c32c11dc87e11b4320ab7dd988502
   - path: SKILL.md
     sha: 2efc773d6284466f25fc42d60d118e27410ceb63
   - path: docs/RESEARCH.md
     sha: 3650c9099507e8a36574ece1b812b53860d56462
-generated_at_commit: f18de1d
+generated_at_commit: 26082c4
 last_refreshed: 2026-06-11
 related: [decisions/adr-004-umbrella-skill-plugin-shims, architecture/overview]
 ---
