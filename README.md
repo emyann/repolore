@@ -263,10 +263,17 @@ edges→messages; verification unchanged), and the flow authoring loop +
 verified-vs-inferred rule folded into the vendored `AGENTS.md` so a target repo
 can draft a flow without the plugin-side `references/flow.md` (it becomes the
 optional deep reference).
+v0.4.2 (this) — the flow authoring loop, fixed end-to-end. `wiki-stamp.mjs` now
+fills every inline flow `*_sha` (`anchor_sha`/`call_anchor_sha`/`cite_sha`) from
+its sibling `*_path`, not just `covers` — the half v0.4.1's template +
+`references/flow.md` promised but never wrote, so a freshly authored flow page
+failed `wiki-flow-check` on the `WRITTEN-BY-wiki-stamp` placeholders (caught by
+two independent dogfood runs). Ships with the second dogfood flow page,
+[`flows/update-classification`](./docs/wiki/flows/update-classification.md):
+update's `(recorded, current, master)` SHA-triplet classification, branch-audited.
 v0.4.x — flows v2: the reference user-space extractors, the diff-scoped
-flow-refresh step, and the second dogfood flow page (`flows/update-classification`);
-the `audit` workflow (LLM pass for wrongness/duplication — what hashes can't
-catch) + findings-inbox v2 it feeds.
+flow-refresh step; the `audit` workflow (LLM pass for wrongness/duplication —
+what hashes can't catch) + findings-inbox v2 it feeds.
 v0.5+ — `wiki-index.json` connector contract + llms.txt emitter; Quartz site
 (renders flows from the flow-meta sidecars) + MCP connector recipes; GitHub
 Action recipe; Copilot `applyTo` / Cursor `.mdc` emitters.
