@@ -233,6 +233,21 @@ When `wiki-check.mjs` flags an accepted decision stale (its covered files
 changed), that is a prompt to *consider a superseding record*, not to edit the
 old one.
 
+### `flows/` — generated diagrams, verified edges
+
+A flow page is **structured data** (`flow_*` frontmatter) from which the Mermaid
+diagram and step/edge/branch tables are *generated* by
+`{{SCRIPTS_DIR}}/wiki-flow-render.mjs` into a delimited `FLOW-RENDER` region —
+**never hand-author the diagram**. Each step is anchored to code by blob SHA;
+each `verified` edge cites the **call site in the caller's own code** and names
+the callee (directional — it proves the from→to hop, not just that bytes exist);
+uncitable hops are honestly `inferred`. `wiki-flow-check.mjs` computes the page's
+tier (structural → anchored → edge-cited → branch-audited → set-validated) on
+every run — the tier is never written to the page. Start from `_templates/flow.md`
+and follow the authoring loop and the full schema in `references/flow.md`. Flows
+are never seeded at init (highest-risk artifact); a page is born only when
+explicitly drafted.
+
 ## `audience` and per-audience sections
 
 `audience` records who a page serves. Default is `[dev]` — developers working
