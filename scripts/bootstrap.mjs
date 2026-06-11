@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * bootstrap.mjs — one-shot mechanical vendoring for `/repolore:init`.
+ * bootstrap.mjs — one-shot mechanical vendoring for the repolore init workflow.
  *
  * The init skill makes the judgment calls (stack detection, scope, the page
  * manifest, prose) and encodes them in a single JSON config; this script does
@@ -49,7 +49,7 @@ import {
 
 const PLUGIN_SCRIPTS = dirname(fileURLToPath(import.meta.url));
 const PLUGIN_TEMPLATES = join(PLUGIN_SCRIPTS, '..', 'templates');
-/** Plugin version, recorded in the repo manifest so /repolore:check can
+/** repolore version, recorded in the repo manifest so the check workflow can
  *  nudge when the installed plugin is newer than the vendored tooling. */
 const pluginVersion = (() => {
   try {
@@ -103,7 +103,7 @@ if (!DRY_RUN) {
     if (!isStr(cfg[key])) problems.push(`${key} is required (non-empty string)`);
   }
   if (existsSync(join(root, '.repolore', 'manifest.json'))) {
-    problems.push('.repolore/manifest.json already exists — this repo is initialized; use /repolore:check or /repolore:refresh');
+    problems.push('.repolore/manifest.json already exists — this repo is initialized; use the repolore check/refresh workflows');
   }
   if (existsSync(join(root, wikiRoot, 'wiki.config.yml'))) {
     problems.push(`${wikiRoot}/wiki.config.yml already exists — adopt the existing wiki instead of overwriting it`);

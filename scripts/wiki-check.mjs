@@ -89,7 +89,7 @@ if (!(QUIET && clean && !overBudget && legacyPages.length === 0)) {
   for (const r of unmanaged) console.log(`  UNMANAGED  ${r.page}  (no \`covers:\` — staleness cannot be tracked)`);
   if (clean && unmanaged.length === 0) console.log('  All pages fresh.');
   else if (clean) console.log(`\n  ${results.length - unmanaged.length} fresh, ${unmanaged.length} unmanaged.`);
-  else console.log(`\n  ${stale.length} stale, ${malformed.length} malformed — run /repolore:refresh (or see the refresh workflow in AGENTS.md).`);
+  else console.log(`\n  ${stale.length} stale, ${malformed.length} malformed — run the repolore refresh workflow (/repolore:refresh in Claude Code; see AGENTS.md).`);
   if (overBudget) console.log(`\n  ⚠ ${results.length} pages exceeds the soft page budget (${pageBudget}). Consider merging or archiving — a curated wiki beats a sprawling one. (Tune wiki.page_budget in wiki.config.yml.)`);
   if (legacyPages.length) console.log(`\n  ⚠ ${legacyPages.length} page(s) carry legacy \`status:\`/\`last_checked:\` fields. Status is computed now — delete those lines.`);
   console.log('');

@@ -65,7 +65,7 @@ export function findWikiRoot(root, argv) {
       try { dir = JSON.parse(readFileSync(manifest, 'utf8')).wikiRoot; } catch { /* unreadable → fall through */ }
     }
   }
-  if (!dir) fail('cannot locate the wiki — pass --wiki-root <dir>, set REPOLORE_ROOT, or run /repolore:init (it writes .repolore/manifest.json)');
+  if (!dir) fail('cannot locate the wiki — pass --wiki-root <dir>, set REPOLORE_ROOT, or run repolore init (it writes .repolore/manifest.json)');
   const abs = isAbsolute(dir) ? dir : resolve(root, dir);
   if (!existsSync(abs)) fail(`wiki root does not exist: ${abs}`);
   return abs;

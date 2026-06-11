@@ -38,10 +38,23 @@ What makes it different from DeepWiki / Code Wiki / memory banks:
 
 ## Install
 
+**As a Claude Code plugin** — namespaced commands, versioned updates:
+
 ```text
 /plugin marketplace add emyann/repolore     # or a local path while testing
 /plugin install repolore@repolore
 ```
+
+**As a standalone skill, in any agent** (Claude Code, Cursor, Copilot,
+Windsurf, …) via the [skills CLI](https://www.skills.sh/):
+
+```text
+npx skills add emyann/repolore
+```
+
+That installs the single `repolore` umbrella skill; invoke it in plain words
+— "set up a repolore wiki here", "run repolore's check", "refresh the wiki".
+Both forms run the same procedures and scripts (see *Packaging* below).
 
 ## Use
 
@@ -51,10 +64,24 @@ What makes it different from DeepWiki / Code Wiki / memory banks:
 | `/repolore:check` | Health report: stale pages, uncovered «page-worthy» code clusters, index drift, page budget. Read-only, never blocks. |
 | `/repolore:refresh` | Bring stale pages back in line with the code: diff-driven triage, citation re-verification, re-stamp, regenerate index, reviewable commit. |
 
+With the standalone skill the same three workflows are invoked in plain words
+("set up a repolore wiki", "run repolore check/refresh") instead of slash
+commands.
+
 Day-to-day, pages get drafted **on demand** ("draft `features/refund-pipeline`
 from the wiki manifest") and updated as part of the change that altered the
 behaviour — the pointer block installed by init tells every agent session to
 do exactly that.
+
+## Packaging
+
+One source of truth, two distributions: the three procedures live in
+[`references/`](./references/) and the assets in `scripts/` + `templates/`.
+The root [`SKILL.md`](./SKILL.md) is the standalone umbrella skill the skills
+CLI installs (root-`SKILL.md` discovery means `npx skills add` sees exactly
+one skill), and the plugin's `skills/init|check|refresh` are thin shims that
+execute the same reference procedures — so the namespaced `/repolore:*`
+commands and the standalone skill can never drift apart.
 
 ## What init vendors into your repo
 
@@ -112,6 +139,9 @@ SHA-tracked vendoring, self-verification); init UX overhaul (seeded overview
 by default, up-front commit consent, in-scope count at the approval gate,
 interface-first report); single local-date source; plugin-update nudge in
 `check`; deterministic + agentic test harness.
+v0.2.1 (this) — standalone distribution via the skills CLI / skills.sh: root
+umbrella `SKILL.md`, single-source procedures in `references/`, plugin skills
+as shims; agent-portable wording in vendored script messages.
 v0.3 — post-commit hook + `install-hook`; dangling-reference and link lints;
 `wiki-index.json` connector contract + llms.txt emitter; `update` skill
 (manifest-hash safe regeneration); flow-validator plugin harness; `audit`
