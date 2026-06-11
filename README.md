@@ -257,6 +257,12 @@ directional graft — a `verified` edge must cite the call site in the caller's
 own code and name the callee — closes the edge-existence hole that broke all
 five prototypes; set-equality is proven non-vendorable and lives in a user-space
 `validators:` seam (ADR-007). Folded into `wiki-check`; dogfood: `flows/bootstrap-vendoring`.
+v0.4.1 (this) — flows v1 finished for every harness: a `sequence` diagram
+projection (`flow_render: sequence` — same flow-meta, actors→participants,
+edges→messages; verification unchanged), and the flow authoring loop +
+verified-vs-inferred rule folded into the vendored `AGENTS.md` so a target repo
+can draft a flow without the plugin-side `references/flow.md` (it becomes the
+optional deep reference).
 v0.4.x — flows v2: the reference user-space extractors, the diff-scoped
 flow-refresh step, and the second dogfood flow page (`flows/update-classification`);
 the `audit` workflow (LLM pass for wrongness/duplication — what hashes can't

@@ -48,3 +48,4 @@ history.
 ## 2026-06-11 — re-stamped adr-009 (templates/AGENTS.md gained the flows subsection; findings decision unchanged, no-op)
 ## 2026-06-11 — updated vendored tooling v0.3.7 → v0.4.0 (flow scripts + _templates/flow.md vendored; AGENTS.md gains the flows rules); no-op re-stamps overview + adr-006
 ## 2026-06-11 — re-stamped freshness-model + adr-001/003/007 after the sequence-diagram emitter (additive flow_render projection; no claims changed)
+## 2026-06-11 — updated vendored tooling v0.4.0 → v0.4.1 (sequence emitter + self-contained flow authoring in AGENTS.md); no-op re-stamp overview
