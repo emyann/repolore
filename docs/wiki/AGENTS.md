@@ -23,7 +23,9 @@ creating or editing any page here.
   and signature tables are recomputed on demand, not curated.
 - **No session or task state.** Active-context notes, progress logs and TODOs
   belong in your agent's native memory or the issue tracker — never here. That
-  content rots fastest and poisons trust in the rest.
+  content rots fastest and poisons trust in the rest. The one sanctioned
+  sibling is `FINDINGS.md` (see below): one-line pointers to suspected code
+  defects, held under their own contract — never inside pages.
 
 ## This is an orientation layer — not an authority on specifics
 
@@ -65,6 +67,7 @@ plan. That file is machine-read by the check scripts — keep it accurate.
 | `index.md` | **GENERATED** catalog — never hand-edit; run `node .repolore/scripts/wiki-index.mjs` |
 | `log.md` | Append-only journal: one line per notable wiki operation (page added/refreshed/superseded) |
 | `GLOSSARY.md` | Project vocabulary — short, alphabetical, cited where a term maps to code |
+| `FINDINGS.md` | Findings inbox — one-line pointers to suspected code defects awaiting triage; outside page semantics (see below). Created on first finding, with consent |
 | `architecture/` | System structure: context, components/containers, deployment topology, message flow |
 | `concepts/` | Domain concepts no single file owns (cross-cutting models, invariants, naming) |
 | `features/` | Feature histories — what a feature is for, what it touched, current status, known gaps |
@@ -186,6 +189,41 @@ line gets a `concepts/` page, and its glossary line links there. An empty
 glossary in a wiki with written pages means terms are being coined without
 being recorded — the check workflow reports it as a smell.
 
+### `FINDINGS.md` — the findings inbox (relay buffer, not a tracker)
+
+Drafting and refreshing pages means reading code attentively — and that
+reading surfaces suspected defects (bugs, security gaps, inconsistencies) as
+a by-product. Pages must never carry them as task state; losing them is
+worse. They go to `FINDINGS.md`, a sibling of `GLOSSARY.md`: committed and
+team-visible, but **outside page semantics** — no frontmatter, no `covers`,
+ignored by freshness, coverage, the index and the page budget.
+
+A finding asserts something no page may assert: that the code is wrong
+relative to intent. Treat every item as a **claim to re-verify**, not a fact.
+One line per item:
+
+```
+- [sec|bug|cleanup] **headline** — evidence `path:lines` (captured YYYY-MM-DD) → category/slug
+```
+
+- The `→` backlink names the page that carries the full, cited context. The
+  inbox line is a pointer; the page is the evidence — never duplicate.
+- Claims not verified in the code carry `(unverified — <what needs
+  checking>)`, mirroring `> TODO-VERIFY:`.
+- **Writes are consented.** Agents append findings inside the same
+  reviewable commit as the page work that surfaced them; humans jot
+  one-liners anytime. Check scripts and hooks never write here, and nothing
+  ever blocks on untriaged findings.
+- **Triage deletes, never checks off.** Each item leaves through one of four
+  exits — fix it now, promote it into the owning page or a gotcha, file it
+  in the issue tracker, or dismiss it with a reason — and the departure gets
+  one `log.md` line. An item that survives triage must be re-affirmed
+  against the current code, not skipped. The moment an item needs an
+  assignee, a status, or discussion, its exit is the issue tracker.
+
+Create the file with consent the first time a finding has nowhere to go —
+an empty inbox should not exist.
+
 ### `decisions/` — dual mutability
 
 Every other page is **living** (refreshed in place). Decision records are
@@ -216,10 +254,14 @@ maintenance and can't be freshness-tracked).
    `node .repolore/scripts/wiki-stamp.mjs <page>` to write the SHAs.
 5. Add or update `GLOSSARY.md` lines for every domain term the page defines
    or leans on (cited; link the page for terms it owns).
-6. Run `node .repolore/scripts/wiki-index.mjs` to regenerate the index, and
+6. If researching the page surfaced suspected code defects, record each as
+   one `FINDINGS.md` line in the same change (creating the file with consent
+   if absent) — the page's gap note or `> TODO-VERIFY:` carries the
+   evidence; the inbox line is the pointer.
+7. Run `node .repolore/scripts/wiki-index.mjs` to regenerate the index, and
    append a line to `log.md`.
-7. Run `node .repolore/scripts/wiki-check.mjs` — the new page must report `fresh`.
-8. If the page isn't in the page plan (`pages:` in `wiki.config.yml`), add it.
+8. Run `node .repolore/scripts/wiki-check.mjs` — the new page must report `fresh`.
+9. If the page isn't in the page plan (`pages:` in `wiki.config.yml`), add it.
 
 ## Workflow: refreshing a stale page
 
@@ -234,10 +276,12 @@ maintenance and can't be freshness-tracked).
      every citation you touch; demote unconfirmable claims to `> TODO-VERIFY:`.
    - **Rewrite** — the feature changed shape; re-research from the code.
 3. Add newly-relevant files to `covers`; drop deleted ones.
-4. Run `wiki-stamp.mjs <page>`, regenerate the index if title/summary changed,
+4. If re-verifying citations surfaced new suspected defects, append them to
+   `FINDINGS.md` in the same change (one line each, per the inbox rules).
+5. Run `wiki-stamp.mjs <page>`, regenerate the index if title/summary changed,
    append to `log.md`. Update glossary lines whose terms the refresh renamed
    or retired.
-5. Re-run `wiki-check.mjs` — the page must return to `fresh`. Commit the
+6. Re-run `wiki-check.mjs` — the page must return to `fresh`. Commit the
    refresh as a normal reviewable change.
 
 ## What NOT to do
@@ -249,4 +293,7 @@ maintenance and can't be freshness-tracked).
   erodes every citation's trust).
 - Do not add `status:` / `last_checked:` fields — status is computed.
 - Do not store session state, TODOs, or auto-generatable reference here.
+- Do not put checkboxes, severity ranks, or remediation directives inside
+  pages — one `FINDINGS.md` line plus a descriptive gap note in the page is
+  the split.
 - Do not let the page plan (`pages:` in `wiki.config.yml`) drift from reality — `wiki-check.mjs` flags the drift.

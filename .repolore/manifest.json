@@ -1,7 +1,7 @@
 {
   "tool": "repolore",
   "schemaVersion": 1,
-  "pluginVersion": "0.3.2",
+  "pluginVersion": "0.3.7",
   "wikiRoot": "docs/wiki",
   "scriptsDir": ".repolore/scripts",
   "initializedAt": "2026-06-11",
@@ -28,7 +28,7 @@
     },
     {
       "path": "docs/wiki/AGENTS.md",
-      "sha": "01c567a33d9bc3ee6ceb8ee60f4c885b81b7088f"
+      "sha": "a84f101bfe889cfb6c98a1dbd0a3a994728d187f"
     },
     {
       "path": "docs/wiki/_templates/page.md",
