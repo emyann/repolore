@@ -13,9 +13,11 @@ jobs:
         with:
           node-version: 22
       - run: npm install -g @anthropic-ai/claude-code
-      # no --strict: plugin.json deliberately omits `version` (commit-SHA mode)
-      # until the frontmatter schema stabilizes; --strict flags that as an error.
+      # no --strict: the skill frontmatter schema is still moving; strict mode
+      # flags fields we use deliberately.
       - run: claude plugin validate .
+      - name: deterministic tests (bootstrap vendoring + scope census)
+        run: node --test tests/*.test.mjs
       - name: smoke-test vendored scripts on a fixture repo
         run: |
           set -e

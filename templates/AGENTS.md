@@ -101,6 +101,10 @@ related: [concepts/retry-model, flows/refund-flow]   # other pages, by category/
 ---
 ```
 
+`related` lists other pages by `category/slug`; entries **may** reference
+planned-but-unwritten pages (they double as drafting prompts) — no tooling
+validates them, so prune dead ones when you touch a page.
+
 There is **no `status:` field**. Freshness status is *computed* by
 `wiki-check.mjs` on demand — committing volatile check-state only creates
 dirty trees and merge conflicts. The durable, reader-visible signal is

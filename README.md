@@ -47,7 +47,7 @@ What makes it different from DeepWiki / Code Wiki / memory banks:
 
 | Command | What it does |
 |---|---|
-| `/repolore:init` | One-time bootstrap: detect the stack → agree scope + a page manifest with you → vendor the wiki skeleton, schema doc (`AGENTS.md`), check scripts and templates into the repo → append pointer blocks to whichever agent context files already exist (`CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, copilot-instructions). |
+| `/repolore:init` | One-time bootstrap: detect the stack → agree scope (with the in-scope file count shown up front) + a page manifest with you → vendor the wiki skeleton, schema doc (`AGENTS.md`), check scripts and templates in one mechanical shot (`bootstrap.mjs`) → seed `architecture/overview.md` (default, declinable) → append pointer blocks to whichever agent context files already exist → finish with a single `docs:` commit (with your consent, asked once up front). |
 | `/repolore:check` | Health report: stale pages, uncovered «page-worthy» code clusters, index drift, page budget. Read-only, never blocks. |
 | `/repolore:refresh` | Bring stale pages back in line with the code: diff-driven triage, citation re-verification, re-stamp, regenerate index, reviewable commit. |
 
@@ -96,10 +96,23 @@ Cost note: an agentic refresh run on a typical stale set costs on the order of
 $0.50–2.00 of tokens ([published recipes](https://understandingdata.com/posts/doc-drift-detection-ci/));
 the deterministic checks are free and instant.
 
+## Testing
+
+Two layers (see [tests/README.md](./tests/README.md)): deterministic
+`node --test` coverage of the bootstrap vendoring path (runs in CI), and an
+on-demand agentic workflow (`.claude/workflows/test-init-ux.js`) that executes
+`/repolore:init` end to end in three fixture repos, mechanically validates the
+end state, and grades the onboarding experience against a UX rubric.
+
 ## Roadmap
 
-v0.1 (this) — init, check, refresh, stamp, generated index.
-v0.2 — post-commit hook + `install-hook`; dangling-reference and link lints;
+v0.1 — init, check, refresh, stamp, generated index.
+v0.2 (this) — config-driven one-shot `bootstrap.mjs` (dry-run scope census,
+SHA-tracked vendoring, self-verification); init UX overhaul (seeded overview
+by default, up-front commit consent, in-scope count at the approval gate,
+interface-first report); single local-date source; plugin-update nudge in
+`check`; deterministic + agentic test harness.
+v0.3 — post-commit hook + `install-hook`; dangling-reference and link lints;
 `wiki-index.json` connector contract + llms.txt emitter; `update` skill
 (manifest-hash safe regeneration); flow-validator plugin harness; `audit`
 skill (LLM pass for wrongness/duplication — what hashes can't catch); Quartz

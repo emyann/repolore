@@ -24,30 +24,12 @@
  *
  * Exit code is always 0 — this is an audit aid, never a gate.
  */
-import { readFileSync, readdirSync } from 'node:fs';
-import { join, relative, dirname } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { relative, dirname } from 'node:path';
 import {
-  repoRoot, findWikiRoot, walkPages, loadConfig, configLists, globToRegex, git,
+  repoRoot, findWikiRoot, walkPages, loadConfig, configLists, git,
+  collectInScopeSources, DEFAULT_PAGE_WORTHY,
 } from './lib.mjs';
-
-const DEFAULT_SOURCE_EXT = [
-  '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs',
-  '.cs', '.py', '.go', '.rs', '.rb', '.java', '.kt', '.swift', '.php',
-  '.prisma', '.proto', '.graphql',
-];
-const DEFAULT_PAGE_WORTHY = [
-  'functions', 'activities', 'transformers', 'routes', 'services', 'operations',
-  'extensions', 'controllers', 'handlers', 'commands', 'jobs', 'workers', 'api',
-];
-const DEFAULT_PRUNE = [
-  '.git', '.repolore', 'node_modules', 'dist', 'build', 'out', 'bin', 'obj',
-  'target', 'coverage', 'vendor', '.venv', 'venv', '__pycache__', '.turbo', '.next',
-];
-const DEFAULT_NOISE = [
-  '\\.(config|setup)\\.[cm]?[jt]sx?$', '\\.d\\.ts$',
-  '\\.(test|spec)\\.[cm]?[jt]sx?$', '(^|/)__(tests|mocks)__/', '_test\\.(go|py)$',
-  '(^|/)\\.eslint', '\\.stories\\.[jt]sx?$',
-];
 
 const args = process.argv.slice(2);
 const has = (f) => args.includes(f);
@@ -64,40 +46,12 @@ const { raw } = loadConfig(wikiRoot);
 
 const scope = configLists(raw, 'scope');
 const tunables = configLists(raw, 'coverage');
-const sourceExt = new Set(tunables.source_extensions?.length ? tunables.source_extensions : DEFAULT_SOURCE_EXT);
 const pageWorthyDirs = tunables.page_worthy_dirs?.length ? tunables.page_worthy_dirs : DEFAULT_PAGE_WORTHY;
-const pruneDirs = new Set(tunables.prune_dirs?.length ? tunables.prune_dirs : DEFAULT_PRUNE);
-const noise = (tunables.noise_patterns?.length ? tunables.noise_patterns : DEFAULT_NOISE).map((p) => new RegExp(p));
 
 const esc = (s) => s.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
 const PAGE_WORTHY = new RegExp(`(^|/)(${pageWorthyDirs.map(esc).join('|')})(/|$)`, 'i');
 
-const includeRes = (scope.include?.length ? scope.include : ['**']).map(globToRegex);
-const excludeRes = (scope.exclude ?? []).map(globToRegex);
 const wikiRel = relative(root, wikiRoot);
-
-const inScope = (rel) =>
-  includeRes.some((r) => r.test(rel)) && !excludeRes.some((r) => r.test(rel)) &&
-  !(rel === wikiRel || rel.startsWith(wikiRel + '/'));
-
-const isSource = (rel) => {
-  const dot = rel.lastIndexOf('.');
-  if (dot === -1 || !sourceExt.has(rel.slice(dot))) return false;
-  return !noise.some((r) => r.test(rel));
-};
-
-/** Recursively collect repo-relative source files that are in wiki scope. */
-function walkSources(dir, acc) {
-  for (const e of readdirSync(dir, { withFileTypes: true })) {
-    if (e.isDirectory()) {
-      if (!pruneDirs.has(e.name)) walkSources(join(dir, e.name), acc);
-    } else {
-      const rel = relative(root, join(dir, e.name));
-      if (isSource(rel) && inScope(rel)) acc.push(rel);
-    }
-  }
-  return acc;
-}
 
 /** Every file path listed in any page's `covers:` block. */
 function collectCovered() {
@@ -109,7 +63,9 @@ function collectCovered() {
   return covered;
 }
 
-let sourceFiles = walkSources(root, []);
+let sourceFiles = collectInScopeSources(root, {
+  include: scope.include ?? [], exclude: scope.exclude ?? [], tunables, wikiRel,
+});
 const covered = collectCovered();
 
 // Restrict to files added since a ref, when asked (the new-page trigger).

@@ -24,7 +24,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 import {
-  repoRoot, findWikiRoot, walkPages, splitFrontmatter, parseCovers, blobSha, git, fail,
+  repoRoot, findWikiRoot, walkPages, splitFrontmatter, parseCovers, blobSha, git, fail, localToday,
 } from './lib.mjs';
 
 const argv = process.argv.slice(2);
@@ -52,7 +52,7 @@ if (ALL) {
 }
 
 const shortHead = git(root, ['rev-parse', '--short', 'HEAD']);
-const today = new Date().toISOString().slice(0, 10);
+const today = localToday();
 
 /** Replace a top-level frontmatter scalar, appending it when absent. */
 function setScalar(fm, key, value) {
@@ -99,7 +99,7 @@ for (const file of pages) {
   writeFileSync(file, `---\n${fm}---${parts.body}`);
 
   const note = missing.length ? `  ⚠ missing covered file(s): ${missing.join(', ')} — remove or fix those entries` : '';
-  console.log(`  STAMP  ${rel}  (${changed} sha(s) updated, @${shortHead})${note}`);
+  console.log(`  STAMP  ${rel}  (${changed} sha(s) updated, @${shortHead}, ${today})${note}`);
   if (missing.length) attention++;
 }
 

@@ -1,0 +1,233 @@
+/**
+ * bootstrap.test.mjs — deterministic tests for the init vendoring path.
+ *
+ * Each test builds a throwaway fixture repo in a temp dir and drives
+ * scripts/bootstrap.mjs against it. Run with: node --test tests/
+ *
+ * The invariant these tests anchor: the in-scope file count bootstrap shows
+ * at the approval gate (--dry-run) is the same number wiki-coverage reports
+ * as the baseline afterwards — same walk, same globs, same defaults.
+ */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import {
+  mkdtempSync, rmSync, writeFileSync, mkdirSync, existsSync, readFileSync,
+  lstatSync, readlinkSync, readdirSync, copyFileSync,
+} from 'node:fs';
+import { join } from 'node:path';
+import { tmpdir } from 'node:os';
+import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+
+const PLUGIN = join(fileURLToPath(import.meta.url), '..', '..');
+const BOOTSTRAP = join(PLUGIN, 'scripts', 'bootstrap.mjs');
+
+const sh = (cwd, cmd, args) => execFileSync(cmd, args, { cwd, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+const git = (cwd, args) => sh(cwd, 'git', args).trim();
+const node = (cwd, args) => sh(cwd, 'node', args);
+
+/** Run a node script expecting failure; returns {status, stderr}. */
+function nodeFail(cwd, args) {
+  try {
+    node(cwd, args);
+    return { status: 0, stderr: '' };
+  } catch (e) {
+    return { status: e.status, stderr: String(e.stderr) };
+  }
+}
+
+/** Tiny TS project: 3 in-scope sources + a test file the noise filter drops. */
+function makeFixture(t) {
+  const dir = mkdtempSync(join(tmpdir(), 'repolore-test-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  git(dir, ['init', '-q']);
+  mkdirSync(join(dir, 'src', 'services'), { recursive: true });
+  mkdirSync(join(dir, 'src', 'routes'), { recursive: true });
+  writeFileSync(join(dir, 'src', 'a.ts'), 'export const a = 1;\n');
+  writeFileSync(join(dir, 'src', 'services', 'billing.ts'), 'export const svc = 1;\n');
+  writeFileSync(join(dir, 'src', 'routes', 'orders.ts'), 'export const r = 1;\n');
+  writeFileSync(join(dir, 'src', 'a.test.ts'), 'import { a } from "./a";\n');
+  writeFileSync(join(dir, 'README.md'), '# fixture\n');
+  git(dir, ['add', '-A']);
+  git(dir, ['-c', 'user.email=t@x', '-c', 'user.name=t', 'commit', '-qm', 'init']);
+  return dir;
+}
+
+function writeConfig(dir, overrides = {}) {
+  const cfg = {
+    projectName: 'fixture',
+    wikiRoot: 'docs/wiki',
+    scopeSummary: 'Covers src/. Tests excluded by the default noise filter.',
+    repoNotes: 'fixture is a tiny service.\nRoutes and services live under src/.',
+    scope: { include: ['src/**'], exclude: [] },
+    pages: [
+      { slug: 'architecture/overview', summary: 'System shape and main components.' },
+      { slug: 'features/billing', summary: 'Billing service history.' },
+    ],
+    ...overrides,
+  };
+  const file = join(dir, 'init.json');
+  writeFileSync(file, JSON.stringify(cfg));
+  return file;
+}
+
+test('dry-run reports the scope census and writes nothing', (t) => {
+  const dir = makeFixture(t);
+  const cfg = writeConfig(dir);
+  const out = JSON.parse(node(dir, [BOOTSTRAP, '--config', cfg, '--dry-run', '--json']));
+  assert.equal(out.mode, 'dry-run');
+  assert.equal(out.inScope, 3, 'three sources in scope; a.test.ts dropped as noise');
+  assert.deepEqual(out.byTopDir, [{ dir: 'src', count: 3 }]);
+  assert.equal(out.pages, 2);
+  assert.ok(!existsSync(join(dir, 'docs')), 'dry-run must not create the wiki');
+  assert.ok(!existsSync(join(dir, '.repolore')), 'dry-run must not create .repolore');
+});
+
+test('dry-run needs only the scope block (phase-2 usage)', (t) => {
+  const dir = makeFixture(t);
+  const file = join(dir, 'scope-only.json');
+  writeFileSync(file, JSON.stringify({ scope: { include: ['src/**'] } }));
+  const out = JSON.parse(node(dir, [BOOTSTRAP, '--config', file, '--dry-run', '--json']));
+  assert.equal(out.inScope, 3);
+});
+
+test('bootstrap vendors everything, verified, with no leftover placeholders', (t) => {
+  const dir = makeFixture(t);
+  const cfg = writeConfig(dir);
+  const out = JSON.parse(node(dir, [BOOTSTRAP, '--config', cfg, '--json']));
+  assert.equal(out.mode, 'bootstrap');
+  assert.deepEqual(out.verified, ['index generated', 'wiki-check clean', 'index --check clean']);
+
+  for (const rel of [
+    'docs/wiki/AGENTS.md', 'docs/wiki/wiki.config.yml', 'docs/wiki/index.md',
+    'docs/wiki/GLOSSARY.md', 'docs/wiki/log.md',
+    'docs/wiki/_templates/page.md', 'docs/wiki/_templates/decision.md',
+    '.repolore/manifest.json',
+    '.repolore/scripts/lib.mjs', '.repolore/scripts/wiki-check.mjs',
+    '.repolore/scripts/wiki-coverage.mjs', '.repolore/scripts/wiki-stamp.mjs',
+    '.repolore/scripts/wiki-index.mjs',
+  ]) assert.ok(existsSync(join(dir, rel)), `missing ${rel}`);
+
+  const link = join(dir, 'docs/wiki/CLAUDE.md');
+  assert.ok(lstatSync(link).isSymbolicLink(), 'CLAUDE.md must be a symlink');
+  assert.equal(readlinkSync(link), 'AGENTS.md');
+
+  for (const cat of ['architecture', 'concepts', 'features', 'flows', 'decisions', 'gotchas', 'howto']) {
+    assert.ok(existsSync(join(dir, 'docs/wiki', cat)), `missing category dir ${cat}`);
+  }
+
+  // Instantiated files carry no surviving {{PLACEHOLDER}}s.
+  for (const f of ['AGENTS.md', 'wiki.config.yml']) {
+    const text = readFileSync(join(dir, 'docs/wiki', f), 'utf8');
+    assert.ok(!/\{\{[A-Z_]+\}\}/.test(text), `unreplaced placeholder in ${f}`);
+  }
+  const agents = readFileSync(join(dir, 'docs/wiki/AGENTS.md'), 'utf8');
+  assert.match(agents, /fixture/, 'project name instantiated');
+  assert.match(agents, /\.repolore\/scripts/, 'scripts dir instantiated');
+
+  // Manifest tracks every vendored file by its real blob SHA.
+  const manifest = JSON.parse(readFileSync(join(dir, '.repolore/manifest.json'), 'utf8'));
+  assert.equal(manifest.tool, 'repolore');
+  assert.equal(manifest.wikiRoot, 'docs/wiki');
+  const pluginJson = JSON.parse(readFileSync(join(PLUGIN, '.claude-plugin', 'plugin.json'), 'utf8'));
+  assert.equal(manifest.pluginVersion, pluginJson.version, 'manifest records the vendoring plugin version');
+  assert.equal(manifest.generatedFiles.length, 8, '5 scripts + AGENTS + 2 templates');
+  for (const { path, sha } of manifest.generatedFiles) {
+    assert.equal(git(dir, ['hash-object', path]), sha, `manifest sha drift for ${path}`);
+  }
+  for (const repoOwned of ['wiki.config.yml', 'GLOSSARY.md', 'log.md']) {
+    assert.ok(!manifest.generatedFiles.some((f) => f.path.endsWith(repoOwned)),
+      `${repoOwned} is repo-owned content, never manifest-tracked`);
+  }
+
+  // Vendored checks run clean in the target repo.
+  node(dir, ['.repolore/scripts/wiki-check.mjs']);
+  node(dir, ['.repolore/scripts/wiki-index.mjs', '--check']);
+});
+
+test('the approval-gate count equals the coverage baseline', (t) => {
+  const dir = makeFixture(t);
+  const cfg = writeConfig(dir);
+  const gate = JSON.parse(node(dir, [BOOTSTRAP, '--config', cfg, '--dry-run', '--json']));
+  node(dir, [BOOTSTRAP, '--config', cfg]);
+  const baseline = JSON.parse(node(dir, ['.repolore/scripts/wiki-coverage.mjs', '--json']));
+  assert.equal(baseline.total, gate.inScope, 'gate number and baseline must be the same number');
+  assert.equal(baseline.covered, 0, 'fresh init covers nothing yet');
+});
+
+test('re-running bootstrap on an initialized repo is refused', (t) => {
+  const dir = makeFixture(t);
+  const cfg = writeConfig(dir);
+  node(dir, [BOOTSTRAP, '--config', cfg]);
+  const { status, stderr } = nodeFail(dir, [BOOTSTRAP, '--config', cfg]);
+  assert.equal(status, 2);
+  assert.match(stderr, /already (exists|initialized)/);
+});
+
+test('config validation rejects the obvious mistakes', (t) => {
+  const dir = makeFixture(t);
+  const cases = [
+    [{ scope: { include: [] } }, /scope\.include/],
+    [{ pages: [{ slug: 'no-category', summary: 'x' }] }, /category\/name/],
+    [{ projectName: '' }, /projectName/],
+    [{ wikiRoot: '/abs/path' }, /repo-relative/],
+  ];
+  for (const [overrides, re] of cases) {
+    const file = join(dir, 'bad.json');
+    writeFileSync(file, JSON.stringify({
+      projectName: 'fixture', scopeSummary: 's', repoNotes: 'r',
+      scope: { include: ['src/**'] }, pages: [], ...overrides,
+    }));
+    const { status, stderr } = nodeFail(dir, [BOOTSTRAP, '--config', file]);
+    assert.equal(status, 2, `expected rejection for ${JSON.stringify(overrides)}`);
+    assert.match(stderr, re);
+  }
+});
+
+test('seeded page path: template → stamp → index → fresh and covered', (t) => {
+  const dir = makeFixture(t);
+  const cfg = writeConfig(dir);
+  node(dir, [BOOTSTRAP, '--config', cfg]);
+
+  const page = join(dir, 'docs/wiki/architecture/overview.md');
+  copyFileSync(join(dir, 'docs/wiki/_templates/page.md'), page);
+  let text = readFileSync(page, 'utf8')
+    .replaceAll('TITLE HERE', 'Overview')
+    .replace('summary: One line, rendered verbatim in the generated index.md.', 'summary: System shape.')
+    .replace('category: concepts', 'category: architecture')
+    .replace('relative/path/to/source.ts', 'src/a.ts');
+  writeFileSync(page, text);
+
+  node(dir, ['.repolore/scripts/wiki-stamp.mjs', 'docs/wiki/architecture/overview.md']);
+  node(dir, ['.repolore/scripts/wiki-index.mjs']);
+  node(dir, ['.repolore/scripts/wiki-check.mjs']); // must exit 0 → page fresh
+  const cov = JSON.parse(node(dir, ['.repolore/scripts/wiki-coverage.mjs', '--json']));
+  assert.equal(cov.covered, 1, 'stamped overview covers src/a.ts');
+  const index = readFileSync(join(dir, 'docs/wiki/index.md'), 'utf8');
+  assert.match(index, /\[Overview\]\(\.\/architecture\/overview\.md\): System shape\./);
+});
+
+test('free-text YAML values are quoted, so ": " in summaries stays valid YAML', (t) => {
+  const dir = makeFixture(t);
+  const cfg = writeConfig(dir, {
+    projectName: 'fixture: the sequel',
+    pages: [{ slug: 'features/api', summary: 'Order endpoints: POST /orders creates "things".' }],
+  });
+  node(dir, [BOOTSTRAP, '--config', cfg]);
+  const raw = readFileSync(join(dir, 'docs/wiki/wiki.config.yml'), 'utf8');
+  assert.match(raw, /title: "fixture: the sequel"/);
+  assert.match(raw, /summary: "Order endpoints: POST \/orders creates \\"things\\"\."/);
+  // the vendored line-based parser still reads the quoted title
+  const idx = readFileSync(join(dir, 'docs/wiki/index.md'), 'utf8');
+  assert.match(idx, /^# fixture: the sequel — wiki index/);
+});
+
+test('empty exclude list parses as no exclusions (comment placeholder)', (t) => {
+  const dir = makeFixture(t);
+  const cfg = writeConfig(dir); // exclude: []
+  node(dir, [BOOTSTRAP, '--config', cfg]);
+  const raw = readFileSync(join(dir, 'docs/wiki/wiki.config.yml'), 'utf8');
+  assert.match(raw, /exclude:\n    # \(none\)/);
+  const cov = JSON.parse(node(dir, ['.repolore/scripts/wiki-coverage.mjs', '--json']));
+  assert.equal(cov.total, 3, 'comment line must not register as an exclude glob');
+});

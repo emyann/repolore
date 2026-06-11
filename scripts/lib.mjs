@@ -6,7 +6,7 @@
  * schema documented in the wiki's AGENTS.md — not arbitrary YAML.
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
-import { join, isAbsolute, resolve } from 'node:path';
+import { join, isAbsolute, resolve, relative } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 /** Special wiki files that are never pages (any level). */
@@ -24,6 +24,16 @@ export const DEFAULT_CATEGORIES = [
 export function fail(msg) {
   console.error(`repolore: ${msg}`);
   process.exit(2);
+}
+
+/**
+ * Today as YYYY-MM-DD in LOCAL time — the one date source for everything
+ * user-visible (stamps, journals, manifests). UTC slicing flips the date for
+ * evening users west of Greenwich, making the journal disagree with the stamp.
+ */
+export function localToday() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
 export function git(cwd, args) {
@@ -177,6 +187,71 @@ export function configScalar(raw, key, sub) {
 /** Top-level list, e.g. `categories:` (inline or block form). */
 export function configList(raw, key) {
   return fmList(raw, key);
+}
+
+// ---------------------------------------------------------------------------
+// Scope semantics — shared by wiki-coverage.mjs and the init bootstrap so the
+// in-scope file count shown at the init approval gate is the same number the
+// coverage baseline reports afterwards.
+// ---------------------------------------------------------------------------
+
+/** File extensions treated as source; `coverage.source_extensions` overrides. */
+export const DEFAULT_SOURCE_EXT = [
+  '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs',
+  '.cs', '.py', '.go', '.rs', '.rb', '.java', '.kt', '.swift', '.php',
+  '.prisma', '.proto', '.graphql',
+];
+/** Directory names whose uncovered clusters signal a missing page. */
+export const DEFAULT_PAGE_WORTHY = [
+  'functions', 'activities', 'transformers', 'routes', 'services', 'operations',
+  'extensions', 'controllers', 'handlers', 'commands', 'jobs', 'workers', 'api',
+];
+/** Directories never walked. */
+export const DEFAULT_PRUNE = [
+  '.git', '.repolore', 'node_modules', 'dist', 'build', 'out', 'bin', 'obj',
+  'target', 'coverage', 'vendor', '.venv', 'venv', '__pycache__', '.turbo', '.next',
+];
+/** Path patterns excluded as noise (tests, configs, generated typings…). */
+export const DEFAULT_NOISE = [
+  '\\.(config|setup)\\.[cm]?[jt]sx?$', '\\.d\\.ts$',
+  '\\.(test|spec)\\.[cm]?[jt]sx?$', '(^|/)__(tests|mocks)__/', '_test\\.(go|py)$',
+  '(^|/)\\.eslint', '\\.stories\\.[jt]sx?$',
+];
+
+/**
+ * Repo-relative source files matching the wiki scope. `include`/`exclude` are
+ * gitignore-ish globs; `tunables` is the parsed `coverage:` block; `wikiRel`
+ * (when given) is excluded along with everything under it.
+ */
+export function collectInScopeSources(root, { include = [], exclude = [], tunables = {}, wikiRel = null } = {}) {
+  const sourceExt = new Set(tunables.source_extensions?.length ? tunables.source_extensions : DEFAULT_SOURCE_EXT);
+  const pruneDirs = new Set(tunables.prune_dirs?.length ? tunables.prune_dirs : DEFAULT_PRUNE);
+  const noise = (tunables.noise_patterns?.length ? tunables.noise_patterns : DEFAULT_NOISE).map((p) => new RegExp(p));
+  const includeRes = (include.length ? include : ['**']).map(globToRegex);
+  const excludeRes = exclude.map(globToRegex);
+
+  const inScope = (rel) =>
+    includeRes.some((r) => r.test(rel)) && !excludeRes.some((r) => r.test(rel)) &&
+    !(wikiRel && (rel === wikiRel || rel.startsWith(wikiRel + '/')));
+  const isSource = (rel) => {
+    const dot = rel.lastIndexOf('.');
+    if (dot === -1 || !sourceExt.has(rel.slice(dot))) return false;
+    return !noise.some((r) => r.test(rel));
+  };
+
+  const acc = [];
+  const walk = (dir) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      if (e.isDirectory()) {
+        if (!pruneDirs.has(e.name)) walk(join(dir, e.name));
+      } else {
+        const rel = relative(root, join(dir, e.name));
+        if (isSource(rel) && inScope(rel)) acc.push(rel);
+      }
+    }
+  };
+  walk(root);
+  return acc;
 }
 
 /** Translate a gitignore-ish glob to an anchored RegExp over a repo-relative path. */

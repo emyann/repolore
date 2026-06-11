@@ -1,6 +1,6 @@
 ---
 name: init
-description: Bootstrap an LLM-maintained, code-derived wiki in this repository — detect the stack, agree a page manifest with the user, vendor the schema + check scripts + templates, and wire agent entry points. Run once per repo.
+description: Bootstrap an LLM-maintained, code-derived wiki in this repository — detect the stack, agree scope + a page manifest with the user, vendor the schema + check scripts + templates in one mechanical shot, seed the overview page, and wire agent entry points. Run once per repo.
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---
@@ -16,12 +16,27 @@ freshness tracking. This is Karpathy's llm-wiki pattern applied to a codebase
 Follow the phases in order. **Never silently write a wall of pages** — the
 manifest approval gate (phase 4) is mandatory. Make no network calls.
 
+The run should end **fully done**: scaffold vendored, the overview page
+drafted (unless declined), entry points wired, and — when the user consented
+in phase 2 — a single commit made. Don't park on a recommendation the user
+then has to approve in another round-trip.
+
 ## Phase 0 — Preflight
 
 1. Confirm you are in a git repo (`git rev-parse --show-toplevel`); abort with
    guidance if not.
-2. If `.repolore/manifest.json` exists, a wiki is already initialized — stop
-   and point the user at `/repolore:check` and `/repolore:refresh`.
+2. If `.repolore/manifest.json` exists, a wiki is already initialized — stop.
+   The abort message is short and consistent: read the manifest and say where
+   the wiki lives and when it was initialized, point at `/repolore:check`
+   (health) and `/repolore:refresh` (updates) as the maintenance loop, and
+   note the start-over escape hatch — delete `.repolore/` and the wiki
+   directory, then run init again. Do not propose anything else. Use this
+   template verbatim (so the abort reads identically every run):
+
+   > This repo already has a repolore wiki (initialized `<initializedAt>`,
+   > at `<wikiRoot>/`). Use `/repolore:check` for a health report and
+   > `/repolore:refresh` to bring stale pages back in line. To start over
+   > instead: delete `.repolore/` and `<wikiRoot>/`, then re-run init.
 3. If a directory containing `wiki.config.yml` exists without the manifest,
    ask the user whether to adopt it (write the manifest pointing at it) rather
    than creating a second wiki.
@@ -41,78 +56,82 @@ Build a picture of the repo with cheap commands — do not deep-read code yet:
 Use AskUserQuestion. Ask only what detection cannot decide:
 
 1. **Wiki location** — default `docs/wiki/` (or alongside existing docs).
-2. **Scope** — propose include/exclude globs from phase 1; ask the user to
-   confirm/amend. This is the key decision: by-policy exclusions (e.g. a theme
-   or generated client) should be explicit.
+2. **Scope** — propose include/exclude globs from phase 1, **with the
+   in-scope file count attached**: write a draft config holding just the
+   `scope` block to a unique temp path outside the repo — unique per RUN,
+   not just per project, so reruns never pick up a stale file (e.g.
+   `/tmp/repolore-init-<project>-$(date +%s).json`) — and run
+   `node ${CLAUDE_PLUGIN_ROOT}/scripts/bootstrap.mjs --config <that file> --dry-run`.
+   It reports how many source files the globs capture, grouped by top-level
+   directory — the same semantics the coverage check uses later. Show that
+   number with the question: it is the cheapest moment to catch over-broad
+   scope (a count that looks bloated for the repo's size means the globs need
+   tightening, not the wiki). By-policy exclusions (e.g. a theme or generated
+   client) should be explicit.
 3. **Audiences** — default `[dev]` only. Offer extra reader types (ops,
    support, admin) only if the repo clearly serves them.
-4. **Seed one page now?** — default: manifest only (pages get drafted on
-   demand later). Offer drafting `architecture/overview.md` immediately as the
-   single exception — one page, no fan-out.
+4. **Seed `architecture/overview.md` now?** — **recommended default: yes.**
+   One page, no fan-out: it gives the run a concrete first artifact, and it
+   doubles as a live example of the citation + covers format before anyone
+   reads the schema doc. Offer manifest-only as the alternative for users who
+   want zero generated prose.
+5. **Commit when done?** — **recommended default: yes**: a single
+   `docs: initialize repolore wiki` commit at the end (vendored layer + wiki +
+   pointer blocks). Alternative: leave everything uncommitted for review.
+   Collecting consent here is what lets the run end fully done instead of
+   parking on "say the word and I'll commit".
 
-Accept `--yes`-style instruction from the user to take all defaults.
+Accept `--yes`-style instruction from the user to take all defaults (in a
+non-interactive run, take the defaults above without asking).
 
 ## Phase 3 — Map the page manifest
 
 From phase 1 (plus light targeted reading — READMEs, entry points, route/job
 registries; **structure, not embeddings**), draft a page manifest: for each
-category, the pages this repo *should eventually have* — `slug`, one-line
-`summary`, `status: planned`. Aim for 10–25 planned pages on a typical repo;
-respect the soft page budget (default 50). Categories with nothing real to say
-stay empty — do not pad.
+category, the pages this repo *should eventually have* — `slug`
+(`category/name`), one-line `summary`, `status: planned`. Aim for 10–25
+planned pages on a typical repo — and scale honestly to the repo: a small
+side project may only support 3–6 real pages. Respect the soft page budget
+(default 50). Categories with nothing real to say stay empty — do not pad.
 
 ## Phase 4 — Propose (the approval gate)
 
-Show the user: the chosen location, the scope globs, and the manifest as a
-table (category / slug / summary). Iterate until approved. Do not write
-anything before approval.
+Assemble the **full** init config (see schema in `bootstrap.mjs`):
+`projectName`, `wikiRoot`, `scopeSummary` (short prose restatement of the
+scope decision incl. by-policy exclusions), `repoNotes` (3–6 lines: what the
+repo is, its top-level shape, what is out of scope and why), `scope`, and the
+manifest under `pages`. Re-run `bootstrap.mjs --config … --dry-run` and show
+the user: the chosen location, the scope globs **with the in-scope file
+count**, and the manifest as a table (category / slug / summary). Iterate
+until approved. Do not write anything into the repo before approval. (In a
+non-interactive all-defaults run, present the proposal and proceed — the
+user's all-defaults instruction is the approval.)
 
-## Phase 5 — Vendor the scaffold
+## Phase 5 — Vendor the scaffold (one mechanical shot)
 
-All master assets live in this plugin at `${CLAUDE_PLUGIN_ROOT}`. Copy and
-instantiate (replace every `{{PLACEHOLDER}}`):
+All judgment is now encoded in the config file; the vendoring itself is
+mechanical and delegated:
 
-1. `mkdir -p` the wiki root and its category dirs + `_templates/`.
-2. Scripts → `.repolore/scripts/` (or a user-preferred tools dir): copy
-   `${CLAUDE_PLUGIN_ROOT}/scripts/{lib,wiki-check,wiki-coverage,wiki-stamp,wiki-index}.mjs`
-   unmodified. The default deliberately lives inside the hidden `.repolore/`
-   dir so the tool's entire footprint outside the wiki is ONE hidden directory
-   (like `.husky/` or `.githooks/`) — keep it there unless the user asks.
-3. `${CLAUDE_PLUGIN_ROOT}/templates/AGENTS.md` → `<wiki>/AGENTS.md`, with
-   `{{PROJECT_NAME}}`, `{{WIKI_DIR}}`, `{{SCRIPTS_DIR}}`, `{{SCOPE_SUMMARY}}`
-   (a short prose restatement of the scope decision incl. by-policy
-   exclusions), `{{PAGE_BUDGET}}` filled in. Create the symlink
-   `<wiki>/CLAUDE.md → AGENTS.md` (`ln -s AGENTS.md CLAUDE.md`) so Claude Code
-   auto-loads it when working in the wiki tree.
-4. `templates/wiki.config.yml` → `<wiki>/wiki.config.yml` with title, scope
-   globs (4-space-indented `- "glob"` lines), repo notes (3–6 lines from phase
-   1: what the repo is, its top-level shape, what is out of scope and why),
-   and the approved manifest under `pages:`.
-5. `templates/page.md` + `templates/decision.md` → `<wiki>/_templates/`;
-   `templates/GLOSSARY.md` + `templates/log.md` → wiki root.
-6. If the user opted in: draft `architecture/overview.md` now, from the code,
-   following `<wiki>/AGENTS.md` rules exactly (citations, covers list), then
-   `node .repolore/scripts/wiki-stamp.mjs <page>`.
-7. Generate the index: `node .repolore/scripts/wiki-index.mjs --wiki-root <wiki>`.
-8. Write `.repolore/manifest.json` at the repo root:
-
-```json
-{
-  "tool": "repolore",
-  "schemaVersion": 1,
-  "wikiRoot": "docs/wiki",
-  "scriptsDir": ".repolore/scripts",
-  "initializedAt": "<ISO date>",
-  "generatedFiles": [ { "path": ".repolore/scripts/wiki-check.mjs", "sha": "<git hash-object>" } ]
-}
-```
-
-List every vendored file with its blob SHA (`git hash-object`) — future
-`update` runs regenerate only files whose hash still matches what was
-originally written, and surface user-modified ones for review.
-
-9. Verify: `node .repolore/scripts/wiki-check.mjs` must exit clean and
-   `wiki-index.mjs --check` must pass.
+1. Run `node ${CLAUDE_PLUGIN_ROOT}/scripts/bootstrap.mjs --config <the config file approved in phase 4>`.
+   In one deterministic step it creates the wiki skeleton + category dirs,
+   copies the five check scripts to `.repolore/scripts/` (the tool's entire
+   footprint outside the wiki is that ONE hidden directory — keep it there
+   unless the user asks), instantiates `AGENTS.md` / `wiki.config.yml` /
+   templates / glossary / log, creates the `CLAUDE.md → AGENTS.md` symlink,
+   writes `.repolore/manifest.json` tracking every vendored file by blob SHA,
+   generates the index, and verifies (`wiki-check`, `wiki-index --check`)
+   before reporting. **Do not hand-copy or re-type any of those files** — if
+   bootstrap fails, read its error, fix the config, and re-run it.
+2. If the user opted in (phase 2 Q4): draft `architecture/overview.md` now,
+   from the code, following `<wikiRoot>/AGENTS.md` rules exactly (citations,
+   covers list, `> TODO-VERIFY:` for anything unverified). Then:
+   `node .repolore/scripts/wiki-stamp.mjs <page>`, regenerate the index
+   (`node .repolore/scripts/wiki-index.mjs`), set the page's manifest entry to
+   `status: seeded` in `wiki.config.yml`, and append the birth line to the
+   END of `log.md` (newest last, after the format comment) — reusing the
+   `last_refreshed` date the stamp just wrote, so the journal and the stamp
+   never disagree.
+3. Re-run `node .repolore/scripts/wiki-check.mjs` — must exit clean.
 
 ## Phase 6 — Wire entry points (least-invasive: never create files uninvited)
 
@@ -121,6 +140,11 @@ wiki material into always-loaded files) to each root context file that
 **already exists**: `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`,
 `.github/copilot-instructions.md`.
 
+- When appending, ensure exactly one blank line separates the block from the
+  existing content (files missing a trailing newline are common — handle that
+  in the same edit, silently; it is not worth narrating). Trust but verify:
+  `tail -c1` is the cheap way to confirm the final newline landed before you
+  commit.
 - **Never create a new context file without asking.** If none exists, ask the
   user (one extra question): create a root `AGENTS.md` with just the block, or
   skip wiring entirely. In a non-interactive run, skip — and include the
@@ -143,12 +167,31 @@ wiki page, update that page as part of the task (`node <scriptsDir>/wiki-check.m
 shows what went stale); **new feature → new page**.
 ```
 
-## Phase 7 — Report
+## Phase 7 — Finish & report
 
-Tell the user: what was created and where; how to draft a page from the
-manifest ("draft `features/<slug>` from the wiki manifest"); the three
-commands (`wiki-check`, `wiki-coverage`, `wiki-index`); that
-`/repolore:check` and `/repolore:refresh` are now the maintenance loop; and
-that the vendored layer is committed while check state never is. Recommend
-committing the scaffold as a single `docs: initialize repolore` commit (do not
-commit without consent).
+If the user consented in phase 2 Q5, make the single commit now — message
+`docs: initialize repolore wiki`, everything init created plus the pointer
+blocks, **respecting any commit conventions the repo's context files declare**
+(trailers, prefixes, things to omit). Never commit without that consent.
+
+Then report, in this order:
+
+1. **What exists now and the one next action.** The wiki location, the seeded
+   overview page (or, if declined, the single suggested follow-up: "draft
+   `architecture/overview` from the wiki manifest"), and the commit (made, or
+   — without consent — recommended).
+2. **The interface** — how to use it day-to-day: draft pages on demand
+   ("draft `features/<slug>` from the wiki manifest"); `/repolore:check` for
+   health; `/repolore:refresh` to bring stale pages back in line. Lead with
+   these slash commands — they are the product surface.
+3. **The plumbing** — the vendored scripts those commands run (`wiki-check`,
+   `wiki-coverage`, `wiki-index`, `wiki-stamp` under `.repolore/scripts/`),
+   for CI use and direct invocation. Note that the vendored layer
+   (`<wikiRoot>/`, `.repolore/`, pointer blocks) is meant to be committed
+   while check state never is.
+4. **The coverage baseline — framed as a baseline, not a deficit.** Report
+   the real numbers from `wiki-coverage.mjs` (a seeded overview may already
+   cover some or even all in-scope files on a small repo): "N in-scope source
+   files, M covered so far; coverage grows as manifest pages are drafted".
+   Never a bare "0% covered" that reads like a failure needing an excuse —
+   and never a scripted sentence that contradicts the actual count.

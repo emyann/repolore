@@ -27,6 +27,21 @@ Then summarize for the user, in this order of importance:
    `status: planned`.
 3. **Hygiene** — malformed pages, unmanaged pages (no `covers:`), index drift
    (regenerate with `wiki-index.mjs`), page-budget warnings, legacy fields.
+4. **Tooling updates** — the manifest's `generatedFiles` records the blob SHA
+   each vendored file had when written. Compare against the installed plugin's
+   masters: for each `<scriptsDir>/*.mjs` entry, `git hash-object
+   ${CLAUDE_PLUGIN_ROOT}/scripts/<name>` and diff the two readings:
+   - manifest SHA ≠ plugin master SHA → **a newer repolore is installed** than
+     what this repo vendored (compare `pluginVersion` in the manifest against
+     `${CLAUDE_PLUGIN_ROOT}/.claude-plugin/plugin.json` for the friendly
+     version numbers). One line, last in the report: "repolore vX is
+     installed; this repo vendored its tooling at vY — to update, copy
+     `${CLAUDE_PLUGIN_ROOT}/scripts/*.mjs` over `<scriptsDir>/` and refresh
+     those SHAs in `.repolore/manifest.json` (a dedicated `/repolore:update`
+     is on the roadmap)." Offer to do it; don't do it unasked.
+   - vendored file's current SHA ≠ its manifest SHA → the repo **edited** that
+     vendored file locally; name it and warn that updates would overwrite the
+     local change.
 
 Rules:
 
