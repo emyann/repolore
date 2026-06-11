@@ -7,14 +7,14 @@ audience: [dev]
 read_when: "touching packaging, distribution, the shims, or anything under references/"
 covers:
   - path: SKILL.md
-    sha: a85722e4d23331039c8a41c528617b97d1c84665
+    sha: e87c7c7cad22195b27b5548307aae7c61a6ce550
   - path: references/init.md
-    sha: 877b9f62a5895259e56b97149ab046269bc155a6
+    sha: ae9bba528e6610d1d2999197807bf3b0a6e71645
   - path: scripts/bootstrap.mjs
-    sha: b837812a51aa7bae58e9f86a529cec3270118a04
+    sha: e5c667de838837c43be457a151c7f6003584c86b
   - path: .claude-plugin/plugin.json
-    sha: c22851c358774bd1601f983cbf16c884333a8ead
-generated_at_commit: 43f4132
+    sha: 5dfb387996994f14d358cb2535e225166df855df
+generated_at_commit: abd1c44
 last_refreshed: 2026-06-11
 related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-bootstrap-mechanical-vendoring, concepts/freshness-model]
 ---

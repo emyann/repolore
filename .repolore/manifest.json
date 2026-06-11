@@ -1,18 +1,18 @@
 {
   "tool": "repolore",
   "schemaVersion": 1,
-  "pluginVersion": "0.2.1",
+  "pluginVersion": "0.2.2",
   "wikiRoot": "docs/wiki",
   "scriptsDir": ".repolore/scripts",
   "initializedAt": "2026-06-11",
   "generatedFiles": [
     {
       "path": ".repolore/scripts/lib.mjs",
-      "sha": "cb68e36bdab46efcbffaf160d19e55bac46a30cb"
+      "sha": "f3edf71392e5f140060e95cb641319a89e403428"
     },
     {
       "path": ".repolore/scripts/wiki-check.mjs",
-      "sha": "0d1e60d3071cc87c552459d8e08d72797ea0534f"
+      "sha": "9010753e72c1ad87d86a165f4f296cc7618d731c"
     },
     {
       "path": ".repolore/scripts/wiki-coverage.mjs",
@@ -24,11 +24,11 @@
     },
     {
       "path": ".repolore/scripts/wiki-index.mjs",
-      "sha": "bec9d422ad667eaf124bc5d33ff0483188061418"
+      "sha": "149fbbc9e882578f488f8f8e05e76f65b724f06f"
     },
     {
       "path": "docs/wiki/AGENTS.md",
-      "sha": "3c1674a362f2987a4af67591762fa132e97e87f6"
+      "sha": "efe12a2ccf3cd70b69514e96cc9128737aea8d9d"
     },
     {
       "path": "docs/wiki/_templates/page.md",

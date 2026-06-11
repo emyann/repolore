@@ -15,3 +15,5 @@ history.
 ## 2026-06-11 — added decisions/adr-004-umbrella-skill-plugin-shims (v0.2.1 packaging decision)
 ## 2026-06-11 — added decisions/adr-005-bootstrap-mechanical-vendoring (v0.2 init redesign)
 ## 2026-06-11 — added gotchas/cross-tool-depth-untested (supersedes RESEARCH §6 "Cross-tool reality")
+## 2026-06-11 — refreshed all 7 pages (terminology sweep: "page manifest" → "page plan"; no-op re-stamps except a one-word edit in adr-005)
+## 2026-06-11 — re-vendored .repolore/scripts at v0.2.2 (page-plan backlog in index + check)

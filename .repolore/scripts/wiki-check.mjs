@@ -26,7 +26,7 @@ import { readFileSync } from 'node:fs';
 import { relative } from 'node:path';
 import {
   repoRoot, findWikiRoot, walkPages, splitFrontmatter, parseCovers, blobSha,
-  loadConfig, configScalar,
+  loadConfig, configScalar, parsePagePlan,
 } from './lib.mjs';
 
 const argv = process.argv.slice(2);
@@ -68,6 +68,22 @@ const unmanaged = results.filter((r) => r.status === 'unmanaged');
 const overBudget = results.length > pageBudget;
 const clean = stale.length === 0 && malformed.length === 0;
 
+// Page-plan reconciliation: surface the backlog (planned, not yet written)
+// and flag plan↔reality drift. Informational — never changes the exit code.
+const plan = parsePagePlan(raw);
+const pageSlugs = new Set(walkPages(wikiRoot).map((f) => relative(wikiRoot, f).replace(/\.md$/, '')));
+const planSlugs = new Set(plan.map((p) => p.slug));
+const backlog = plan.filter((p) => !pageSlugs.has(p.slug) && p.status !== 'seeded');
+const written = plan.filter((p) => pageSlugs.has(p.slug)).length;
+const planDrift = [
+  ...plan.filter((p) => p.status === 'seeded' && !pageSlugs.has(p.slug))
+    .map((p) => `${p.slug} — status: seeded but no page file exists`),
+  ...plan.filter((p) => p.status === 'planned' && pageSlugs.has(p.slug))
+    .map((p) => `${p.slug} — page exists but the plan still says planned (flip to seeded)`),
+  ...[...pageSlugs].filter((s) => !planSlugs.has(s))
+    .map((s) => `${s} — page exists but is missing from the page plan (add it to pages: in wiki.config.yml)`),
+];
+
 if (JSON_OUT) {
   console.log(JSON.stringify({
     pages: results,
@@ -75,11 +91,12 @@ if (JSON_OUT) {
     page_budget: pageBudget,
     over_budget: overBudget,
     legacy_fields: legacyPages,
+    plan: { total: plan.length, written, backlog: backlog.map((p) => p.slug), drift: planDrift },
   }, null, 2));
   process.exit(clean ? 0 : 1);
 }
 
-if (!(QUIET && clean && !overBudget && legacyPages.length === 0)) {
+if (!(QUIET && clean && !overBudget && legacyPages.length === 0 && planDrift.length === 0)) {
   console.log(`\nWiki freshness — ${results.length} page(s) checked\n`);
   for (const r of stale) {
     console.log(`  STALE      ${r.page}`);
@@ -92,6 +109,15 @@ if (!(QUIET && clean && !overBudget && legacyPages.length === 0)) {
   else console.log(`\n  ${stale.length} stale, ${malformed.length} malformed — run the repolore refresh workflow (/repolore:refresh in Claude Code; see AGENTS.md).`);
   if (overBudget) console.log(`\n  ⚠ ${results.length} pages exceeds the soft page budget (${pageBudget}). Consider merging or archiving — a curated wiki beats a sprawling one. (Tune wiki.page_budget in wiki.config.yml.)`);
   if (legacyPages.length) console.log(`\n  ⚠ ${legacyPages.length} page(s) carry legacy \`status:\`/\`last_checked:\` fields. Status is computed now — delete those lines.`);
+  if (planDrift.length) {
+    console.log(`\n  ⚠ page plan drift (pages: in wiki.config.yml disagrees with reality):`);
+    for (const d of planDrift) console.log(`     - ${d}`);
+  }
+  if (!QUIET && backlog.length) {
+    console.log(`\n  Plan: ${written}/${plan.length} written — ${backlog.length} page(s) waiting to be drafted:`);
+    for (const p of backlog) console.log(`     - ${p.slug}${p.summary ? `  (${p.summary})` : ''}`);
+    console.log(`     Draft on demand: "draft \`${backlog[0].slug}\` from the wiki plan".`);
+  }
   console.log('');
 }
 

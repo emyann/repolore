@@ -11,10 +11,10 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: scripts/wiki-check.mjs
-    sha: 0d1e60d3071cc87c552459d8e08d72797ea0534f
+    sha: 9010753e72c1ad87d86a165f4f296cc7618d731c
   - path: scripts/wiki-stamp.mjs
     sha: 670c72deed77d68517c5a55951bf946627c32038
-generated_at_commit: 43f4132
+generated_at_commit: abd1c44
 last_refreshed: 2026-06-11
 related: [decisions/adr-001-blob-sha-freshness-anchors, concepts/freshness-model]
 ---

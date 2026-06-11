@@ -11,12 +11,12 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: scripts/lib.mjs
-    sha: cb68e36bdab46efcbffaf160d19e55bac46a30cb
+    sha: f3edf71392e5f140060e95cb641319a89e403428
   - path: scripts/wiki-coverage.mjs
     sha: defc70c4060d7a2282cde9f4c209c19cae438070
   - path: scripts/wiki-index.mjs
-    sha: bec9d422ad667eaf124bc5d33ff0483188061418
-generated_at_commit: 43f4132
+    sha: 149fbbc9e882578f488f8f8e05e76f65b724f06f
+generated_at_commit: abd1c44
 last_refreshed: 2026-06-11
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-005-bootstrap-mechanical-vendoring]
 ---

@@ -11,10 +11,10 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: scripts/bootstrap.mjs
-    sha: b837812a51aa7bae58e9f86a529cec3270118a04
+    sha: e5c667de838837c43be457a151c7f6003584c86b
   - path: references/init.md
-    sha: 877b9f62a5895259e56b97149ab046269bc155a6
-generated_at_commit: 43f4132
+    sha: ae9bba528e6610d1d2999197807bf3b0a6e71645
+generated_at_commit: abd1c44
 last_refreshed: 2026-06-11
 related: [architecture/overview, decisions/adr-003-stdlib-only-vendored-scripts]
 ---
@@ -27,7 +27,7 @@ The first shipped init (v0.1) had the LLM perform every mechanical step —
 mkdir, copy five scripts, fill template placeholders, hash files, write the
 manifest. Observed on the first real run: ~5 minutes of churn, plus a
 transcription-error surface on every hand-copied file. The judgment in init
-(stack detection, scope, the page manifest, prose) is a small fraction of the
+(stack detection, scope, the page plan, prose) is a small fraction of the
 steps.
 
 ## Decision

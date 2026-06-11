@@ -19,3 +19,10 @@
 ## Gotchas
 
 - [Cross-tool depth is untested — nudge strength varies by agent](./gotchas/cross-tool-depth-untested.md): Wiki consumption depth varies by agent nudge strength; pointer-block-only teams (Copilot) are untested.
+
+## Planned (not yet written)
+
+- concepts/freshness-model: fresh/stale/unmanaged/malformed semantics, covers lists, and the coverage inversion.
+- howto/run-the-ux-harness: Running the deterministic test suite and the agentic init-UX workflow.
+
+> Backlog from the page plan (`pages:` in `wiki.config.yml`) — draft on demand: "draft `<slug>` from the wiki plan".

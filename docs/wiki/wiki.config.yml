@@ -2,7 +2,7 @@
 #
 # This file controls what the wiki covers and which pages should exist. It is
 # read by the check scripts (scope + coverage tunables + page budget) AND by
-# humans/LLMs during refresh (repo_notes + page manifest). Keep it accurate —
+# humans/LLMs during refresh (repo_notes + page plan). Keep it accurate —
 # it is the planning surface for the wiki.
 
 wiki:
@@ -35,7 +35,7 @@ coverage:
   # prune_dirs: [.git, node_modules, dist]
   # noise_patterns: ['\.(test|spec)\.[jt]s$']
 
-# Page manifest — the pages the wiki *should* eventually have.
+# Page plan — the pages the wiki *should* eventually have.
 # status: seeded = written | planned = not yet written.
 # The LLM may add pages not listed here; when it does, it adds them back.
 pages:

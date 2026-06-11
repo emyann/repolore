@@ -150,6 +150,24 @@ export function parseCovers(fm) {
   return covers;
 }
 
+/**
+ * The page plan — `pages:` entries of wiki.config.yml as
+ * [{slug, summary, status}]. status defaults to 'planned' when absent.
+ */
+export function parsePagePlan(raw) {
+  const entries = [];
+  let cur = null;
+  for (const line of blockLines(raw, 'pages')) {
+    const slugM = line.match(/^\s*-\s*slug:\s*(.+?)\s*$/);
+    const sumM = line.match(/^\s*summary:\s*(.+?)\s*$/);
+    const statM = line.match(/^\s*status:\s*(.+?)\s*$/);
+    if (slugM) { cur = { slug: slugM[1], summary: '', status: 'planned' }; entries.push(cur); }
+    else if (sumM && cur) cur.summary = sumM[1].replace(/^["']|["']$/g, '');
+    else if (statM && cur) cur.status = statM[1];
+  }
+  return entries;
+}
+
 /** Raw wiki.config.yml text ('' when absent — every consumer has defaults). */
 export function loadConfig(wikiRoot) {
   const file = join(wikiRoot, 'wiki.config.yml');

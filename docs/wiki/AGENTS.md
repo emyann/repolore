@@ -56,7 +56,7 @@ Never narrate runtime behaviour you have not read in the code.
 Covers the product machinery: the master scripts (scripts/**), the test harness (tests/**, with *.test.mjs noise-filtered), and the agentic workflow (.claude/workflows/**). By policy out of scope: templates/ (instantiated into target repos, carry {{PLACEHOLDER}}s), skills/ (3-line plugin shims), references/ (the procedures themselves — prose, not source), and docs/RESEARCH.md (immutable point-in-time report; pages may still list any of these in covers).
 
 See `wiki.config.yml` for the authoritative include/exclude globs and the page
-manifest. That file is machine-read by the check scripts — keep it accurate.
+plan. That file is machine-read by the check scripts — keep it accurate.
 
 ## Directory layout
 
@@ -202,7 +202,7 @@ maintenance and can't be freshness-tracked).
 5. Run `node .repolore/scripts/wiki-index.mjs` to regenerate the index, and
    append a line to `log.md`.
 6. Run `node .repolore/scripts/wiki-check.mjs` — the new page must report `fresh`.
-7. If the page wasn't in the `pages:` manifest in `wiki.config.yml`, add it.
+7. If the page isn't in the page plan (`pages:` in `wiki.config.yml`), add it.
 
 ## Workflow: refreshing a stale page
 
@@ -231,4 +231,4 @@ maintenance and can't be freshness-tracked).
   erodes every citation's trust).
 - Do not add `status:` / `last_checked:` fields — status is computed.
 - Do not store session state, TODOs, or auto-generatable reference here.
-- Do not let the `pages:` manifest in `wiki.config.yml` drift from reality.
+- Do not let the page plan (`pages:` in `wiki.config.yml`) drift from reality — `wiki-check.mjs` flags the drift.

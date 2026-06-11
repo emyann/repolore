@@ -11,12 +11,12 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: SKILL.md
-    sha: a85722e4d23331039c8a41c528617b97d1c84665
+    sha: e87c7c7cad22195b27b5548307aae7c61a6ce550
   - path: skills/init/SKILL.md
-    sha: a7afcf950d2c8c6ee3ede4a5bb4da44340c53c0a
+    sha: 4df0069b899fb6f4281ffba524f828eba590dce7
   - path: references/init.md
-    sha: 877b9f62a5895259e56b97149ab046269bc155a6
-generated_at_commit: 43f4132
+    sha: ae9bba528e6610d1d2999197807bf3b0a6e71645
+generated_at_commit: abd1c44
 last_refreshed: 2026-06-11
 related: [architecture/overview, gotchas/cross-tool-depth-untested]
 ---
