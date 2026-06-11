@@ -34,7 +34,10 @@ Then summarize for the user, in this order of importance:
    Also: an empty or near-empty `GLOSSARY.md` while written pages exist —
    terms are being coined without being recorded (the feeding rule in
    `AGENTS.md`). Offer a one-shot backfill from the existing pages'
-   terminology; don't run it unasked.
+   terminology; don't run it unasked. And one line when optional
+   capabilities are inactive (post-commit nudge not installed, etc.):
+   point at the setup workflow (`/repolore:setup` in the Claude Code
+   plugin) — point, don't re-ask.
 5. **Tooling updates** — run the deterministic classifier:
    `node <SKILL_ROOT>/scripts/update.mjs --dry-run`. It compares every
    tracked vendored file against the installed masters (up-to-date /

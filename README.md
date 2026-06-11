@@ -108,6 +108,7 @@ the manifest SHAs stay truthful.
 | `/repolore:init` | One-time bootstrap: detect the stack → agree scope (with the in-scope file count shown up front) + a page plan with you → vendor the wiki skeleton, schema doc (`AGENTS.md`), check scripts and templates in one mechanical shot (`bootstrap.mjs`) → seed `architecture/overview.md` (default, declinable) → append pointer blocks to whichever agent context files already exist → optionally wire team auto-update into `.claude/settings.json` (see *Updating*) → finish with a single `docs:` commit (with your consent, asked once up front). |
 | `/repolore:check` | Health report: stale pages, uncovered «page-worthy» code clusters, index drift, page budget. Read-only, never blocks. |
 | `/repolore:refresh` | Bring stale pages back in line with the code: diff-driven triage, citation re-verification, re-stamp, regenerate index, reviewable commit. |
+| `/repolore:setup` | Activate optional capabilities with one consented question: the post-commit nudge (per-machine, or team-wide via husky/`prepare` script), team auto-update in project settings. Detects what is available-but-inactive so you never have to know to ask. |
 | `/repolore:update` | Bring the repo's vendored tooling up to the installed repolore version: deterministic classification (up-to-date / outdated-pristine / locally modified / missing / new), safe regeneration, manifest SHAs + version refreshed. Never overwrites your local edits without explicit `--force` consent. |
 
 With the standalone skill the same workflows are invoked in plain words
@@ -218,6 +219,9 @@ v0.3.2 (this) — the post-commit nudge: per-contributor, chaining-safe,
 never blocks (silent when green; stale pages + new-page-worthy files
 otherwise); installed by init (consented) and offered by update to existing
 repos.
+v0.3.4 (this) — the setup workflow: available-but-inactive capabilities
+become one consented question (and update asks it directly when it ADDs new
+capability scripts); team-wide nudge recipes (husky dir, npm `prepare`).
 v0.3.x — flows v1 per [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md):
 flow-meta/v1 (line-parseable) + flow template + honesty-gradient text +
 structural/anchored checks + `wiki-flow-render.mjs` + two dogfood flow pages;

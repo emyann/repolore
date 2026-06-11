@@ -16,7 +16,7 @@ truth; the wiki is the orientation layer.
 `<SKILL_ROOT>` below means **the directory containing this SKILL.md** (it
 ships with `scripts/`, `templates/`, and `references/` alongside).
 
-## Four workflows — pick by what the user asked
+## Five workflows — pick by what the user asked
 
 | User intent | Procedure to read and execute |
 |---|---|
@@ -24,6 +24,7 @@ ships with `scripts/`, `templates/`, and `references/` alongside).
 | "is the wiki up to date?" / before relying on wiki content | `<SKILL_ROOT>/references/check.md` |
 | "update the wiki" / check reported stale pages | `<SKILL_ROOT>/references/refresh.md` |
 | "update repolore's tooling in this repo" / check reported newer tooling | `<SKILL_ROOT>/references/update.md` |
+| "activate repolore extras" (hook, team-wide nudge, auto-update) / after an update adds capabilities | `<SKILL_ROOT>/references/setup.md` |
 
 Read the matching procedure fully and follow it exactly, substituting
 `<SKILL_ROOT>` as defined above. Each is self-contained; the scripts they

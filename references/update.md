@@ -24,11 +24,12 @@
 4. Apply: `node <SKILL_ROOT>/scripts/update.mjs` plus any consented
    `--force <path>` flags. The script refreshes manifest SHAs and
    `pluginVersion` itself.
-5. If the update ADDed scripts new to this version (e.g. the post-commit
-   nudge pair, `wiki-hook.mjs` + `wiki-install-hook.mjs`), say what they are
-   and offer the relevant one-time setup
-   (`node <scriptsDir>/wiki-install-hook.mjs`) — never run installers
-   unasked.
+5. If the update ADDed scripts that enable an optional capability (e.g. the
+   post-commit nudge pair), do not bury the offer in prose: run the setup
+   workflow's question for the NEW capabilities right now
+   (`<SKILL_ROOT>/references/setup.md`) — one simple accept/decline. Never
+   run installers without that consent; never make the user discover the
+   capability from a report.
 6. Finish the loop: regenerate the index
    (`node <scriptsDir>/wiki-index.mjs` — newer tooling may change the index
    format), then `node <scriptsDir>/wiki-check.mjs`. If pages went stale
