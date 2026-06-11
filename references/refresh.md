@@ -32,16 +32,21 @@ You are refreshing the repo's LLM-maintained wiki. Read
 5. Fix MALFORMED pages (repair frontmatter to the schema).
 6. `node <scriptsDir>/wiki-index.mjs` if any title/summary changed (or
    `--check` says so); append one line per refreshed page to `<wikiRoot>/log.md`;
-   update `GLOSSARY.md` lines whose terms the refresh renamed or retired.
+   update `GLOSSARY.md` lines whose terms the refresh renamed or retired;
+   append any defects the re-verification surfaced to `<wikiRoot>/FINDINGS.md`
+   (one line each — see the inbox rules in `<wikiRoot>/AGENTS.md`).
 7. Re-run `wiki-check.mjs` — every page must report fresh.
 8. Present the refresh as a reviewable change; offer a single
    `docs(wiki): refresh N stale pages` commit (do not commit without consent).
 
 ## Guardrails
 
-- **Do not invent pages or content.** Only refresh what exists. A missing
+- **Do not invent pages or content.** Only refresh what exists. Exactly two
+  by-products may be filed, both in the same reviewable change: a missing
   page you notice goes into the page plan (`pages:` in `wiki.config.yml`) as
-  `status: planned` — not written now.
+  `status: planned` — not written now — and a suspected code defect goes
+  into `<wikiRoot>/FINDINGS.md` as one inbox line (grammar and rules in
+  `<wikiRoot>/AGENTS.md`; create the file with consent if absent).
 - A stale **accepted decision record** is a prompt to consider a *superseding*
   ADR, never an in-place rewrite (dual mutability — see AGENTS.md).
 - Code wins every conflict; never adjust prose to defend a stale claim.
