@@ -7,7 +7,7 @@ audience: [dev]
 read_when: "touching packaging, distribution, the shims, or anything under references/"
 covers:
   - path: SKILL.md
-    sha: 2efc773d6284466f25fc42d60d118e27410ceb63
+    sha: a5faeb26798f0011a46679aaa6c66237903d2c50
   - path: references/init.md
     sha: 3f231716382c32c11dc87e11b4320ab7dd988502
   - path: scripts/bootstrap.mjs
@@ -15,8 +15,8 @@ covers:
   - path: scripts/update.mjs
     sha: e35ecd77860900a9dc8ba6d0a5d5abce05d7c51e
   - path: .claude-plugin/plugin.json
-    sha: 046ed1bc8139b48145040569cb70d4666f9eb5fe
-generated_at_commit: a1cd290
+    sha: fedec9a2932b8305fe9707cdccd937698a7681fc
+generated_at_commit: 1bf52a0
 last_refreshed: 2026-06-11
 related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-bootstrap-mechanical-vendoring, concepts/freshness-model]
 ---
@@ -31,7 +31,7 @@ related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-boots
 
 1. **Claude Code plugin** — declared by `.claude-plugin/plugin.json` and
    `marketplace.json`; surfaces the namespaced commands `/repolore:init`,
-   `/repolore:check`, `/repolore:refresh`, `/repolore:update`. The files
+   `/repolore:check`, `/repolore:refresh`, `/repolore:update`, `/repolore:setup`. The files
    under `skills/` are deliberately thin shims (`skills/init/SKILL.md`).
 2. **Standalone umbrella skill** — the root `SKILL.md`, installed by
    `npx skills add emyann/repolore` into ~20 agents. Root-`SKILL.md`
@@ -43,7 +43,7 @@ related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-boots
    blob SHA.
 
 Both front doors execute the same procedures: `references/init.md`,
-`references/check.md`, `references/refresh.md`, `references/update.md`,
+`references/check.md`, `references/refresh.md`, `references/update.md`, `references/setup.md`,
 written against `<SKILL_ROOT>` — the directory holding `SKILL.md`,
 `scripts/`, `templates/`. The judgment/mechanics split: procedures (LLM
 judgment) live in markdown; everything deterministic lives in the

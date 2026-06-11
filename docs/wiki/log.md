@@ -29,3 +29,4 @@ history.
 ## 2026-06-11 — refreshed pages for the hook feature (freshness-model owns the trigger layer; howto covers the hook tests)
 ## 2026-06-11 — refreshed 4 pages (init wording fixes; no-op re-stamps) — flagged by the post-commit nudge on its own release commit
 ## 2026-06-11 — re-stamped overview (plugin.json version bump; no-op)
+## 2026-06-11 — refreshed overview + adr-004 (setup workflow added; gotcha no-op) — flagged by the nudge

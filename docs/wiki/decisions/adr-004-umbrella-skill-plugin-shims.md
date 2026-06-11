@@ -11,12 +11,12 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: SKILL.md
-    sha: 2efc773d6284466f25fc42d60d118e27410ceb63
+    sha: a5faeb26798f0011a46679aaa6c66237903d2c50
   - path: skills/init/SKILL.md
     sha: 4df0069b899fb6f4281ffba524f828eba590dce7
   - path: references/init.md
     sha: 3f231716382c32c11dc87e11b4320ab7dd988502
-generated_at_commit: 26082c4
+generated_at_commit: 1bf52a0
 last_refreshed: 2026-06-11
 related: [architecture/overview, gotchas/cross-tool-depth-untested]
 ---
@@ -34,11 +34,11 @@ hides the plugin internals from `npx skills add` entirely.
 
 ## Decision
 
-Procedures live exactly once, in `references/{init,check,refresh,update}.md`,
+Procedures live exactly once, in `references/{init,check,refresh,update,setup}.md`,
 written against `<SKILL_ROOT>` — defined by whichever entry point ran. The
 root `SKILL.md` is the standalone umbrella (skill root = repo root, so
 `scripts/` and `templates/` ship inside the install without moving). The
-plugin's `skills/init|check|refresh|update/SKILL.md` are thin shims that set
+plugin's `skills/init|check|refresh|update|setup/SKILL.md` are thin shims that set
 `<SKILL_ROOT>` = `${CLAUDE_PLUGIN_ROOT}` and execute the same reference file,
 keeping the namespaced `/repolore:*` commands and their frontmatter
 (`allowed-tools`, `disable-model-invocation`).
