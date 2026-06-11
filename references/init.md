@@ -51,7 +51,7 @@ Build a picture of the repo with cheap commands — do not deep-read code yet:
 - **Existing docs**: `docs/`, ADR directories (`adr/`, `decisions/`, `doc/adr`) — an existing ADR set should be *linked*, not duplicated.
 - **Exclude candidates**: test dirs, generated code, vendored code, build output, UI-heavy areas (LLM-derived docs are weak for those).
 
-## Phase 2 — Ask (≤5 questions, strong defaults)
+## Phase 2 — Ask (≤6 questions, strong defaults)
 
 Ask the user (with your environment's question UI when available). Ask only
 what detection cannot decide:
@@ -86,6 +86,28 @@ what detection cannot decide:
    pointer blocks). Alternative: leave everything uncommitted for review.
    Collecting consent here is what lets the run end fully done instead of
    parking on "say the word and I'll commit".
+6. **Team auto-update?** — *Claude Code plugin installs only; skip this
+   question entirely in standalone/other-agent runs.* Offer to declare the
+   plugin in the repo's `.claude/settings.json` so every teammate gets
+   repolore preinstalled and self-updating, by merging these two keys
+   (deep-merge — never clobber existing settings):
+
+   ```json
+   {
+     "extraKnownMarketplaces": {
+       "repolore": {
+         "source": { "source": "github", "repo": "emyann/repolore" },
+         "autoUpdate": true
+       }
+     },
+     "enabledPlugins": { "repolore@repolore": true }
+   }
+   ```
+
+   **Recommended default: yes when `.claude/settings.json` already exists;
+   skip when it doesn't** (creating config files uninvited violates the
+   phase-6 rule — include the snippet in the report instead). The merge
+   itself happens in phase 6.
 
 Accept `--yes`-style instruction from the user to take all defaults (in a
 non-interactive run, take the defaults above without asking).
@@ -163,6 +185,10 @@ wiki material into always-loaded files) to each root context file that
 - If the **only** context file is `CLAUDE.local.md` (typically gitignored and
   personal), append there, but note in the report that teammates' agents won't
   see the pointer and suggest — don't create — a committed alternative.
+- If the user opted into team auto-update (phase 2 Q6): deep-merge the
+  `extraKnownMarketplaces` + `enabledPlugins` keys from Q6 into
+  `.claude/settings.json`, preserving every existing key. It ships in the
+  phase-7 commit like everything else init created.
 
 The block:
 

@@ -101,7 +101,7 @@ and offers the re-vendor when something newer is available; a dedicated
 
 | Command | What it does |
 |---|---|
-| `/repolore:init` | One-time bootstrap: detect the stack → agree scope (with the in-scope file count shown up front) + a page plan with you → vendor the wiki skeleton, schema doc (`AGENTS.md`), check scripts and templates in one mechanical shot (`bootstrap.mjs`) → seed `architecture/overview.md` (default, declinable) → append pointer blocks to whichever agent context files already exist → finish with a single `docs:` commit (with your consent, asked once up front). |
+| `/repolore:init` | One-time bootstrap: detect the stack → agree scope (with the in-scope file count shown up front) + a page plan with you → vendor the wiki skeleton, schema doc (`AGENTS.md`), check scripts and templates in one mechanical shot (`bootstrap.mjs`) → seed `architecture/overview.md` (default, declinable) → append pointer blocks to whichever agent context files already exist → optionally wire team auto-update into `.claude/settings.json` (see *Updating*) → finish with a single `docs:` commit (with your consent, asked once up front). |
 | `/repolore:check` | Health report: stale pages, uncovered «page-worthy» code clusters, index drift, page budget. Read-only, never blocks. |
 | `/repolore:refresh` | Bring stale pages back in line with the code: diff-driven triage, citation re-verification, re-stamp, regenerate index, reviewable commit. |
 
@@ -187,6 +187,8 @@ v0.2.2 (this) — the page plan made visible: backlog section in the generated
 `index.md`, plan state + plan↔reality drift lints in `wiki-check`, and the
 "page manifest" terminology retired ("manifest" now only ever means
 `.repolore/manifest.json`).
+v0.2.3 (this) — init optionally wires team auto-update (the *Updating*
+settings recipe) into `.claude/settings.json`.
 v0.3 — post-commit hook + `install-hook`; dangling-reference and link lints;
 `wiki-index.json` connector contract + llms.txt emitter; `update` skill
 (manifest-hash safe regeneration); flow-validator plugin harness; `audit`

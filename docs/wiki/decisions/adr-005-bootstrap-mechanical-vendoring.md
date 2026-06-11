@@ -13,8 +13,8 @@ covers:
   - path: scripts/bootstrap.mjs
     sha: e5c667de838837c43be457a151c7f6003584c86b
   - path: references/init.md
-    sha: ae9bba528e6610d1d2999197807bf3b0a6e71645
-generated_at_commit: abd1c44
+    sha: d443f18f13ccbaece98d8c5c911a9c25c95fec7a
+generated_at_commit: 09ee74a
 last_refreshed: 2026-06-11
 related: [architecture/overview, decisions/adr-003-stdlib-only-vendored-scripts]
 ---

@@ -9,12 +9,12 @@ covers:
   - path: SKILL.md
     sha: e87c7c7cad22195b27b5548307aae7c61a6ce550
   - path: references/init.md
-    sha: ae9bba528e6610d1d2999197807bf3b0a6e71645
+    sha: d443f18f13ccbaece98d8c5c911a9c25c95fec7a
   - path: scripts/bootstrap.mjs
     sha: e5c667de838837c43be457a151c7f6003584c86b
   - path: .claude-plugin/plugin.json
-    sha: 5dfb387996994f14d358cb2535e225166df855df
-generated_at_commit: abd1c44
+    sha: 4c5f8c55f7047fa840405d554d0afbb383b5212d
+generated_at_commit: 09ee74a
 last_refreshed: 2026-06-11
 related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-bootstrap-mechanical-vendoring, concepts/freshness-model]
 ---
