@@ -40,8 +40,8 @@ const DEFAULT_PAGE_WORTHY = [
   'extensions', 'controllers', 'handlers', 'commands', 'jobs', 'workers', 'api',
 ];
 const DEFAULT_PRUNE = [
-  '.git', 'node_modules', 'dist', 'build', 'out', 'bin', 'obj', 'target',
-  'coverage', 'vendor', '.venv', 'venv', '__pycache__', '.turbo', '.next',
+  '.git', '.repolore', 'node_modules', 'dist', 'build', 'out', 'bin', 'obj',
+  'target', 'coverage', 'vendor', '.venv', 'venv', '__pycache__', '.turbo', '.next',
 ];
 const DEFAULT_NOISE = [
   '\\.(config|setup)\\.[cm]?[jt]sx?$', '\\.d\\.ts$',

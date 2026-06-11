@@ -32,7 +32,7 @@ Build a picture of the repo with cheap commands — do not deep-read code yet:
 
 - **Languages & layout**: extension census (e.g. `git ls-files | sed -n 's/.*\.//p' | sort | uniq -c | sort -rn | head`), monorepo markers (`pnpm-workspace.yaml`, `lerna.json`, workspaces in `package.json`, `*.sln`), top-level directory tree.
 - **Entry points**: root README, Makefile/justfile, docker-compose, main manifests.
-- **Existing agent context**: `CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`, `.cursor/rules*` — these get pointer blocks in phase 6, and their content often names the subsystems that deserve pages.
+- **Existing agent context**: `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, `.github/copilot-instructions.md`, `.cursor/rules*` — existing ones get pointer blocks in phase 6, and their content often names the subsystems that deserve pages.
 - **Existing docs**: `docs/`, ADR directories (`adr/`, `decisions/`, `doc/adr`) — an existing ADR set should be *linked*, not duplicated.
 - **Exclude candidates**: test dirs, generated code, vendored code, build output, UI-heavy areas (LLM-derived docs are weak for those).
 
@@ -73,8 +73,11 @@ All master assets live in this plugin at `${CLAUDE_PLUGIN_ROOT}`. Copy and
 instantiate (replace every `{{PLACEHOLDER}}`):
 
 1. `mkdir -p` the wiki root and its category dirs + `_templates/`.
-2. Scripts → `scripts/repolore/` in the repo (or a user-preferred tools dir):
-   copy `${CLAUDE_PLUGIN_ROOT}/scripts/{lib,wiki-check,wiki-coverage,wiki-stamp,wiki-index}.mjs` unmodified.
+2. Scripts → `.repolore/scripts/` (or a user-preferred tools dir): copy
+   `${CLAUDE_PLUGIN_ROOT}/scripts/{lib,wiki-check,wiki-coverage,wiki-stamp,wiki-index}.mjs`
+   unmodified. The default deliberately lives inside the hidden `.repolore/`
+   dir so the tool's entire footprint outside the wiki is ONE hidden directory
+   (like `.husky/` or `.githooks/`) — keep it there unless the user asks.
 3. `${CLAUDE_PLUGIN_ROOT}/templates/AGENTS.md` → `<wiki>/AGENTS.md`, with
    `{{PROJECT_NAME}}`, `{{WIKI_DIR}}`, `{{SCRIPTS_DIR}}`, `{{SCOPE_SUMMARY}}`
    (a short prose restatement of the scope decision incl. by-policy
@@ -89,8 +92,8 @@ instantiate (replace every `{{PLACEHOLDER}}`):
    `templates/GLOSSARY.md` + `templates/log.md` → wiki root.
 6. If the user opted in: draft `architecture/overview.md` now, from the code,
    following `<wiki>/AGENTS.md` rules exactly (citations, covers list), then
-   `node scripts/repolore/wiki-stamp.mjs <page>`.
-7. Generate the index: `node scripts/repolore/wiki-index.mjs --wiki-root <wiki>`.
+   `node .repolore/scripts/wiki-stamp.mjs <page>`.
+7. Generate the index: `node .repolore/scripts/wiki-index.mjs --wiki-root <wiki>`.
 8. Write `.repolore/manifest.json` at the repo root:
 
 ```json
@@ -98,9 +101,9 @@ instantiate (replace every `{{PLACEHOLDER}}`):
   "tool": "repolore",
   "schemaVersion": 1,
   "wikiRoot": "docs/wiki",
-  "scriptsDir": "scripts/repolore",
+  "scriptsDir": ".repolore/scripts",
   "initializedAt": "<ISO date>",
-  "generatedFiles": [ { "path": "scripts/repolore/wiki-check.mjs", "sha": "<git hash-object>" } ]
+  "generatedFiles": [ { "path": ".repolore/scripts/wiki-check.mjs", "sha": "<git hash-object>" } ]
 }
 ```
 
@@ -108,15 +111,25 @@ List every vendored file with its blob SHA (`git hash-object`) — future
 `update` runs regenerate only files whose hash still matches what was
 originally written, and surface user-modified ones for review.
 
-9. Verify: `node scripts/repolore/wiki-check.mjs` must exit clean and
+9. Verify: `node .repolore/scripts/wiki-check.mjs` must exit clean and
    `wiki-index.mjs --check` must pass.
 
-## Phase 6 — Wire entry points
+## Phase 6 — Wire entry points (least-invasive: never create files uninvited)
 
 Append a pointer block (≤10 lines, **pointer, not content** — never inline
-wiki material into always-loaded files) to each root context file that exists
-(`CLAUDE.md`, `AGENTS.md`, `.github/copilot-instructions.md`); if none exists,
-create a root `AGENTS.md` with just the block:
+wiki material into always-loaded files) to each root context file that
+**already exists**: `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`,
+`.github/copilot-instructions.md`.
+
+- **Never create a new context file without asking.** If none exists, ask the
+  user (one extra question): create a root `AGENTS.md` with just the block, or
+  skip wiring entirely. In a non-interactive run, skip — and include the
+  ready-to-paste block in the phase 7 report instead.
+- If the **only** context file is `CLAUDE.local.md` (typically gitignored and
+  personal), append there, but note in the report that teammates' agents won't
+  see the pointer and suggest — don't create — a committed alternative.
+
+The block:
 
 ```markdown
 ## Project wiki (LLM-maintained)

@@ -31,6 +31,10 @@ What makes it different from DeepWiki / Code Wiki / memory banks:
 - **Curated, not generated.** A page manifest you approve, a soft page budget,
   and a distillation rule ("if an agent can find it in 30 seconds, it doesn't
   belong here") keep it an orientation layer, not 400 pages of paraphrased code.
+- **Minimal footprint.** Outside the wiki itself, the tool's entire presence is
+  one hidden `.repolore/` directory (manifest + stdlib-only scripts) and a
+  ≤10-line pointer appended to agent context files that already exist — init
+  never creates a context file without asking.
 
 ## Install
 
@@ -43,7 +47,7 @@ What makes it different from DeepWiki / Code Wiki / memory banks:
 
 | Command | What it does |
 |---|---|
-| `/repolore:init` | One-time bootstrap: detect the stack → agree scope + a page manifest with you → vendor the wiki skeleton, schema doc (`AGENTS.md`), check scripts and templates into the repo → wire pointer blocks into `CLAUDE.md`/`AGENTS.md`/copilot-instructions. |
+| `/repolore:init` | One-time bootstrap: detect the stack → agree scope + a page manifest with you → vendor the wiki skeleton, schema doc (`AGENTS.md`), check scripts and templates into the repo → append pointer blocks to whichever agent context files already exist (`CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, copilot-instructions). |
 | `/repolore:check` | Health report: stale pages, uncovered «page-worthy» code clusters, index drift, page budget. Read-only, never blocks. |
 | `/repolore:refresh` | Bring stale pages back in line with the code: diff-driven triage, citation re-verification, re-stamp, regenerate index, reviewable commit. |
 
@@ -63,12 +67,13 @@ docs/wiki/                  # location configurable
   wiki.config.yml           # machine-read config: scope globs, tunables, page manifest
   architecture/ concepts/ features/ flows/ decisions/ gotchas/ howto/
   _templates/               # page.md + decision.md
-scripts/repolore/           # vendored, stdlib-only (node + git), zero npm install
-  wiki-check.mjs            # blob-SHA freshness: fresh / stale / unmanaged / malformed
-  wiki-coverage.mjs         # in-scope files no page covers; --since <ref> new-page nudge
-  wiki-stamp.mjs            # writes covers SHAs + generated_at_commit (never hand-compute)
-  wiki-index.mjs            # regenerates index.md; --check for drift
-.repolore/manifest.json     # wiki location + vendored-file hashes (for future safe updates)
+.repolore/                  # the ONLY footprint outside the wiki — one hidden dir
+  manifest.json             # wiki location + vendored-file hashes (for future safe updates)
+  scripts/                  # vendored, stdlib-only (node + git), zero npm install
+    wiki-check.mjs          # blob-SHA freshness: fresh / stale / unmanaged / malformed
+    wiki-coverage.mjs       # in-scope files no page covers; --since <ref> new-page nudge
+    wiki-stamp.mjs          # writes covers SHAs + generated_at_commit (never hand-compute)
+    wiki-index.mjs          # regenerates index.md; --check for drift
 ```
 
 **Pages are the product and always committed; tooling is regenerable; check

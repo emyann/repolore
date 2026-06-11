@@ -27,7 +27,7 @@ jobs:
           printf 'wiki:\n  title: Fixture\n  page_budget: 50\nscope:\n  include:\n    - "src/**"\n  exclude: []\n' > "$FIX/wiki/wiki.config.yml"
           printf -- '---\ntitle: A\nsummary: about a\ncategory: concepts\ncovers:\n  - path: src/a.ts\n    sha: x\n---\n# A\n' > "$FIX/wiki/concepts/a.md"
           git -C "$FIX" add -A && git -C "$FIX" -c user.email=ci@x -c user.name=ci commit -qm init
-          mkdir -p "$FIX/.repolore" && printf '{"wikiRoot":"wiki","scriptsDir":"scripts/repolore"}' > "$FIX/.repolore/manifest.json"
+          mkdir -p "$FIX/.repolore" && printf '{"wikiRoot":"wiki","scriptsDir":".repolore/scripts"}' > "$FIX/.repolore/manifest.json"
           cp -r scripts "$FIX/scripts-repolore"
           cd "$FIX"
           node scripts-repolore/wiki-stamp.mjs wiki/concepts/a.md
