@@ -37,3 +37,4 @@ history.
 ## 2026-06-11 — refreshed for v0.3.6 rung-3 wiring: targeted edits to adr-005 (symlink→import) + cross-tool-depth rung 3; no-op re-stamps (overview, adr-004, adr-006, run-the-ux-harness)
 ## 2026-06-11 — amended adr-006 consequences: inverted-compat burden + skills.lock revisit trigger (costs surfaced by a vendoring-vs-dependency debate; decision unchanged)
 ## 2026-06-11 — added decisions/adr-009-findings-inbox-contract (findings inbox v1: capture convention ratified, from docs/RESEARCH-FINDINGS.md; tooling deferred to the audit workflow)
+## 2026-06-11 — re-stamped overview after the v0.3.7 version bump (plugin.json; no-op)
