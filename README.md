@@ -110,7 +110,7 @@ the manifest SHAs stay truthful.
 | `/repolore:refresh` | Bring stale pages back in line with the code: diff-driven triage, citation re-verification, re-stamp, regenerate index, reviewable commit. |
 | `/repolore:update` | Bring the repo's vendored tooling up to the installed repolore version: deterministic classification (up-to-date / outdated-pristine / locally modified / missing / new), safe regeneration, manifest SHAs + version refreshed. Never overwrites your local edits without explicit `--force` consent. |
 
-With the standalone skill the same three workflows are invoked in plain words
+With the standalone skill the same workflows are invoked in plain words
 ("set up a repolore wiki", "run repolore check/refresh") instead of slash
 commands.
 
@@ -121,11 +121,11 @@ do exactly that.
 
 ## Packaging
 
-One source of truth, two distributions: the three procedures live in
+One source of truth, two distributions: the procedures live in
 [`references/`](./references/) and the assets in `scripts/` + `templates/`.
 The root [`SKILL.md`](./SKILL.md) is the standalone umbrella skill the skills
 CLI installs (root-`SKILL.md` discovery means `npx skills add` sees exactly
-one skill), and the plugin's `skills/init|check|refresh` are thin shims that
+one skill), and the plugin's `skills/init|check|refresh|update` are thin shims that
 execute the same reference procedures — so the namespaced `/repolore:*`
 commands and the standalone skill can never drift apart.
 
