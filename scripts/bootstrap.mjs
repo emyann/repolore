@@ -158,14 +158,18 @@ const write = (rel, content) => {
   written.push(rel);
 };
 
-/** Replace {{PLACEHOLDER}}s and assert none survive. */
+/** Replace {{PLACEHOLDER}}s; every placeholder the TEMPLATE declares must get
+ *  a replacement. Checked against the template, not the output — substituted
+ *  user content may legitimately contain `{{…}}` text. */
 function instantiate(name, replacements) {
-  let text = tpl(name);
+  const template = tpl(name);
+  const expected = new Set([...template.matchAll(/\{\{([A-Z_]+)\}\}/g)].map((m) => m[1]));
+  let text = template;
   for (const [key, value] of Object.entries(replacements)) {
     text = text.replaceAll(`{{${key}}}`, value);
+    expected.delete(key);
   }
-  const leftover = text.match(/\{\{[A-Z_]+\}\}/);
-  if (leftover) fail(`internal: unreplaced placeholder ${leftover[0]} in ${name}`);
+  if (expected.size) fail(`internal: unreplaced placeholder {{${[...expected][0]}}} in ${name}`);
   return text;
 }
 

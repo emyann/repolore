@@ -222,6 +222,16 @@ test('free-text YAML values are quoted, so ": " in summaries stays valid YAML', 
   assert.match(idx, /^# fixture: the sequel — wiki index/);
 });
 
+test('config text containing literal {{PLACEHOLDER}} does not trip the leftover check', (t) => {
+  const dir = makeFixture(t);
+  const cfg = writeConfig(dir, {
+    scopeSummary: 'Templates carry {{PLACEHOLDER}}s and are out of scope by policy.',
+  });
+  node(dir, [BOOTSTRAP, '--config', cfg]); // must not fail
+  const agents = readFileSync(join(dir, 'docs/wiki/AGENTS.md'), 'utf8');
+  assert.match(agents, /carry \{\{PLACEHOLDER\}\}s/, 'user text preserved verbatim');
+});
+
 test('empty exclude list parses as no exclusions (comment placeholder)', (t) => {
   const dir = makeFixture(t);
   const cfg = writeConfig(dir); // exclude: []
