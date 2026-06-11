@@ -35,7 +35,7 @@ What makes it different from DeepWiki / Code Wiki / memory banks:
 ## Install
 
 ```text
-/plugin marketplace add <github-org>/repolore     # or a local path while testing
+/plugin marketplace add emyann/repolore     # or a local path while testing
 /plugin install repolore@repolore
 ```
 
