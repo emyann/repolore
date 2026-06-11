@@ -8,6 +8,10 @@
 
 - [Overview — three surfaces, one implementation](./architecture/overview.md): The three surfaces — Claude Code plugin, standalone umbrella skill, vendored per-repo layer — and how they share one implementation.
 
+## Concepts
+
+- [The freshness model](./concepts/freshness-model.md): fresh/stale/unmanaged/malformed semantics, covers lists, and the coverage inversion.
+
 ## Decisions
 
 - [ADR-001: Use git blob SHAs as freshness anchors — never LLM judgment](./decisions/adr-001-blob-sha-freshness-anchors.md): Git blob SHAs drive staleness detection; LLM judgment is never the trigger.
@@ -20,9 +24,6 @@
 
 - [Cross-tool depth is untested — nudge strength varies by agent](./gotchas/cross-tool-depth-untested.md): Wiki consumption depth varies by agent nudge strength; pointer-block-only teams (Copilot) are untested.
 
-## Planned (not yet written)
+## Howto
 
-- concepts/freshness-model: fresh/stale/unmanaged/malformed semantics, covers lists, and the coverage inversion.
-- howto/run-the-ux-harness: Running the deterministic test suite and the agentic init-UX workflow.
-
-> Backlog from the page plan (`pages:` in `wiki.config.yml`) — draft on demand: "draft `<slug>` from the wiki plan".
+- [Run the init-UX test harness](./howto/run-the-ux-harness.md): Running the deterministic test suite and the agentic init-UX workflow.

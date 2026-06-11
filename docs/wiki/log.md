@@ -18,3 +18,5 @@ history.
 ## 2026-06-11 — refreshed all 7 pages (terminology sweep: "page manifest" → "page plan"; no-op re-stamps except a one-word edit in adr-005)
 ## 2026-06-11 — re-vendored .repolore/scripts at v0.2.2 (page-plan backlog in index + check)
 ## 2026-06-11 — refreshed overview, adr-004, adr-005, gotchas/cross-tool-depth-untested (init gained team auto-update Q6; no-op re-stamps)
+## 2026-06-11 — added concepts/freshness-model (drafted from the wiki plan)
+## 2026-06-11 — added howto/run-the-ux-harness (drafted from the wiki plan; coverage reaches 9/9)

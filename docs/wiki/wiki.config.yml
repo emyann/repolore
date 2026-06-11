@@ -62,7 +62,7 @@ pages:
     status: seeded
   - slug: concepts/freshness-model
     summary: "fresh/stale/unmanaged/malformed semantics, covers lists, and the coverage inversion."
-    status: planned
+    status: seeded
   - slug: howto/run-the-ux-harness
     summary: "Running the deterministic test suite and the agentic init-UX workflow."
-    status: planned
+    status: seeded
