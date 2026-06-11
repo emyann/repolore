@@ -7,14 +7,14 @@ audience: [dev]
 read_when: "deciding how the wiki reaches non-Claude agents, prioritizing emitters/hooks, or evaluating pointer-block effectiveness"
 covers:
   - path: references/init.md
-    sha: 3f231716382c32c11dc87e11b4320ab7dd988502
+    sha: 7b632f359b6b70b17b211f2da6687697ddcd7c3d
   - path: SKILL.md
     sha: a5faeb26798f0011a46679aaa6c66237903d2c50
   - path: docs/RESEARCH.md
     sha: 3650c9099507e8a36574ece1b812b53860d56462
-generated_at_commit: 1bf52a0
+generated_at_commit: 0add012
 last_refreshed: 2026-06-11
-related: [decisions/adr-004-umbrella-skill-plugin-shims, architecture/overview]
+related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-008-per-harness-entry-point-bridging, architecture/overview]
 ---
 
 # Cross-tool depth is untested — nudge strength varies by agent
@@ -42,9 +42,12 @@ bottom:
    mechanically from `covers` paths + `read_when`. The only mechanism that
    reaches Copilot at the moment of relevance.
 3. **Root pointer block** — what init wires today (`references/init.md`
-   phase 6): a ≤10-line block in `AGENTS.md`/`CLAUDE.md`/
-   `.github/copilot-instructions.md`. A suggestion competing for context
-   budget — weak *in every agent*, not just Copilot.
+   phase 6): a ≤10-line block whose canonical home is `AGENTS.md`, bridged
+   into each harness's own file by its native mechanism — an `@AGENTS.md`
+   import for `CLAUDE.md` (Claude Code never auto-loads `AGENTS.md`), the
+   literal block for `.github/copilot-instructions.md`
+   (`decisions/adr-008-per-harness-entry-point-bridging`). A suggestion
+   competing for context budget — weak *in every agent*, not just Copilot.
 4. **Nothing** — repo machinery only (hooks/CI, also not built yet).
 
 ## What this means in practice

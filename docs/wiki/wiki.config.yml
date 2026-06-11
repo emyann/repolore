@@ -60,6 +60,9 @@ pages:
   - slug: decisions/adr-006-vendored-tooling
     summary: "Why generic scripts are committed into every repo instead of running from the plugin or npm."
     status: seeded
+  - slug: decisions/adr-008-per-harness-entry-point-bridging
+    summary: "AGENTS.md is the one canonical pointer; each harness links to it by its native mechanism — @import for Claude, literal block for Copilot, emitters later."
+    status: seeded
   - slug: gotchas/cross-tool-depth-untested
     summary: "Wiki consumption depth varies by agent nudge strength; pointer-block-only teams (Copilot) are untested."
     status: seeded

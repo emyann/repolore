@@ -9,11 +9,11 @@ covers:
   - path: tests/make-fixtures.mjs
     sha: 65ffe7a1b23f6d66275d28e0debb492e13c48f52
   - path: tests/validate-fixture.mjs
-    sha: 24dcf3070e1af11fe21f3f40a3e1e3372018ad56
+    sha: de13e76738f44ab649230b0e25ba6e36cbb93867
   - path: .claude/workflows/test-init-ux.js
     sha: 7a6700b750df1d3cb545185c83ce8ac3b800d955
   - path: tests/bootstrap.test.mjs
-    sha: c13307c12531e818454b5f199831213f19e67ade
+    sha: 685bab07aa0bd0c67903d94640a9b5729c2a56d0
   - path: tests/hook.test.mjs
     sha: 3f93d03728f73c844aa1aa27ea1052ac9fc04418
   - path: tests/update.test.mjs
@@ -22,7 +22,7 @@ covers:
     sha: 53a3786b7c17269e72e49cd2fe6c893712133d4b
   - path: tests/_helpers.mjs
     sha: 69761a14bf7edef781572eb0cbc239be38090a43
-generated_at_commit: f18de1d
+generated_at_commit: 0add012
 last_refreshed: 2026-06-11
 related: [decisions/adr-005-bootstrap-mechanical-vendoring, architecture/overview]
 ---

@@ -33,3 +33,5 @@ history.
 ## 2026-06-11 — planned flows/bootstrap-vendoring, flows/update-classification, decisions/adr-007 (from RESEARCH-FLOWS §5.5/§6.5)
 ## 2026-06-11 — refreshed overview: added references/check.md + references/update.md to covers (close the procedure-layer freshness blind spot); planned flows/check-health, flows/refresh-triage
 ## 2026-06-11 — re-stamped overview after the v0.3.5 version bump (plugin.json; no-op)
+## 2026-06-11 — added decisions/adr-008-per-harness-entry-point-bridging (rung-3 wiring: AGENTS.md canonical, @import for Claude)
+## 2026-06-11 — refreshed for v0.3.6 rung-3 wiring: targeted edits to adr-005 (symlink→import) + cross-tool-depth rung 3; no-op re-stamps (overview, adr-004, adr-006, run-the-ux-harness)

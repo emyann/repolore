@@ -20,6 +20,7 @@
 - [ADR-004: One source of procedures, two distributions — root umbrella skill + plugin shims](./decisions/adr-004-umbrella-skill-plugin-shims.md): One source of procedures (references/), two distributions — root SKILL.md umbrella and plugin shims.
 - [ADR-005: Init delegates all mechanical vendoring to config-driven bootstrap.mjs](./decisions/adr-005-bootstrap-mechanical-vendoring.md): Init delegates all mechanical vendoring to config-driven bootstrap.mjs; the LLM keeps only judgment work.
 - [ADR-006: Vendor the tooling into every repo — verification must survive the tool](./decisions/adr-006-vendored-tooling.md): Why generic, non-repo-specific scripts are committed into every initialized repo instead of running from the plugin install or npm.
+- [ADR-008: Bridge AGENTS.md into each harness by its native mechanism](./decisions/adr-008-per-harness-entry-point-bridging.md): AGENTS.md is the one canonical pointer; each harness links to it by the cheapest faithful means — @import for Claude, literal block for Copilot, emitters later.
 
 ## Gotchas
 

@@ -11,10 +11,10 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: scripts/bootstrap.mjs
-    sha: c1b881a4cea1ac1a55fd8d5b581a59bebce913e5
+    sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
   - path: references/init.md
-    sha: 3f231716382c32c11dc87e11b4320ab7dd988502
-generated_at_commit: 26082c4
+    sha: 7b632f359b6b70b17b211f2da6687697ddcd7c3d
+generated_at_commit: 0add012
 last_refreshed: 2026-06-11
 related: [architecture/overview, decisions/adr-003-stdlib-only-vendored-scripts]
 ---
@@ -34,8 +34,9 @@ steps.
 
 All judgment is encoded into one JSON config (schema documented in the header
 of `scripts/bootstrap.mjs`); one script call does everything mechanical —
-skeleton, script copies, template instantiation, the CLAUDE.md→AGENTS.md
-symlink, `.repolore/manifest.json` with blob SHAs, index generation — and
+skeleton, script copies, template instantiation, the `CLAUDE.md` `@AGENTS.md`
+import (`decisions/adr-008-per-harness-entry-point-bridging`),
+`.repolore/manifest.json` with blob SHAs, index generation — and
 self-verifies (`wiki-check`, `wiki-index --check`) before reporting. The same
 script's `--dry-run` powers the approval gates: it reports the in-scope file
 count with the *same walk* the coverage check uses (`collectInScopeSources`
