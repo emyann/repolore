@@ -12,6 +12,7 @@ import { execFileSync } from 'node:child_process';
 /** Special wiki files that are never pages (any level). */
 export const SKIP_FILES = new Set([
   'index.md', 'AGENTS.md', 'CLAUDE.md', 'README.md', 'GLOSSARY.md', 'log.md',
+  'FINDINGS.md',
 ]);
 /** Directories inside the wiki that never hold pages. */
 export const SKIP_DIRS = new Set(['_templates', '_audit']);
