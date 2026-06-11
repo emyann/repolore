@@ -238,6 +238,12 @@ deletion-not-checkbox triage with four domain-exiting dispositions; created
 on demand, never written by check/hooks, never gating. Tooling (per-item SHA
 anchors, triage workflow) deferred to the audit workflow. See `adr-009` +
 [docs/RESEARCH-FINDINGS.md](./docs/RESEARCH-FINDINGS.md).
+v0.3.8 (this) — update closes the stale-plugin loop: a repo can only sync to
+the *installed* plugin version, so "nothing to do" could mask a stale install.
+`update.mjs` now names the installed version in its report, and the workflow
+probes the marketplace clone on disk (zero network, best-effort) and offers
+the consented channel refresh (`claude plugin marketplace update` /
+`npx skills update`), ending with the user-only reload step.
 v0.3.x — flows v1 per [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md):
 flow-meta/v1 (line-parseable) + flow template + honesty-gradient text +
 structural/anchored checks + `wiki-flow-render.mjs` + two dogfood flow pages;

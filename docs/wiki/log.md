@@ -40,3 +40,4 @@ history.
 ## 2026-06-11 — re-stamped overview after the v0.3.7 version bump (plugin.json; no-op)
 ## 2026-06-11 — updated vendored tooling v0.3.2 → v0.3.7 (AGENTS.md gains the findings-inbox section)
 ## 2026-06-11 — re-stamped overview + adr-006 after the stale-plugin channel-refresh feat (report wording + workflow step; claims unchanged, no-op)
+## 2026-06-11 — re-stamped overview within the v0.3.8 release commit (plugin.json bump; no-op)
