@@ -49,3 +49,6 @@ history.
 ## 2026-06-11 — updated vendored tooling v0.3.7 → v0.4.0 (flow scripts + _templates/flow.md vendored; AGENTS.md gains the flows rules); no-op re-stamps overview + adr-006
 ## 2026-06-11 — re-stamped freshness-model + adr-001/003/007 after the sequence-diagram emitter (additive flow_render projection; no claims changed)
 ## 2026-06-11 — updated vendored tooling v0.4.0 → v0.4.1 (sequence emitter + self-contained flow authoring in AGENTS.md); no-op re-stamp overview
+## 2026-06-11 — added flows/update-classification (the second dogfood flow page: update's (recorded, current, master) SHA-triplet classification; 9 steps, 1 verified edge + 6 cited branches, tier branch-audited)
+## 2026-06-11 — fixed wiki-stamp: it now fills inline flow *_sha (anchor/call/cite) from each field's sibling *_path, not just covers — the half-shipped v0.4.1 flow authoring loop; re-stamped freshness-model + adr-002
+## 2026-06-11 — updated vendored tooling v0.4.1 → v0.4.2 (wiki-stamp flow-sha fix); no-op re-stamp overview

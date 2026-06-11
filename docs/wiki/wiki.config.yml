@@ -79,8 +79,8 @@ pages:
     summary: "How init's one-shot vendoring executes: config → bootstrap.mjs → verified scaffold. The v1 dogfood flow page."
     status: seeded
   - slug: flows/update-classification
-    summary: "How the update workflow classifies and applies tooling changes from the (recorded, current, master) SHA triplet. (Blocked on flow-meta v1.)"
-    status: planned
+    summary: "How update classifies every tracked file from its (recorded, current, master) SHA triplet into one safe action — never overwriting a local edit by default. The second dogfood flow page."
+    status: seeded
   - slug: flows/check-health
     summary: "How the check workflow reports wiki health — freshness, coverage, backlog and tooling-update classification — as read-only signals that become offers, never gates. (Blocked on flow-meta v1.)"
     status: planned

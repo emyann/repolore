@@ -1,6 +1,6 @@
 # repolore — wiki index
 
-> GENERATED FILE — do not edit by hand. Regenerate with `node .repolore/scripts/wiki-index.mjs`.
+> GENERATED FILE — do not edit by hand. Regenerate with `node scripts/wiki-index.mjs`.
 > One line per page, taken verbatim from each page's frontmatter `title`/`summary`.
 > Schema and authoring rules: [AGENTS.md](./AGENTS.md).
 
@@ -15,6 +15,7 @@
 ## Flows
 
 - [Flow: bootstrap-vendoring — config to verified scaffold](./flows/bootstrap-vendoring.md): How init turns an approved config into a verified vendored scaffold — the one mechanical shot, its spawned checks, and its error/dry-run branches.
+- [Flow: update-classification — the (recorded, current, master) triplet](./flows/update-classification.md): How update classifies every tracked file from its (recorded, current, master) SHA triplet into one safe action — and never overwrites a local edit by default.
 
 ## Decisions
 
@@ -40,6 +41,5 @@
 
 - flows/check-health: How the check workflow reports wiki health — freshness, coverage, backlog and tooling-update classification — as read-only signals that become offers, never gates. (Blocked on flow-meta v1.)
 - flows/refresh-triage: How the refresh workflow brings stale pages back into line: diff-driven triage (re-stamp / targeted edit / rewrite), citation re-verification, re-stamp, reviewable commit. (Blocked on flow-meta v1.)
-- flows/update-classification: How the update workflow classifies and applies tooling changes from the (recorded, current, master) SHA triplet. (Blocked on flow-meta v1.)
 
 > Backlog from the page plan (`pages:` in `wiki.config.yml`) — draft on demand: "draft `<slug>` from the wiki plan".
