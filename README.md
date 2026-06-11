@@ -147,7 +147,8 @@ v0.3 — post-commit hook + `install-hook`; dangling-reference and link lints;
 (manifest-hash safe regeneration); flow-validator plugin harness; `audit`
 skill (LLM pass for wrongness/duplication — what hashes can't catch); Quartz
 site + MCP connector recipes; GitHub Action recipe.
-See the report's §7 for the full sequence.
+This section is the single roadmap home; the numbering in the report's §7 is
+the original point-in-time plan and has diverged (§7 says so too).
 
 ## License
 

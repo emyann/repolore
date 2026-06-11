@@ -1,0 +1,68 @@
+# wiki.config.yml — machine-authoritative config for the repolore tooling.
+#
+# This file controls what the wiki covers and which pages should exist. It is
+# read by the check scripts (scope + coverage tunables + page budget) AND by
+# humans/LLMs during refresh (repo_notes + page manifest). Keep it accurate —
+# it is the planning surface for the wiki.
+
+wiki:
+  title: "repolore"
+  page_budget: 15          # soft cap — wiki-check warns above this, never blocks
+
+# Category order for the generated index. Uncomment to override the default:
+# categories: [architecture, concepts, features, flows, decisions, gotchas, howto]
+
+repo_notes: |
+  repolore is a Claude Code plugin AND a standalone agent skill (skills.sh) that bootstraps + maintains code-derived LLM wikis in target repos.
+  One implementation, two front doors: root SKILL.md (umbrella) and skills/* shims both execute references/{init,check,refresh}.md.
+  scripts/ holds the masters (vendored into target repos at init); tests/ + .claude/workflows/ hold the two-layer test harness.
+  Self-referential quirk: this repo runs repolore on itself, so .repolore/scripts are vendored COPIES of scripts/ masters — drift between them is the update-nudge demo, not a bug.
+
+# Files the wiki may be distilled from. Drives wiki-coverage.mjs.
+scope:
+  include:
+    - "scripts/**"
+    - "tests/**"
+    - ".claude/workflows/**"
+  exclude:
+    # (none)
+
+# Coverage tunables — uncomment to override the defaults baked into
+# wiki-coverage.mjs (shown there in full).
+coverage:
+  # source_extensions: [.ts, .tsx, .cs, .py]
+  # page_worthy_dirs: [functions, routes, services, controllers]
+  # prune_dirs: [.git, node_modules, dist]
+  # noise_patterns: ['\.(test|spec)\.[jt]s$']
+
+# Page manifest — the pages the wiki *should* eventually have.
+# status: seeded = written | planned = not yet written.
+# The LLM may add pages not listed here; when it does, it adds them back.
+pages:
+  - slug: architecture/overview
+    summary: "The three surfaces — Claude Code plugin, standalone umbrella skill, vendored per-repo layer — and how they share one implementation."
+    status: seeded
+  - slug: decisions/adr-001-blob-sha-freshness-anchors
+    summary: "Git blob SHAs drive staleness detection; LLM judgment is never the trigger."
+    status: seeded
+  - slug: decisions/adr-002-computed-status
+    summary: "Freshness status is computed on demand, never written to the tracked tree."
+    status: seeded
+  - slug: decisions/adr-003-stdlib-only-vendored-scripts
+    summary: "Vendored tooling is node+git stdlib only — zero npm install in target repos."
+    status: seeded
+  - slug: decisions/adr-004-umbrella-skill-plugin-shims
+    summary: "One source of procedures (references/), two distributions: root SKILL.md umbrella and plugin shims."
+    status: seeded
+  - slug: decisions/adr-005-bootstrap-mechanical-vendoring
+    summary: "Init delegates all mechanical vendoring to config-driven bootstrap.mjs; the LLM keeps only judgment work."
+    status: seeded
+  - slug: gotchas/cross-tool-depth-untested
+    summary: "Wiki consumption depth varies by agent nudge strength; pointer-block-only teams (Copilot) are untested."
+    status: seeded
+  - slug: concepts/freshness-model
+    summary: "fresh/stale/unmanaged/malformed semantics, covers lists, and the coverage inversion."
+    status: planned
+  - slug: howto/run-the-ux-harness
+    summary: "Running the deterministic test suite and the agentic init-UX workflow."
+    status: planned

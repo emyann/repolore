@@ -1,0 +1,42 @@
+{
+  "tool": "repolore",
+  "schemaVersion": 1,
+  "pluginVersion": "0.2.1",
+  "wikiRoot": "docs/wiki",
+  "scriptsDir": ".repolore/scripts",
+  "initializedAt": "2026-06-11",
+  "generatedFiles": [
+    {
+      "path": ".repolore/scripts/lib.mjs",
+      "sha": "cb68e36bdab46efcbffaf160d19e55bac46a30cb"
+    },
+    {
+      "path": ".repolore/scripts/wiki-check.mjs",
+      "sha": "0d1e60d3071cc87c552459d8e08d72797ea0534f"
+    },
+    {
+      "path": ".repolore/scripts/wiki-coverage.mjs",
+      "sha": "defc70c4060d7a2282cde9f4c209c19cae438070"
+    },
+    {
+      "path": ".repolore/scripts/wiki-stamp.mjs",
+      "sha": "670c72deed77d68517c5a55951bf946627c32038"
+    },
+    {
+      "path": ".repolore/scripts/wiki-index.mjs",
+      "sha": "bec9d422ad667eaf124bc5d33ff0483188061418"
+    },
+    {
+      "path": "docs/wiki/AGENTS.md",
+      "sha": "3c1674a362f2987a4af67591762fa132e97e87f6"
+    },
+    {
+      "path": "docs/wiki/_templates/page.md",
+      "sha": "2c4fcdc2f32b511f800fe1c50c473216428304d5"
+    },
+    {
+      "path": "docs/wiki/_templates/decision.md",
+      "sha": "a7e643d81f0e9a0a8b74fa14e21ce37295455d2e"
+    }
+  ]
+}

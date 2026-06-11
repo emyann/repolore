@@ -179,6 +179,12 @@ Distribute in the gist's spirit: the schema doc explicitly invites the agent to 
 
 ## 7. Implementation roadmap
 
+> **Superseded for sequencing:** this section is the point-in-time plan as of
+> the research date. The living roadmap (and its version numbering, which has
+> since diverged) is the **Roadmap section of the README**; the risk register
+> in §6 is progressively superseded by covers-tracked pages under
+> `docs/wiki/` (see `gotchas/cross-tool-depth-untested`).
+
 **v0.1 — the minimum loop that proves the thesis on one real repo.** (Scope cut deliberately after adversarial review: the draft's v0.1 was eight workstreams; the init skill alone — robust detection and seeding across unknown monorepos — is a multi-week product if attempted in full generality.)
 
 1. Plugin skeleton + own-repo marketplace.json; `claude plugin validate` in CI.
