@@ -11,10 +11,10 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: templates/AGENTS.md
-    sha: a652fffb022301f74bc50e35f0cbdd41062e924e
+    sha: 47556ac8f4ed912ff845c85e4c31f07f4743cdf0
   - path: references/refresh.md
     sha: bacff895383a46e0a45a7a0a54e6e1bb9b62e2d9
-generated_at_commit: 46b019b
+generated_at_commit: be31ab0
 last_refreshed: 2026-06-11
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status, decisions/adr-006-vendored-tooling]
 ---
