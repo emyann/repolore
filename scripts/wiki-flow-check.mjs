@@ -57,11 +57,13 @@ const REPO_ROOT = (() => {
 function git(args) { return execFileSync('git', args, { cwd: REPO_ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); }
 function abs(p) { return p && (p.startsWith('/') ? p : `${REPO_ROOT}/${p}`); }
 
-// Memoize git/fs by distinct file/blob — keeps spawns proportional to files, not
-// to step/edge count (the ADR-006 <1s budget driver).
-const _sha = new Map(), _blob = new Map(), _wt = new Map();
+// Memoize git/fs by distinct file — keeps spawns proportional to files, not to
+// step/edge count (the ADR-006 <1s budget driver). We never cat-file a blob:
+// the recorded SHA is a fingerprint to detect drift, and when it MATCHES the
+// working tree the working tree IS that content — so we read the file directly,
+// which (unlike `git cat-file`) also works for uncommitted edits while authoring.
+const _sha = new Map(), _wt = new Map();
 function blobSha(p) { if (_sha.has(p)) return _sha.get(p); let v = null; try { v = git(['hash-object', p]).trim(); } catch { v = null; } _sha.set(p, v); return v; }
-function blobAt(sha) { if (_blob.has(sha)) return _blob.get(sha); let v = null; try { v = git(['cat-file', '-p', sha]); } catch { v = null; } _blob.set(sha, v); return v; }
 function readWt(p) { if (_wt.has(p)) return _wt.get(p); let v = null; try { v = readFileSync(abs(p), 'utf8'); } catch { v = null; } _wt.set(p, v); return v; }
 
 const BRANCH_LEX = ['if ', 'else', 'switch', 'case ', 'catch', 'try ', 'throw ', '? ', ' || ', ' && '];
@@ -86,8 +88,8 @@ function resolveSpan(label, p, sha, lines, errors) {
   const wt = blobSha(p);
   if (wt === null) { errors.push(`${label}: ${p} does not exist`); return null; }
   if (sha && wt !== sha) { errors.push(`${label}: ${p} moved (recorded ${short(sha)} != now ${short(wt)}) — re-verify and re-stamp`); return null; }
-  const blob = sha ? blobAt(sha) : readWt(p);
-  if (blob === null) { errors.push(`${label}: blob ${short(sha)} not in object store`); return null; }
+  const blob = readWt(p); // wt === sha (or no sha) ⇒ the working tree is the recorded content
+  if (blob === null) { errors.push(`${label}: ${p} not readable`); return null; }
   if (lines == null) return { text: blob, count: blob.split('\n').length, blob };
   const span = sliceLines(blob, lines);
   if (span === null) { errors.push(`${label}: lines ${lines} out of range in ${p}`); return null; }
@@ -269,7 +271,7 @@ function checkPage(file) {
       if (sp) scan(`${e.call_anchor_path}:${e.call_anchor_lines}`, sp.text);
     }
     if (s.anchor_path && s.anchor_match && !/\.(md|txt|rst)$/.test(s.anchor_path)) {
-      const blob = s.anchor_sha ? blobAt(s.anchor_sha) : readWt(s.anchor_path);
+      const blob = readWt(s.anchor_path);
       if (blob) { const ls = blob.split('\n'); const i = ls.findIndex((l) => l.includes(s.anchor_match)); if (i !== -1) scan(`${s.anchor_path}~${i + 1}`, ls.slice(Math.max(0, i - 1), i + 6).join('\n')); }
     }
     const hard = [...hits].some((h) => ['catch', 'throw', 'return'].includes(h));

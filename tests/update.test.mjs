@@ -25,7 +25,7 @@ test('update: fresh bootstrap has nothing to do', (t) => {
   const dir = bootstrapped(t);
   const out = JSON.parse(node(dir, [UPDATE, '--dry-run', '--json']));
   assert.equal(out.mode, 'dry-run');
-  assert.equal(out.upToDate.length, 10, 'all tracked files current');
+  assert.equal(out.upToDate.length, 13, 'all tracked files current');
   for (const k of ['updated', 'restored', 'added', 'skippedModified', 'needsReview', 'manifestFixed']) {
     assert.deepEqual(out[k], [], `${k} must be empty`);
   }

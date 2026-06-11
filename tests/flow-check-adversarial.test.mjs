@@ -55,7 +55,6 @@ flow_edges:`,
     actor: bootstrap
     action: "phone home"
     anchor_path: scripts/bootstrap.mjs
-    anchor_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
     anchor_match: "fetch('https://telemetry"`,
   ).replace('flow_edges:\n', `flow_edges:
   - from: verify
@@ -69,7 +68,7 @@ flow_edges:`,
 });
 
 test('(b) rotted citation: wrong anchor_sha → "moved, re-verify"', () => {
-  const text = BASE.replace('anchor_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628', 'anchor_sha: 0000000000000000000000000000000000000000');
+  const text = BASE.replace(/anchor_sha: [0-9a-f]{40}/, 'anchor_sha: ' + '0'.repeat(40));
   const r = check(stage(text));
   assert.equal(r.code, 1);
   assert.ok(r.json.errors.some((e) => e.includes('moved')), JSON.stringify(r.json.errors));
@@ -86,7 +85,7 @@ test('(c2) edge cited outside the caller: call_anchor_path != from-step anchor �
   // point the run-bootstrap→generate-index call site at init.md (not the caller)
   const text = BASE.replace(
     `    call_anchor_path: scripts/bootstrap.mjs
-    call_anchor_lines: 251`,
+    call_anchor_lines: 252`,
     `    call_anchor_path: references/init.md
     call_anchor_lines: 151`,
   );
@@ -96,7 +95,7 @@ test('(c2) edge cited outside the caller: call_anchor_path != from-step anchor �
 });
 
 test('(c3) whole-file span attack: an over-wide call_anchor_lines is rejected', () => {
-  const text = BASE.replace('call_anchor_lines: 251', 'call_anchor_lines: 1-279');
+  const text = BASE.replace('call_anchor_lines: 252', 'call_anchor_lines: 1-279');
   const r = check(stage(text, { regenerate: true }));
   assert.equal(r.code, 1);
   assert.ok(r.json.errors.some((e) => e.includes('narrow to the call site')), JSON.stringify(r.json.errors));
@@ -132,11 +131,12 @@ test('(f) omitted branch: honest §6.1 limit — no hard fail without an extract
     condition: "wiki-check / index --check throws"
     kind: error
     cite_path: scripts/bootstrap.mjs
-    cite_lines: 257-258
-    cite_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    cite_lines: 258-259
+    cite_sha: 42f64b261eb399c1de827b0485a126c325a70137
     cite_match: "verification failed after vendoring"`,
     '',
   );
+  assert.ok(!text.includes('report-verify-fail\n    condition'), 'fixture must actually drop the branch');
   const r = check(stage(text, { regenerate: true }));
   assert.equal(r.code, 0, 'omission is not a hard fail without set-equality (honest §6.1)');
   // verify now has zero outgoing edges + no branch; branch-audit only fires on

@@ -224,6 +224,7 @@ write(join(wikiRoot, 'wiki.config.yml'), instantiate('wiki.config.yml', {
 // 5. Static templates and journals (copied unmodified).
 write(join(wikiRoot, '_templates', 'page.md'), tpl('page.md'));
 write(join(wikiRoot, '_templates', 'decision.md'), tpl('decision.md'));
+write(join(wikiRoot, '_templates', 'flow.md'), tpl('flow.md'));
 write(join(wikiRoot, 'GLOSSARY.md'), tpl('GLOSSARY.md'));
 write(join(wikiRoot, 'log.md'), tpl('log.md'));
 

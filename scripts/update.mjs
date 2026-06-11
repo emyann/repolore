@@ -97,6 +97,7 @@ function masterContent(rel, currentText) {
   }
   if (rel === join(wikiRoot, '_templates', 'page.md')) return readFileSync(join(PLUGIN_TEMPLATES, 'page.md'), 'utf8');
   if (rel === join(wikiRoot, '_templates', 'decision.md')) return readFileSync(join(PLUGIN_TEMPLATES, 'decision.md'), 'utf8');
+  if (rel === join(wikiRoot, '_templates', 'flow.md')) return readFileSync(join(PLUGIN_TEMPLATES, 'flow.md'), 'utf8');
   if (rel === join(wikiRoot, 'AGENTS.md')) return regenerateAgents(currentText);
   return null;
 }

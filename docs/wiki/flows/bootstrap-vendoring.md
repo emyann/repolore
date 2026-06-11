@@ -21,37 +21,37 @@ flow_steps:
     actor: bootstrap
     action: "Parse + validate config, then vendor the scaffold (skeleton, scripts, templates, manifest) in one shot"
     anchor_path: scripts/bootstrap.mjs
-    anchor_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    anchor_sha: 42f64b261eb399c1de827b0485a126c325a70137
     anchor_match: "copyFileSync(join(PLUGIN_SCRIPTS"
   - id: generate-index
     actor: bootstrap
     action: "Spawn wiki-index.mjs to generate the catalog"
     anchor_path: scripts/bootstrap.mjs
-    anchor_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    anchor_sha: 42f64b261eb399c1de827b0485a126c325a70137
     anchor_match: "wiki-index.mjs'"
   - id: verify
     actor: bootstrap
     action: "Spawn wiki-check + wiki-index --check; on failure abort"
     anchor_path: scripts/bootstrap.mjs
-    anchor_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    anchor_sha: 42f64b261eb399c1de827b0485a126c325a70137
     anchor_match: "wiki-check.mjs'"
   - id: report-invalid
     actor: bootstrap
     action: "Invalid config: print problems and exit 2"
     anchor_path: scripts/bootstrap.mjs
-    anchor_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    anchor_sha: 42f64b261eb399c1de827b0485a126c325a70137
     anchor_match: "if (problems.length) fail"
   - id: dry-run-preview
     actor: bootstrap
     action: "Dry-run: print in-scope counts, write nothing, exit 0"
     anchor_path: scripts/bootstrap.mjs
-    anchor_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    anchor_sha: 42f64b261eb399c1de827b0485a126c325a70137
     anchor_match: "argv.includes('--dry-run')"
   - id: report-verify-fail
     actor: bootstrap
     action: "Verification failed after vendoring: report and exit 2"
     anchor_path: scripts/bootstrap.mjs
-    anchor_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    anchor_sha: 42f64b261eb399c1de827b0485a126c325a70137
     anchor_match: "verification failed after vendoring"
 flow_edges:
   - from: invoke
@@ -68,8 +68,8 @@ flow_edges:
     kind: call
     evidence: verified
     call_anchor_path: scripts/bootstrap.mjs
-    call_anchor_lines: 251
-    call_anchor_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    call_anchor_lines: 252
+    call_anchor_sha: 42f64b261eb399c1de827b0485a126c325a70137
     call_match: "join(scriptsDir, 'wiki-index.mjs')"
     callee_token: "wiki-index.mjs"
   - from: generate-index
@@ -77,8 +77,8 @@ flow_edges:
     kind: call
     evidence: verified
     call_anchor_path: scripts/bootstrap.mjs
-    call_anchor_lines: 253
-    call_anchor_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    call_anchor_lines: 254
+    call_anchor_sha: 42f64b261eb399c1de827b0485a126c325a70137
     call_match: "join(scriptsDir, 'wiki-check.mjs')"
     callee_token: "wiki-check.mjs"
 flow_branches:
@@ -88,7 +88,7 @@ flow_branches:
     kind: error
     cite_path: scripts/bootstrap.mjs
     cite_lines: 111
-    cite_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    cite_sha: 42f64b261eb399c1de827b0485a126c325a70137
     cite_match: "if (problems.length) fail"
   - at: run-bootstrap
     to: dry-run-preview
@@ -96,15 +96,15 @@ flow_branches:
     kind: guard
     cite_path: scripts/bootstrap.mjs
     cite_lines: 61
-    cite_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    cite_sha: 42f64b261eb399c1de827b0485a126c325a70137
     cite_match: "argv.includes('--dry-run')"
   - at: verify
     to: report-verify-fail
     condition: "wiki-check / index --check throws"
     kind: error
     cite_path: scripts/bootstrap.mjs
-    cite_lines: 257-258
-    cite_sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    cite_lines: 258-259
+    cite_sha: 42f64b261eb399c1de827b0485a126c325a70137
     cite_match: "verification failed after vendoring"
 covers:
   - path: scripts/bootstrap.mjs
@@ -170,8 +170,8 @@ flowchart TD
 | From → To | Kind | Evidence | Call site | Callee |
 |-----------|------|----------|-----------|--------|
 | invoke → run-bootstrap | call | verified | `references/init.md:151` — `scripts/bootstrap.mjs --config` | `bootstrap.mjs` |
-| run-bootstrap → generate-index | call | verified | `scripts/bootstrap.mjs:251` — `join(scriptsDir, 'wiki-index.mjs')` | `wiki-index.mjs` |
-| generate-index → verify | call | verified | `scripts/bootstrap.mjs:253` — `join(scriptsDir, 'wiki-check.mjs')` | `wiki-check.mjs` |
+| run-bootstrap → generate-index | call | verified | `scripts/bootstrap.mjs:252` — `join(scriptsDir, 'wiki-index.mjs')` | `wiki-index.mjs` |
+| generate-index → verify | call | verified | `scripts/bootstrap.mjs:254` — `join(scriptsDir, 'wiki-check.mjs')` | `wiki-check.mjs` |
 
 **Branches** — alternative and error paths:
 
@@ -179,7 +179,7 @@ flowchart TD
 |---------|------|-----------|----------|
 | run-bootstrap → report-invalid | error | problems.length > 0 (config invalid) | `scripts/bootstrap.mjs:111` — `if (problems.length) fail` |
 | run-bootstrap → dry-run-preview | guard | --dry-run flag present | `scripts/bootstrap.mjs:61` — `argv.includes('--dry-run')` |
-| verify → report-verify-fail | error | wiki-check / index --check throws | `scripts/bootstrap.mjs:257-258` — `verification failed after vendoring` |
+| verify → report-verify-fail | error | wiki-check / index --check throws | `scripts/bootstrap.mjs:258-259` — `verification failed after vendoring` |
 
 <!-- FLOW-RENDER:END -->
 
