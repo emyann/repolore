@@ -9,10 +9,10 @@ covers:
   - path: references/init.md
     sha: d443f18f13ccbaece98d8c5c911a9c25c95fec7a
   - path: SKILL.md
-    sha: e87c7c7cad22195b27b5548307aae7c61a6ce550
+    sha: 2efc773d6284466f25fc42d60d118e27410ceb63
   - path: docs/RESEARCH.md
     sha: 3650c9099507e8a36574ece1b812b53860d56462
-generated_at_commit: 09ee74a
+generated_at_commit: af1586e
 last_refreshed: 2026-06-11
 related: [decisions/adr-004-umbrella-skill-plugin-shims, architecture/overview]
 ---

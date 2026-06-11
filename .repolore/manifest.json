@@ -1,14 +1,14 @@
 {
   "tool": "repolore",
   "schemaVersion": 1,
-  "pluginVersion": "0.2.2",
+  "pluginVersion": "0.3.0",
   "wikiRoot": "docs/wiki",
   "scriptsDir": ".repolore/scripts",
   "initializedAt": "2026-06-11",
   "generatedFiles": [
     {
       "path": ".repolore/scripts/lib.mjs",
-      "sha": "f3edf71392e5f140060e95cb641319a89e403428"
+      "sha": "b30812bff5b121f947e7ed5df3a451f8e5856f08"
     },
     {
       "path": ".repolore/scripts/wiki-check.mjs",

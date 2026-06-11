@@ -20,3 +20,5 @@ history.
 ## 2026-06-11 — refreshed overview, adr-004, adr-005, gotchas/cross-tool-depth-untested (init gained team auto-update Q6; no-op re-stamps)
 ## 2026-06-11 — added concepts/freshness-model (drafted from the wiki plan)
 ## 2026-06-11 — added howto/run-the-ux-harness (drafted from the wiki plan; coverage reaches 9/9)
+## 2026-06-11 — refreshed 8 stale pages after the update-workflow build (targeted edits: overview, adr-004, howto; rest no-op)
+## 2026-06-11 — updated vendored tooling v0.2.2 → v0.3.0 via the new update workflow (its own first run)

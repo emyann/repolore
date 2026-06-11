@@ -21,6 +21,12 @@ export const DEFAULT_CATEGORIES = [
   'architecture', 'concepts', 'features', 'flows', 'decisions', 'gotchas', 'howto',
 ];
 
+/** The vendored tooling set — what bootstrap copies into target repos and
+ *  update refreshes. Order matters to no one; completeness does. */
+export const VENDORED_SCRIPTS = [
+  'lib.mjs', 'wiki-check.mjs', 'wiki-coverage.mjs', 'wiki-stamp.mjs', 'wiki-index.mjs',
+];
+
 export function fail(msg) {
   console.error(`repolore: ${msg}`);
   process.exit(2);
@@ -193,11 +199,17 @@ export function configLists(raw, key) {
   return out;
 }
 
-/** Scalar under a top-level block, e.g. (`wiki`, `page_budget`). */
+/** Scalar under a top-level block, e.g. (`wiki`, `page_budget`). Quoted
+ *  values are returned verbatim (sans quotes); unquoted values lose any
+ *  trailing ` # comment` — YAML semantics our line parser must honor, or
+ *  `page_budget: 50  # soft cap` reads as the string "50  # soft cap". */
 export function configScalar(raw, key, sub) {
   for (const line of blockLines(raw, key)) {
     const m = line.match(new RegExp(`^\\s{2}${sub}:\\s*(.+?)\\s*$`));
-    if (m) return m[1].replace(/^["']|["']$/g, '');
+    if (!m) continue;
+    const q = m[1].match(/^(["'])(.*?)\1/);
+    if (q) return q[2];
+    return m[1].replace(/\s+#.*$/, '');
   }
   return null;
 }

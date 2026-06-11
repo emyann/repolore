@@ -13,8 +13,8 @@ covers:
   - path: scripts/wiki-stamp.mjs
     sha: 670c72deed77d68517c5a55951bf946627c32038
   - path: scripts/lib.mjs
-    sha: f3edf71392e5f140060e95cb641319a89e403428
-generated_at_commit: 4f05eb2
+    sha: b30812bff5b121f947e7ed5df3a451f8e5856f08
+generated_at_commit: af1586e
 last_refreshed: 2026-06-11
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status]
 ---

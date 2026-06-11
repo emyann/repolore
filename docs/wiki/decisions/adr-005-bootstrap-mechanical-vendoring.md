@@ -11,10 +11,10 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: scripts/bootstrap.mjs
-    sha: e5c667de838837c43be457a151c7f6003584c86b
+    sha: c1b881a4cea1ac1a55fd8d5b581a59bebce913e5
   - path: references/init.md
     sha: d443f18f13ccbaece98d8c5c911a9c25c95fec7a
-generated_at_commit: 09ee74a
+generated_at_commit: af1586e
 last_refreshed: 2026-06-11
 related: [architecture/overview, decisions/adr-003-stdlib-only-vendored-scripts]
 ---

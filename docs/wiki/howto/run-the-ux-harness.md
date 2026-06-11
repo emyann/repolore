@@ -13,8 +13,14 @@ covers:
   - path: .claude/workflows/test-init-ux.js
     sha: 7a6700b750df1d3cb545185c83ce8ac3b800d955
   - path: tests/bootstrap.test.mjs
-    sha: e4bc15a3af14236374933b304dd1bff00bbfa301
-generated_at_commit: 4f05eb2
+    sha: 40a362f35874e8fc496d99cca8b34bd08b874499
+  - path: tests/update.test.mjs
+    sha: 19161978fdf97c117758f8e10c29a60eeede53d3
+  - path: tests/lib.test.mjs
+    sha: 53a3786b7c17269e72e49cd2fe6c893712133d4b
+  - path: tests/_helpers.mjs
+    sha: 69761a14bf7edef781572eb0cbc239be38090a43
+generated_at_commit: af1586e
 last_refreshed: 2026-06-11
 related: [decisions/adr-005-bootstrap-mechanical-vendoring, architecture/overview]
 ---
@@ -32,7 +38,7 @@ related: [decisions/adr-005-bootstrap-mechanical-vendoring, architecture/overvie
 node --test tests/*.test.mjs
 ```
 
-`tests/bootstrap.test.mjs` drives `bootstrap.mjs` against throwaway fixture
+`tests/bootstrap.test.mjs` + `tests/update.test.mjs` + `tests/lib.test.mjs` (shared fixtures in `tests/_helpers.mjs`) drive the plugin-side tools against throwaway fixture
 repos: dry-run census, vendoring, placeholder instantiation, manifest SHA
 integrity, the re-run guard, config validation, YAML quoting, the page-plan
 backlog/drift lints, and the invariant that the approval-gate file count
