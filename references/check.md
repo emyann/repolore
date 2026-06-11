@@ -31,6 +31,10 @@ Then summarize for the user, in this order of importance:
    the bottom of the generated `index.md`.
 4. **Hygiene** — malformed pages, unmanaged pages (no `covers:`), index drift
    (regenerate with `wiki-index.mjs`), page-budget warnings, legacy fields.
+   Also: an empty or near-empty `GLOSSARY.md` while written pages exist —
+   terms are being coined without being recorded (the feeding rule in
+   `AGENTS.md`). Offer a one-shot backfill from the existing pages'
+   terminology; don't run it unasked.
 5. **Tooling updates** — run the deterministic classifier:
    `node <SKILL_ROOT>/scripts/update.mjs --dry-run`. It compares every
    tracked vendored file against the installed masters (up-to-date /

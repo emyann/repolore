@@ -31,7 +31,8 @@ You are refreshing the repo's LLM-maintained wiki. Read
    re-read against the diff ("refresh-by-rote" erodes citation trust).
 5. Fix MALFORMED pages (repair frontmatter to the schema).
 6. `node <scriptsDir>/wiki-index.mjs` if any title/summary changed (or
-   `--check` says so); append one line per refreshed page to `<wikiRoot>/log.md`.
+   `--check` says so); append one line per refreshed page to `<wikiRoot>/log.md`;
+   update `GLOSSARY.md` lines whose terms the refresh renamed or retired.
 7. Re-run `wiki-check.mjs` — every page must report fresh.
 8. Present the refresh as a reviewable change; offer a single
    `docs(wiki): refresh N stale pages` commit (do not commit without consent).

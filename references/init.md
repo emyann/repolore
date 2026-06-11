@@ -152,7 +152,10 @@ mechanical and delegated:
    bootstrap fails, read its error, fix the config, and re-run it.
 2. If the user opted in (phase 2 Q4): draft `architecture/overview.md` now,
    from the code, following `<wikiRoot>/AGENTS.md` rules exactly (citations,
-   covers list, `> TODO-VERIFY:` for anything unverified). Then:
+   covers list, `> TODO-VERIFY:` for anything unverified). In the same pass,
+   seed `GLOSSARY.md` with the 3–8 domain terms phase 1 and the overview
+   surfaced (one cited line each, alphabetical) — the vocabulary layer
+   starts alive, and the feeding rule in `AGENTS.md` keeps it fed. Then:
    `node .repolore/scripts/wiki-stamp.mjs <page>`, set the page's page-plan
    entry to `status: seeded` in `wiki.config.yml` (and if drafting from the
    code contradicted the plan's one-line summary, correct that summary now —

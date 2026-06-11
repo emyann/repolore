@@ -171,6 +171,16 @@ Append one line per notable wiki operation, newest last:
 It gives future sessions recency awareness for free. Append-only; never
 rewrite history.
 
+### `GLOSSARY.md` — the vocabulary layer, and its feeding rule
+
+One line per term, alphabetical, cited where the term maps to a symbol,
+table, or config key. The feeding rule: **coin no term without recording
+it** — every domain term a page defines or leans on either already has a
+glossary line or gains one in the same change. A term that outgrows one
+line gets a `concepts/` page, and its glossary line links there. An empty
+glossary in a wiki with written pages means terms are being coined without
+being recorded — the check workflow reports it as a smell.
+
 ### `decisions/` — dual mutability
 
 Every other page is **living** (refreshed in place). Decision records are
@@ -199,10 +209,12 @@ maintenance and can't be freshness-tracked).
    claims get `> TODO-VERIFY:`.
 4. Fill `covers` with every source file you drew from (paths only), then run
    `node .repolore/scripts/wiki-stamp.mjs <page>` to write the SHAs.
-5. Run `node .repolore/scripts/wiki-index.mjs` to regenerate the index, and
+5. Add or update `GLOSSARY.md` lines for every domain term the page defines
+   or leans on (cited; link the page for terms it owns).
+6. Run `node .repolore/scripts/wiki-index.mjs` to regenerate the index, and
    append a line to `log.md`.
-6. Run `node .repolore/scripts/wiki-check.mjs` — the new page must report `fresh`.
-7. If the page isn't in the page plan (`pages:` in `wiki.config.yml`), add it.
+7. Run `node .repolore/scripts/wiki-check.mjs` — the new page must report `fresh`.
+8. If the page isn't in the page plan (`pages:` in `wiki.config.yml`), add it.
 
 ## Workflow: refreshing a stale page
 
@@ -218,7 +230,8 @@ maintenance and can't be freshness-tracked).
    - **Rewrite** — the feature changed shape; re-research from the code.
 3. Add newly-relevant files to `covers`; drop deleted ones.
 4. Run `wiki-stamp.mjs <page>`, regenerate the index if title/summary changed,
-   append to `log.md`.
+   append to `log.md`. Update glossary lines whose terms the refresh renamed
+   or retired.
 5. Re-run `wiki-check.mjs` — the page must return to `fresh`. Commit the
    refresh as a normal reviewable change.
 

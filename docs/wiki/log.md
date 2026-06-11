@@ -22,3 +22,5 @@ history.
 ## 2026-06-11 — added howto/run-the-ux-harness (drafted from the wiki plan; coverage reaches 9/9)
 ## 2026-06-11 — refreshed 8 stale pages after the update-workflow build (targeted edits: overview, adr-004, howto; rest no-op)
 ## 2026-06-11 — updated vendored tooling v0.2.2 → v0.3.0 via the new update workflow (its own first run)
+## 2026-06-11 — updated vendored tooling v0.3.0 → v0.3.1 (AGENTS.md gained the glossary feeding rule)
+## 2026-06-11 — backfilled GLOSSARY.md (11 terms) per the new feeding rule

@@ -198,6 +198,9 @@ v0.3.0 (this) — the `update` workflow: manifest-hash safe regeneration of the
 vendored layer (`scripts/update.mjs` + `/repolore:update`); fixed a latent
 bug it uncovered (unquoted config values kept trailing comments, so the
 page-budget warning could never fire).
+v0.3.1 (this) — the glossary feeding loop: init seeds 3–8 cited terms, the
+page-writing/refresh workflows must record every term they coin, check
+reports an empty glossary as a smell and offers a backfill.
 v0.3.x — post-commit hook + `install-hook`; Copilot `applyTo` / Cursor `.mdc`
 emitter; read-side consumption eval; dangling-reference and link lints;
 `audit` workflow (LLM pass for wrongness/duplication — what hashes can't
