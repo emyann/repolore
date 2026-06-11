@@ -231,6 +231,13 @@ canonical pointer and each harness links to it by its native mechanism — an
 `@AGENTS.md` import for `CLAUDE.md` (Claude Code never auto-loads `AGENTS.md`),
 the literal block for Copilot. The in-wiki bridge switches from symlink to
 import (portable — no Windows/CI symlink caveat). See `adr-008`.
+v0.3.7 (this) — the findings inbox (v1, convention only): code-defect
+findings surfaced while drafting/refreshing pages get a `FINDINGS.md` relay
+buffer beside the wiki — outside page semantics, consent-only writes,
+deletion-not-checkbox triage with four domain-exiting dispositions; created
+on demand, never written by check/hooks, never gating. Tooling (per-item SHA
+anchors, triage workflow) deferred to the audit workflow. See `adr-009` +
+[docs/RESEARCH-FINDINGS.md](./docs/RESEARCH-FINDINGS.md).
 v0.3.x — flows v1 per [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md):
 flow-meta/v1 (line-parseable) + flow template + honesty-gradient text +
 structural/anchored checks + `wiki-flow-render.mjs` + two dogfood flow pages;
