@@ -13,6 +13,13 @@ deserves a `concepts/` page (link it).
 - **covers** — the frontmatter list of source files a page distils, each
   pinned to the git blob SHA it had when the page was verified
   (`scripts/lib.mjs` `parseCovers`).
+- **finding** — a suspected code defect (a code ≠ intent claim) surfaced as
+  a by-product of drafting/refresh; one `FINDINGS.md` line pointing at the
+  page that carries the evidence — a claim to re-verify, never page content
+  (see [adr-009](./decisions/adr-009-findings-inbox-contract.md)).
+- **findings inbox** — the committed `FINDINGS.md` relay buffer beside a
+  wiki: outside page semantics, consent-only writes, deletion-not-checkbox
+  triage with four domain-exiting dispositions (`templates/AGENTS.md`).
 - **manifest** — `.repolore/manifest.json` only: wiki location, scripts dir,
   `pluginVersion`, and every vendored file's blob SHA (`scripts/bootstrap.mjs`).
 - **page plan** — the `pages:` block of `wiki.config.yml`; the wiki's

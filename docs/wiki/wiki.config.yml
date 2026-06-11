@@ -63,6 +63,9 @@ pages:
   - slug: decisions/adr-008-per-harness-entry-point-bridging
     summary: "AGENTS.md is the one canonical pointer; each harness links to it by its native mechanism — @import for Claude, literal block for Copilot, emitters later."
     status: seeded
+  - slug: decisions/adr-009-findings-inbox-contract
+    summary: "Findings (code ≠ intent claims) live in a FINDINGS.md relay buffer beside the wiki — outside page semantics, consented writes, deletion-not-checkbox triage; tooling deferred to the audit workflow."
+    status: seeded
   - slug: gotchas/cross-tool-depth-untested
     summary: "Wiki consumption depth varies by agent nudge strength; pointer-block-only teams (Copilot) are untested."
     status: seeded
