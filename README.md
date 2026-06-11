@@ -244,6 +244,10 @@ the *installed* plugin version, so "nothing to do" could mask a stale install.
 probes the marketplace clone on disk (zero network, best-effort) and offers
 the consented channel refresh (`claude plugin marketplace update` /
 `npx skills update`), ending with the user-only reload step.
+v0.3.9 (this) — the findings inbox actually works: `wiki-check`/`-index`/the
+page budget now skip `FINDINGS.md` (added to `lib.mjs` `SKIP_FILES`), so the
+inbox stops being flagged `MALFORMED`. ADR-009's v1 "zero scripts" was wrong
+by one line — caught by the first real migration (pipao's 28-item backlog).
 v0.3.x — flows v1 per [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md):
 flow-meta/v1 (line-parseable) + flow template + honesty-gradient text +
 structural/anchored checks + `wiki-flow-render.mjs` + two dogfood flow pages;
