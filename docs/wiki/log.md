@@ -31,3 +31,4 @@ history.
 ## 2026-06-11 — re-stamped overview (plugin.json version bump; no-op)
 ## 2026-06-11 — refreshed overview + adr-004 (setup workflow added; gotcha no-op) — flagged by the nudge
 ## 2026-06-11 — planned flows/bootstrap-vendoring, flows/update-classification, decisions/adr-007 (from RESEARCH-FLOWS §5.5/§6.5)
+## 2026-06-11 — refreshed overview: added references/check.md + references/update.md to covers (close the procedure-layer freshness blind spot); planned flows/check-health, flows/refresh-triage

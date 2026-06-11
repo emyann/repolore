@@ -33,6 +33,8 @@
 
 - decisions/adr-007-verification-ladder-placement: Vendored stdlib owns structural→branch-audited flow checks; set-equality extractors live in user space. To accept before v0.4 code exists.
 - flows/bootstrap-vendoring: How init's one-shot vendoring executes: config → bootstrap.mjs → verified scaffold. (Blocked on flow-meta v1 — see docs/RESEARCH-FLOWS.md.)
+- flows/check-health: How the check workflow reports wiki health — freshness, coverage, backlog and tooling-update classification — as read-only signals that become offers, never gates. (Blocked on flow-meta v1.)
+- flows/refresh-triage: How the refresh workflow brings stale pages back into line: diff-driven triage (re-stamp / targeted edit / rewrite), citation re-verification, re-stamp, reviewable commit. (Blocked on flow-meta v1.)
 - flows/update-classification: How the update workflow classifies and applies tooling changes from the (recorded, current, master) SHA triplet. (Blocked on flow-meta v1.)
 
 > Backlog from the page plan (`pages:` in `wiki.config.yml`) — draft on demand: "draft `<slug>` from the wiki plan".

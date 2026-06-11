@@ -10,13 +10,17 @@ covers:
     sha: a5faeb26798f0011a46679aaa6c66237903d2c50
   - path: references/init.md
     sha: 3f231716382c32c11dc87e11b4320ab7dd988502
+  - path: references/check.md
+    sha: 17cdc7931c2c93102b952c7a3418c95d135a6844
+  - path: references/update.md
+    sha: 4a208cf33d73fc95b2add00db6f36920b12262d4
   - path: scripts/bootstrap.mjs
     sha: c1b881a4cea1ac1a55fd8d5b581a59bebce913e5
   - path: scripts/update.mjs
     sha: e35ecd77860900a9dc8ba6d0a5d5abce05d7c51e
   - path: .claude-plugin/plugin.json
     sha: fedec9a2932b8305fe9707cdccd937698a7681fc
-generated_at_commit: 1bf52a0
+generated_at_commit: 9680a08
 last_refreshed: 2026-06-11
 related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-bootstrap-mechanical-vendoring, concepts/freshness-model]
 ---

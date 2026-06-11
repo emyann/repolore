@@ -1,7 +1,7 @@
 ---
 name: check
 description: Report the health of the repo's LLM wiki — stale or unmanaged pages, new code with no page, index drift, page budget, tooling updates. Use when the user asks whether the wiki is up to date, before relying on wiki content for a task, or after merging significant changes.
-allowed-tools: Read, Bash, Glob, Grep
+allowed-tools: Read, Bash, Glob, Grep, AskUserQuestion
 ---
 
 # repolore: check

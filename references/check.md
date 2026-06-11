@@ -43,10 +43,22 @@ Then summarize for the user, in this order of importance:
    tracked vendored file against the installed masters (up-to-date /
    outdated-pristine / locally modified / missing / new) and prints the
    from→to versions. If anything is outdated: one line, last in the report
-   ("repolore vX is installed; this repo's tooling is at vY") and offer the
-   update workflow (`/repolore:update` in the Claude Code plugin) — don't
-   apply it unasked. Relay any locally-modified warnings verbatim: those
-   files will never be overwritten without explicit consent.
+   ("repolore vX is installed; this repo's tooling is at vY"). Then offer the
+   update workflow (`/repolore:update` in the Claude Code plugin) — never
+   apply it unasked. How to offer:
+   - **Clean update, nothing else pending** — the classifier reports no
+     locally-modified files AND the report found no stale pages (no #1 action
+     items competing for attention): present a single `AskUserQuestion`
+     ("repolore vX is installed; tooling here is vY — run the update now?" →
+     *Run update now* / *Not now*). On *Run update now*, hand off to the
+     update workflow; otherwise leave the one-line pointer. The update is a
+     true one-shot here, so removing the round-trip is pure win.
+   - **Anything else** — locally-modified files present, or stale pages that
+     outrank the tooling finding: keep the one-line prose pointer, don't pop a
+     question. The update needs per-file keep-vs-overwrite decisions (it isn't
+     a yes/no), and tooling must not jump ahead of the real action items.
+   Relay any locally-modified warnings verbatim either way: those files will
+   never be overwritten without explicit consent.
 
 Rules:
 
