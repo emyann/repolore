@@ -71,6 +71,9 @@ Releases ship as version bumps of `plugin.json` (see the
 **Claude Code plugin — automatically.** Auto-update is off by default for
 third-party marketplaces; enable it once via `/plugin` → **Marketplaces** →
 repolore → **Enable auto-update**, and new versions install at startup.
+(Launch-update semantics: the session that fetches a new version keeps
+running on the snapshot it already loaded — the update applies from the
+next session, or after `/reload-plugins`.)
 Better for teams: declare it in the project's `.claude/settings.json` and
 every teammate gets the plugin, pre-enabled and auto-updating, with zero
 setup:
