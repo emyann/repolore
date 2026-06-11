@@ -21,7 +21,7 @@ import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import {
   repoRoot, findWikiRoot, walkPages, splitFrontmatter, fmScalar,
-  loadConfig, configScalar, configList, DEFAULT_CATEGORIES,
+  loadConfig, configScalar, configList, parsePagePlan, DEFAULT_CATEGORIES,
 } from './lib.mjs';
 
 const argv = process.argv.slice(2);
@@ -75,6 +75,18 @@ for (const cat of ordered) {
   }
   lines.push('');
 }
+
+// The backlog: page-plan entries with no page file yet. Surfacing them here
+// makes "what is waiting to be drafted" visible at the wiki's front door.
+const pageSlugs = new Set(entries.map((e) => e.relPath.replace(/\.md$/, '')));
+const backlog = parsePagePlan(raw).filter((p) => !pageSlugs.has(p.slug));
+if (backlog.length) {
+  lines.push('## Planned (not yet written)', '');
+  for (const p of backlog.sort((a, b) => a.slug.localeCompare(b.slug))) {
+    lines.push(`- ${p.slug}: ${p.summary || '(no summary in the page plan)'}`);
+  }
+  lines.push('', '> Backlog from the page plan (`pages:` in `wiki.config.yml`) — draft on demand: "draft `<slug>` from the wiki plan".', '');
+}
 const content = lines.join('\n');
 
 const indexFile = join(wikiRoot, 'index.md');
@@ -92,6 +104,6 @@ if (CHECK) {
 }
 
 writeFileSync(indexFile, content);
-console.log(`wrote ${relative(root, indexFile)} (${entries.length} pages, ${ordered.length} categories).`);
+console.log(`wrote ${relative(root, indexFile)} (${entries.length} pages, ${ordered.length} categories${backlog.length ? `, ${backlog.length} planned` : ''}).`);
 for (const w of warnings) console.log(`  ⚠ ${w}`);
 process.exit(0);

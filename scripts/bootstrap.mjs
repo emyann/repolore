@@ -204,13 +204,13 @@ if (!existsSync(symlinkPath)) {
 }
 
 // 4. wiki.config.yml — globs at 4-space indent, repo notes folded into the
-//    `repo_notes: |` block, manifest entries at 2-space indent. Free-text
+//    `repo_notes: |` block, page-plan entries at 2-space indent. Free-text
 //    values are double-quoted: summaries routinely contain ": " and an
 //    unquoted one is invalid strict YAML — our line-based parser tolerates
 //    it, but yamllint/IDEs/external consumers will not.
 const yq = (s) => `"${s.replace(/\\/g, '\\\\').replace(/"/g, '\\"')}"`;
 const globLines = (globs) => (globs.length ? globs.map((g) => `    - "${g}"`).join('\n') : '    # (none)');
-const manifestLines = pages.length
+const planLines = pages.length
   ? pages.map((p) => `  - slug: ${p.slug}\n    summary: ${yq(p.summary)}\n    status: ${p.status ?? 'planned'}`).join('\n')
   : '  # (none yet — add entries as pages are planned)';
 write(join(wikiRoot, 'wiki.config.yml'), instantiate('wiki.config.yml', {
@@ -218,7 +218,7 @@ write(join(wikiRoot, 'wiki.config.yml'), instantiate('wiki.config.yml', {
   REPO_NOTES: cfg.repoNotes.trim().split('\n').join('\n  '),
   SCOPE_INCLUDE: globLines(cfg.scope.include),
   SCOPE_EXCLUDE: globLines(cfg.scope.exclude ?? []),
-  PAGE_MANIFEST: manifestLines,
+  PAGE_PLAN: planLines,
 }).replace(/^(\s*page_budget:)\s*\d+/m, `$1 ${pageBudget}`));
 
 // 5. Static templates and journals (copied unmodified).
@@ -273,7 +273,7 @@ if (JSON_OUT) {
   console.log(`  Wiki:      ${wikiRoot}/ (AGENTS.md + CLAUDE.md link, wiki.config.yml, templates, glossary, log, generated index)`);
   console.log(`  Tooling:   ${scriptsDir}/ (${VENDORED_SCRIPTS.length} scripts) + .repolore/manifest.json (${trackedRels.length} files tracked by blob SHA)`);
   console.log(`  Verified:  ${verified.join(', ')}`);
-  console.log(`  Manifest:  ${pages.length} page(s) planned (soft budget ${pageBudget})`);
+  console.log(`  Page plan: ${pages.length} page(s) (soft budget ${pageBudget})`);
   console.log(`  Baseline:  ${sources.length} in-scope source file(s) — wiki-coverage.mjs reports how many a page covers as the wiki grows\n`);
 }
 process.exit(0);

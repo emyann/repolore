@@ -22,11 +22,16 @@ Then summarize for the user, in this order of importance:
 2. **Coverage gaps** — uncovered «page-worthy» clusters only (the wiki
    distils; don't recite every uncovered file). A cluster under routes/,
    services/, functions/ etc. usually means a missing page — name the likely
-   page and offer to add it to the manifest in `wiki.config.yml` as
+   page and offer to add it to the page plan (`pages:` in `wiki.config.yml`) as
    `status: planned`.
-3. **Hygiene** — malformed pages, unmanaged pages (no `covers:`), index drift
+3. **The backlog** — `wiki-check.mjs` prints the page plan's state (N written,
+   M waiting to be drafted, plan↔reality drift). Relay it with the
+   draft-on-demand prompt ("draft `<slug>` from the wiki plan") so the user
+   always knows what is waiting; the same list sits in the Planned section at
+   the bottom of the generated `index.md`.
+4. **Hygiene** — malformed pages, unmanaged pages (no `covers:`), index drift
    (regenerate with `wiki-index.mjs`), page-budget warnings, legacy fields.
-4. **Tooling updates** — the manifest's `generatedFiles` records the blob SHA
+5. **Tooling updates** — the manifest's `generatedFiles` records the blob SHA
    each vendored file had when written. Compare against the installed
    repolore's masters: for each `<scriptsDir>/*.mjs` entry, `git hash-object
    <SKILL_ROOT>/scripts/<name>` and diff the two readings:

@@ -28,7 +28,7 @@ What makes it different from DeepWiki / Code Wiki / memory banks:
 - **Diff-driven refresh, reviewable commits.** The refresh skill feeds the
   exact diff since the page was last verified, triages no-op / edit / rewrite,
   and produces a normal commit you review — never silent mutation.
-- **Curated, not generated.** A page manifest you approve, a soft page budget,
+- **Curated, not generated.** A page plan you approve, a soft page budget,
   and a distillation rule ("if an agent can find it in 30 seconds, it doesn't
   belong here") keep it an orientation layer, not 400 pages of paraphrased code.
 - **Minimal footprint.** Outside the wiki itself, the tool's entire presence is
@@ -60,7 +60,7 @@ Both forms run the same procedures and scripts (see *Packaging* below).
 
 | Command | What it does |
 |---|---|
-| `/repolore:init` | One-time bootstrap: detect the stack → agree scope (with the in-scope file count shown up front) + a page manifest with you → vendor the wiki skeleton, schema doc (`AGENTS.md`), check scripts and templates in one mechanical shot (`bootstrap.mjs`) → seed `architecture/overview.md` (default, declinable) → append pointer blocks to whichever agent context files already exist → finish with a single `docs:` commit (with your consent, asked once up front). |
+| `/repolore:init` | One-time bootstrap: detect the stack → agree scope (with the in-scope file count shown up front) + a page plan with you → vendor the wiki skeleton, schema doc (`AGENTS.md`), check scripts and templates in one mechanical shot (`bootstrap.mjs`) → seed `architecture/overview.md` (default, declinable) → append pointer blocks to whichever agent context files already exist → finish with a single `docs:` commit (with your consent, asked once up front). |
 | `/repolore:check` | Health report: stale pages, uncovered «page-worthy» code clusters, index drift, page budget. Read-only, never blocks. |
 | `/repolore:refresh` | Bring stale pages back in line with the code: diff-driven triage, citation re-verification, re-stamp, regenerate index, reviewable commit. |
 
@@ -69,7 +69,7 @@ With the standalone skill the same three workflows are invoked in plain words
 commands.
 
 Day-to-day, pages get drafted **on demand** ("draft `features/refund-pipeline`
-from the wiki manifest") and updated as part of the change that altered the
+from the wiki plan") and updated as part of the change that altered the
 behaviour — the pointer block installed by init tells every agent session to
 do exactly that.
 
@@ -91,7 +91,7 @@ docs/wiki/                  # location configurable
   AGENTS.md                 # the schema doc: taxonomy, frontmatter, citation + refresh rules
   CLAUDE.md -> AGENTS.md    # symlink so Claude Code auto-loads it in the wiki tree
   GLOSSARY.md  log.md       # vocabulary + append-only journal
-  wiki.config.yml           # machine-read config: scope globs, tunables, page manifest
+  wiki.config.yml           # machine-read config: scope globs, tunables, page plan
   architecture/ concepts/ features/ flows/ decisions/ gotchas/ howto/
   _templates/               # page.md + decision.md
 .repolore/                  # the ONLY footprint outside the wiki — one hidden dir
@@ -142,6 +142,10 @@ interface-first report); single local-date source; plugin-update nudge in
 v0.2.1 (this) — standalone distribution via the skills CLI / skills.sh: root
 umbrella `SKILL.md`, single-source procedures in `references/`, plugin skills
 as shims; agent-portable wording in vendored script messages.
+v0.2.2 (this) — the page plan made visible: backlog section in the generated
+`index.md`, plan state + plan↔reality drift lints in `wiki-check`, and the
+"page manifest" terminology retired ("manifest" now only ever means
+`.repolore/manifest.json`).
 v0.3 — post-commit hook + `install-hook`; dangling-reference and link lints;
 `wiki-index.json` connector contract + llms.txt emitter; `update` skill
 (manifest-hash safe regeneration); flow-validator plugin harness; `audit`

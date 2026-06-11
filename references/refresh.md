@@ -39,7 +39,7 @@ You are refreshing the repo's LLM-maintained wiki. Read
 ## Guardrails
 
 - **Do not invent pages or content.** Only refresh what exists. A missing
-  page you notice goes into the `pages:` manifest in `wiki.config.yml` as
+  page you notice goes into the page plan (`pages:` in `wiki.config.yml`) as
   `status: planned` — not written now.
 - A stale **accepted decision record** is a prompt to consider a *superseding*
   ADR, never an in-place rewrite (dual mutability — see AGENTS.md).

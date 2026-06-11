@@ -1,6 +1,6 @@
 ---
 name: init
-description: Bootstrap an LLM-maintained, code-derived wiki in this repository — detect the stack, agree scope + a page manifest with the user, vendor the schema + check scripts + templates in one mechanical shot, seed the overview page, and wire agent entry points. Run once per repo.
+description: Bootstrap an LLM-maintained, code-derived wiki in this repository — detect the stack, agree scope + a page plan with the user, vendor the schema + check scripts + templates in one mechanical shot, seed the overview page, and wire agent entry points. Run once per repo.
 disable-model-invocation: true
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion
 ---

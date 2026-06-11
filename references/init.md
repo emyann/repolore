@@ -12,7 +12,7 @@ freshness tracking. This is Karpathy's llm-wiki pattern applied to a codebase
 — the immutable source layer is the repo itself.
 
 Follow the phases in order. **Never silently write a wall of pages** — the
-manifest approval gate (phase 4) is mandatory. Make no network calls.
+plan approval gate (phase 4) is mandatory. Make no network calls.
 
 The run should end **fully done**: scaffold vendored, the overview page
 drafted (unless declined), entry points wired, and — when the user consented
@@ -61,7 +61,9 @@ what detection cannot decide:
    in-scope file count attached**: write a draft config holding just the
    `scope` block to a unique temp path outside the repo — unique per RUN,
    not just per project, so reruns never pick up a stale file (e.g.
-   `/tmp/repolore-init-<project>-$(date +%s).json`) — and run
+   `/tmp/repolore-init-<project>-$(date +%s).json`; resolve the unique name
+   once and reuse it literally afterwards — shell state may not persist
+   between your tool calls) — and run
    `node <SKILL_ROOT>/scripts/bootstrap.mjs --config <that file> --dry-run`.
    It reports how many source files the globs capture, grouped by top-level
    directory — the same semantics the coverage check uses later. Show that
@@ -77,7 +79,7 @@ what detection cannot decide:
 4. **Seed `architecture/overview.md` now?** — **recommended default: yes.**
    One page, no fan-out: it gives the run a concrete first artifact, and it
    doubles as a live example of the citation + covers format before anyone
-   reads the schema doc. Offer manifest-only as the alternative for users who
+   reads the schema doc. Offer plan-only as the alternative for users who
    want zero generated prose.
 5. **Commit when done?** — **recommended default: yes**: a single
    `docs: initialize repolore wiki` commit at the end (vendored layer + wiki +
@@ -88,10 +90,10 @@ what detection cannot decide:
 Accept `--yes`-style instruction from the user to take all defaults (in a
 non-interactive run, take the defaults above without asking).
 
-## Phase 3 — Map the page manifest
+## Phase 3 — Map the page plan
 
 From phase 1 (plus light targeted reading — READMEs, entry points, route/job
-registries; **structure, not embeddings**), draft a page manifest: for each
+registries; **structure, not embeddings**), draft a page plan: for each
 category, the pages this repo *should eventually have* — `slug`
 (`category/name`), one-line `summary`, `status: planned`. Aim for 10–25
 planned pages on a typical repo — and scale honestly to the repo: a small
@@ -104,9 +106,9 @@ Assemble the **full** init config (see schema in `bootstrap.mjs`):
 `projectName`, `wikiRoot`, `scopeSummary` (short prose restatement of the
 scope decision incl. by-policy exclusions), `repoNotes` (3–6 lines: what the
 repo is, its top-level shape, what is out of scope and why), `scope`, and the
-manifest under `pages`. Re-run `bootstrap.mjs --config … --dry-run` and show
+plan under `pages`. Re-run `bootstrap.mjs --config … --dry-run` and show
 the user: the chosen location, the scope globs **with the in-scope file
-count**, and the manifest as a table (category / slug / summary). Iterate
+count**, and the plan as a table (category / slug / summary). Iterate
 until approved. Do not write anything into the repo before approval. (In a
 non-interactive all-defaults run, present the proposal and proceed — the
 user's all-defaults instruction is the approval.)
@@ -129,13 +131,17 @@ mechanical and delegated:
 2. If the user opted in (phase 2 Q4): draft `architecture/overview.md` now,
    from the code, following `<wikiRoot>/AGENTS.md` rules exactly (citations,
    covers list, `> TODO-VERIFY:` for anything unverified). Then:
-   `node .repolore/scripts/wiki-stamp.mjs <page>`, regenerate the index
-   (`node .repolore/scripts/wiki-index.mjs`), set the page's manifest entry to
-   `status: seeded` in `wiki.config.yml`, and append the birth line to the
-   END of `log.md` (newest last, after the format comment), exactly in this
-   shape: `## <date> — added architecture/overview (seeded at init)` —
-   reusing the `last_refreshed` date the stamp just wrote, so the journal and
-   the stamp never disagree.
+   `node .repolore/scripts/wiki-stamp.mjs <page>`, set the page's page-plan
+   entry to `status: seeded` in `wiki.config.yml` (and if drafting from the
+   code contradicted the plan's one-line summary, correct that summary now —
+   the plan must not preserve a claim the page itself disproves), THEN
+   regenerate the index (`node .repolore/scripts/wiki-index.mjs` — its
+   Planned section derives from the plan, so the status flip must come
+   first), and append the birth line to the END of `log.md` (newest last,
+   after the format comment), exactly in this shape:
+   `## <date> — added architecture/overview (seeded at init)` — reusing the
+   `last_refreshed` date the stamp just wrote, so the journal and the stamp
+   never disagree.
 3. Re-run `node .repolore/scripts/wiki-check.mjs` — must exit clean.
 
 ## Phase 6 — Wire entry points (least-invasive: never create files uninvited)
@@ -183,11 +189,13 @@ Then report, in this order:
 
 1. **What exists now and the one next action.** The wiki location, the seeded
    overview page (or, if declined, the single suggested follow-up: "draft
-   `architecture/overview` from the wiki manifest"), and the commit (made, or
+   `architecture/overview` from the wiki plan"), and the commit (made, or
    — without consent — recommended).
 2. **The interface** — how to use it day-to-day: draft pages on demand
-   ("draft `features/<slug>` from the wiki manifest"); the check workflow for
-   health; the refresh workflow to bring stale pages back in line. Name the
+   ("draft `features/<slug>` from the wiki plan" — the remaining planned
+   pages are listed in the Planned section at the bottom of `index.md`, and
+   the check workflow re-surfaces them); the check workflow for health; the
+   refresh workflow to bring stale pages back in line. Name the
    forms this install offers — `/repolore:check` and `/repolore:refresh` in
    the Claude Code plugin, "run repolore's check / refresh" with the
    standalone skill. Lead with these — they are the product surface.
@@ -199,6 +207,6 @@ Then report, in this order:
 4. **The coverage baseline — framed as a baseline, not a deficit.** Report
    the real numbers from `wiki-coverage.mjs` (a seeded overview may already
    cover some or even all in-scope files on a small repo): "N in-scope source
-   files, M covered so far; coverage grows as manifest pages are drafted".
+   files, M covered so far; coverage grows as planned pages are drafted".
    Never a bare "0% covered" that reads like a failure needing an excuse —
    and never a scripted sentence that contradicts the actual count.

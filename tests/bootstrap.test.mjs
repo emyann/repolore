@@ -207,6 +207,44 @@ test('seeded page path: template → stamp → index → fresh and covered', (t)
   assert.match(index, /\[Overview\]\(\.\/architecture\/overview\.md\): System shape\./);
 });
 
+test('page plan: backlog surfaces in index and check; drift is flagged', (t) => {
+  const dir = makeFixture(t);
+  const cfg = writeConfig(dir); // two planned pages, none drafted
+  node(dir, [BOOTSTRAP, '--config', cfg]);
+
+  const idx = readFileSync(join(dir, 'docs/wiki/index.md'), 'utf8');
+  assert.match(idx, /## Planned \(not yet written\)/);
+  assert.match(idx, /- architecture\/overview: System shape and main components\./);
+  assert.match(idx, /- features\/billing: Billing service history\./);
+
+  let chk = JSON.parse(node(dir, ['.repolore/scripts/wiki-check.mjs', '--json']));
+  assert.deepEqual(chk.plan, {
+    total: 2, written: 0,
+    backlog: ['architecture/overview', 'features/billing'], drift: [],
+  });
+
+  // Draft the overview but "forget" to flip its plan status → drift flagged,
+  // backlog shrinks, the index's Planned section loses the entry.
+  const page = join(dir, 'docs/wiki/architecture/overview.md');
+  const text = readFileSync(join(dir, 'docs/wiki/_templates/page.md'), 'utf8')
+    .replaceAll('TITLE HERE', 'Overview')
+    .replace('summary: One line, rendered verbatim in the generated index.md.', 'summary: System shape.')
+    .replace('category: concepts', 'category: architecture')
+    .replace('relative/path/to/source.ts', 'src/a.ts');
+  writeFileSync(page, text);
+  node(dir, ['.repolore/scripts/wiki-stamp.mjs', 'docs/wiki/architecture/overview.md']);
+  node(dir, ['.repolore/scripts/wiki-index.mjs']);
+
+  chk = JSON.parse(node(dir, ['.repolore/scripts/wiki-check.mjs', '--json']));
+  assert.equal(chk.plan.written, 1);
+  assert.deepEqual(chk.plan.backlog, ['features/billing']);
+  assert.ok(chk.plan.drift.some((d) => d.includes('architecture/overview') && d.includes('flip to seeded')));
+
+  const idx2 = readFileSync(join(dir, 'docs/wiki/index.md'), 'utf8');
+  assert.doesNotMatch(idx2, /- architecture\/overview: System shape and main components\./);
+  assert.match(idx2, /- features\/billing: /);
+});
+
 test('free-text YAML values are quoted, so ": " in summaries stays valid YAML', (t) => {
   const dir = makeFixture(t);
   const cfg = writeConfig(dir, {

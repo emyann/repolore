@@ -31,7 +31,7 @@ invoke are stdlib-only (node + git, no npm install).
 Day-to-day, outside those workflows: once a repo is initialized, its wiki
 rules live in `<wikiRoot>/AGENTS.md` *inside that repo* (location recorded in
 `.repolore/manifest.json`) — pages are drafted on demand ("draft
-`features/<slug>` from the wiki manifest") and updated as part of the change
+`features/<slug>` from the wiki plan") and updated as part of the change
 that altered the behaviour they describe.
 
 Also available as a Claude Code plugin (`/plugin marketplace add
