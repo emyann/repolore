@@ -28,3 +28,4 @@ history.
 ## 2026-06-11 — updated vendored tooling v0.3.1 → v0.3.2 (post-commit nudge pair ADDed via the update workflow)
 ## 2026-06-11 — refreshed pages for the hook feature (freshness-model owns the trigger layer; howto covers the hook tests)
 ## 2026-06-11 — refreshed 4 pages (init wording fixes; no-op re-stamps) — flagged by the post-commit nudge on its own release commit
+## 2026-06-11 — re-stamped overview (plugin.json version bump; no-op)
