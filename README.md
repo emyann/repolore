@@ -147,6 +147,8 @@ docs/wiki/                  # location configurable
     wiki-coverage.mjs       # in-scope files no page covers; --since <ref> new-page nudge
     wiki-stamp.mjs          # writes covers SHAs + generated_at_commit (never hand-compute)
     wiki-index.mjs          # regenerates index.md; --check for drift
+    wiki-hook.mjs           # non-blocking post-commit nudge (always exit 0)
+    wiki-install-hook.mjs   # one-liner per contributor; chains existing hooks
 ```
 
 **Pages are the product and always committed; tooling is regenerable; check
@@ -212,6 +214,10 @@ page-budget warning could never fire).
 v0.3.1 (this) — the glossary feeding loop: init seeds 3–8 cited terms, the
 page-writing/refresh workflows must record every term they coin, check
 reports an empty glossary as a smell and offers a backfill.
+v0.3.2 (this) — the post-commit nudge: per-contributor, chaining-safe,
+never blocks (silent when green; stale pages + new-page-worthy files
+otherwise); installed by init (consented) and offered by update to existing
+repos.
 v0.3.x — flows v1 per [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md):
 flow-meta/v1 (line-parseable) + flow template + honesty-gradient text +
 structural/anchored checks + `wiki-flow-render.mjs` + two dogfood flow pages;

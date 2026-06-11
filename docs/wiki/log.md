@@ -25,3 +25,5 @@ history.
 ## 2026-06-11 — updated vendored tooling v0.3.0 → v0.3.1 (AGENTS.md gained the glossary feeding rule)
 ## 2026-06-11 — backfilled GLOSSARY.md (11 terms) per the new feeding rule
 ## 2026-06-11 — added decisions/adr-006-vendored-tooling (the "why is generated JS in my repo" answer)
+## 2026-06-11 — updated vendored tooling v0.3.1 → v0.3.2 (post-commit nudge pair ADDed via the update workflow)
+## 2026-06-11 — refreshed pages for the hook feature (freshness-model owns the trigger layer; howto covers the hook tests)

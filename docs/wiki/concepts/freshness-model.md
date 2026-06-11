@@ -13,8 +13,12 @@ covers:
   - path: scripts/wiki-stamp.mjs
     sha: 670c72deed77d68517c5a55951bf946627c32038
   - path: scripts/lib.mjs
-    sha: b30812bff5b121f947e7ed5df3a451f8e5856f08
-generated_at_commit: af1586e
+    sha: 0d44e14368f39b0c04c066e82a7b1d96ab1aa017
+  - path: scripts/wiki-hook.mjs
+    sha: b8ea5b5dfff094a42bdae269558fa6f8b51c575a
+  - path: scripts/wiki-install-hook.mjs
+    sha: ec6892d6c8900675421ad1e39beddcdc88c9e135
+generated_at_commit: f18de1d
 last_refreshed: 2026-06-11
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status]
 ---
@@ -70,6 +74,17 @@ Since v0.2.2, `wiki-check.mjs` also reads the page plan (`pages:` in
 draft-on-demand prompt) plus plan↔reality drift: seeded-but-missing,
 drafted-but-still-planned, written-but-unplanned. Informational only — plan
 findings never change the exit code.
+
+## When the checks run
+
+On demand via the check workflow — and, per contributor who opts in,
+automatically after every commit: `wiki-hook.mjs` runs the freshness check
+plus the new-page nudge (`--since HEAD~1 --page-worthy`), prints only when
+something needs attention, and ALWAYS exits 0 (blocking gates get
+uninstalled — the contract is stated in `scripts/wiki-hook.mjs`).
+`wiki-install-hook.mjs` installs it chaining-safely: appends a marker block
+to any existing post-commit hook and respects `core.hooksPath`. Hooks are
+not cloned with repos, so each contributor opts in once.
 
 ## What the model deliberately cannot catch
 

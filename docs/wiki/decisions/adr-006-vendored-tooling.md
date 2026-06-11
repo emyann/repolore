@@ -14,7 +14,7 @@ covers:
     sha: c1b881a4cea1ac1a55fd8d5b581a59bebce913e5
   - path: scripts/update.mjs
     sha: e35ecd77860900a9dc8ba6d0a5d5abce05d7c51e
-generated_at_commit: 1d70741
+generated_at_commit: f18de1d
 last_refreshed: 2026-06-11
 related: [decisions/adr-003-stdlib-only-vendored-scripts, decisions/adr-005-bootstrap-mechanical-vendoring, decisions/adr-004-umbrella-skill-plugin-shims]
 ---

@@ -14,7 +14,7 @@ covers:
     sha: 9010753e72c1ad87d86a165f4f296cc7618d731c
   - path: scripts/wiki-stamp.mjs
     sha: 670c72deed77d68517c5a55951bf946627c32038
-generated_at_commit: af1586e
+generated_at_commit: f18de1d
 last_refreshed: 2026-06-11
 related: [decisions/adr-001-blob-sha-freshness-anchors, concepts/freshness-model]
 ---

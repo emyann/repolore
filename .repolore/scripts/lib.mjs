@@ -25,6 +25,7 @@ export const DEFAULT_CATEGORIES = [
  *  update refreshes. Order matters to no one; completeness does. */
 export const VENDORED_SCRIPTS = [
   'lib.mjs', 'wiki-check.mjs', 'wiki-coverage.mjs', 'wiki-stamp.mjs', 'wiki-index.mjs',
+  'wiki-hook.mjs', 'wiki-install-hook.mjs',
 ];
 
 export function fail(msg) {

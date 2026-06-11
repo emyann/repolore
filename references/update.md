@@ -24,13 +24,18 @@
 4. Apply: `node <SKILL_ROOT>/scripts/update.mjs` plus any consented
    `--force <path>` flags. The script refreshes manifest SHAs and
    `pluginVersion` itself.
-5. Finish the loop: regenerate the index
+5. If the update ADDed scripts new to this version (e.g. the post-commit
+   nudge pair, `wiki-hook.mjs` + `wiki-install-hook.mjs`), say what they are
+   and offer the relevant one-time setup
+   (`node <scriptsDir>/wiki-install-hook.mjs`) — never run installers
+   unasked.
+6. Finish the loop: regenerate the index
    (`node <scriptsDir>/wiki-index.mjs` — newer tooling may change the index
    format), then `node <scriptsDir>/wiki-check.mjs`. If pages went stale
    because they *cover* tooling files (dogfood repos), follow the refresh
    workflow's triage. Append one line to `<wikiRoot>/log.md`:
    `## <date> — updated vendored tooling v<from> → v<to>`.
-6. Offer a single `chore(repolore): update vendored tooling to v<to>` commit
+7. Offer a single `chore(repolore): update vendored tooling to v<to>` commit
    (respect the repo's commit conventions; never commit without consent).
 
 ## Guardrails

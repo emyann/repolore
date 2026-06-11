@@ -51,7 +51,7 @@ Build a picture of the repo with cheap commands — do not deep-read code yet:
 - **Existing docs**: `docs/`, ADR directories (`adr/`, `decisions/`, `doc/adr`) — an existing ADR set should be *linked*, not duplicated.
 - **Exclude candidates**: test dirs, generated code, vendored code, build output, UI-heavy areas (LLM-derived docs are weak for those).
 
-## Phase 2 — Ask (≤6 questions, strong defaults)
+## Phase 2 — Ask (≤7 questions, strong defaults)
 
 Ask the user (with your environment's question UI when available). Ask only
 what detection cannot decide:
@@ -86,7 +86,7 @@ what detection cannot decide:
    pointer blocks). Alternative: leave everything uncommitted for review.
    Collecting consent here is what lets the run end fully done instead of
    parking on "say the word and I'll commit".
-6. **Team auto-update?** — *Claude Code plugin installs only; skip this
+6. **Team auto-update?** — *Claude Code plugin installs only (you are one if `${CLAUDE_PLUGIN_ROOT}` is defined); skip this
    question entirely in standalone/other-agent runs.* Offer to declare the
    plugin in the repo's `.claude/settings.json` so every teammate gets
    repolore preinstalled and self-updating, by merging these two keys
@@ -108,6 +108,14 @@ what detection cannot decide:
    skip when it doesn't** (creating config files uninvited violates the
    phase-6 rule — include the snippet in the report instead). The merge
    itself happens in phase 6.
+7. **Install the post-commit wiki nudge?** — **recommended default: yes.**
+   A non-blocking hook that, after each commit, prints only when pages went
+   stale or newly added page-worthy files lack a page — silent when green,
+   always exits 0, never blocks a commit. Git hooks are not cloned with
+   repos, so the blast radius is this user only; teammates opt in with one
+   command (named in the phase-7 report). Installed in phase 6 via
+   `node .repolore/scripts/wiki-install-hook.mjs` (chains existing hooks,
+   respects `core.hooksPath`/husky).
 
 Accept `--yes`-style instruction from the user to take all defaults (in a
 non-interactive run, take the defaults above without asking).
@@ -159,7 +167,9 @@ mechanical and delegated:
    `node .repolore/scripts/wiki-stamp.mjs <page>`, set the page's page-plan
    entry to `status: seeded` in `wiki.config.yml` (and if drafting from the
    code contradicted the plan's one-line summary, correct that summary now —
-   the plan must not preserve a claim the page itself disproves), THEN
+   the plan must not preserve a claim the page itself disproves; a claim the
+   page merely demoted to TODO-VERIFY is unproven, not disproven — leave the
+   summary, the page carries the doubt), THEN
    regenerate the index (`node .repolore/scripts/wiki-index.mjs` — its
    Planned section derives from the plan, so the status flip must come
    first), and append the birth line to the END of `log.md` (newest last,
@@ -177,10 +187,10 @@ wiki material into always-loaded files) to each root context file that
 `.github/copilot-instructions.md`.
 
 - When appending, ensure exactly one blank line separates the block from the
-  existing content (files missing a trailing newline are common — handle that
-  in the same edit, silently; it is not worth narrating). Trust but verify:
-  `tail -c1` is the cheap way to confirm the final newline landed before you
-  commit.
+  existing content (files missing a trailing newline are common — fix it silently, without
+  narrating). String-replacement editors cannot control the file's final
+  byte: verify with `tail -c1` after the edit and append the newline if
+  missing — that check is mandatory, not optional.
 - **Never create a new context file without asking.** If none exists, ask the
   user (one extra question): create a root `AGENTS.md` with just the block, or
   skip wiring entirely. In a non-interactive run, skip — and include the
@@ -192,6 +202,10 @@ wiki material into always-loaded files) to each root context file that
   `extraKnownMarketplaces` + `enabledPlugins` keys from Q6 into
   `.claude/settings.json`, preserving every existing key. It ships in the
   phase-7 commit like everything else init created.
+- If the user opted into the post-commit nudge (phase 2 Q7): run
+  `node .repolore/scripts/wiki-install-hook.mjs` (after bootstrap — the
+  script it installs must exist). This writes only under the repo's git
+  hooks directory; nothing for the commit.
 
 The block:
 
@@ -232,7 +246,9 @@ Then report, in this order:
    `wiki-coverage`, `wiki-index`, `wiki-stamp` under `.repolore/scripts/`),
    for CI use and direct invocation. Note that the vendored layer
    (`<wikiRoot>/`, `.repolore/`, pointer blocks) is meant to be committed
-   while check state never is.
+   while check state never is. If the nudge was installed (Q7): say so, and
+   give teammates the opt-in one-liner — hooks are not cloned:
+   `node .repolore/scripts/wiki-install-hook.mjs`.
 4. **The coverage baseline — framed as a baseline, not a deficit.** Report
    the real numbers from `wiki-coverage.mjs` (a seeded overview may already
    cover some or even all in-scope files on a small repo): "N in-scope source

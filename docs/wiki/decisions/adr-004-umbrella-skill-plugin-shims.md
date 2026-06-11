@@ -15,8 +15,8 @@ covers:
   - path: skills/init/SKILL.md
     sha: 4df0069b899fb6f4281ffba524f828eba590dce7
   - path: references/init.md
-    sha: 693d1d3538eac45f539a5ac4291515f5ec8f2eac
-generated_at_commit: e30a8e5
+    sha: ce557bfe7776c5f31c17d5f59fc7fcab9bfe64dd
+generated_at_commit: f18de1d
 last_refreshed: 2026-06-11
 related: [architecture/overview, gotchas/cross-tool-depth-untested]
 ---

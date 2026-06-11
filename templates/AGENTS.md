@@ -149,6 +149,11 @@ The rule: **a new feature gets a new page (or extends an existing one).** When
 you ship a capability, add or extend the page that owns it and list its files
 in `covers`, so freshness can track it from then on.
 
+Both checks can run automatically after every commit — a non-blocking nudge
+that prints only when something needs attention:
+`node {{SCRIPTS_DIR}}/wiki-install-hook.mjs` (once per contributor; hooks are
+not cloned with repos; `--uninstall` to remove).
+
 ### `index.md` is generated
 
 Page summaries live in exactly one place: the page's own frontmatter. After
