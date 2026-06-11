@@ -108,11 +108,11 @@ flow_branches:
     cite_match: "verification failed after vendoring"
 covers:
   - path: scripts/bootstrap.mjs
-    sha: WRITTEN-BY-wiki-stamp
+    sha: 42f64b261eb399c1de827b0485a126c325a70137
   - path: references/init.md
-    sha: WRITTEN-BY-wiki-stamp
-generated_at_commit: WRITTEN-BY-wiki-stamp
-last_refreshed: WRITTEN-BY-wiki-stamp
+    sha: 7b632f359b6b70b17b211f2da6687697ddcd7c3d
+generated_at_commit: e9c2194
+last_refreshed: 2026-06-11
 related: [decisions/adr-005-bootstrap-mechanical-vendoring, architecture/overview]
 ---
 

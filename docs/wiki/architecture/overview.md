@@ -15,12 +15,12 @@ covers:
   - path: references/update.md
     sha: ab8931adfd0da4955b530fc14d52850cac6e45f4
   - path: scripts/bootstrap.mjs
-    sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    sha: 42f64b261eb399c1de827b0485a126c325a70137
   - path: scripts/update.mjs
-    sha: 8dd492ba3f8cc3fd94676eea099c1de6a90dc2be
+    sha: 60051a3b366a7add3cd29be01f9677d73e534e6d
   - path: .claude-plugin/plugin.json
     sha: 57fd2fac8cb67b64c7e761c3511a7fbdba3c4420
-generated_at_commit: 8faaf21
+generated_at_commit: e9c2194
 last_refreshed: 2026-06-11
 related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-bootstrap-mechanical-vendoring, concepts/freshness-model]
 ---
@@ -48,13 +48,14 @@ related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-boots
 
 Both front doors execute the same procedures: `references/init.md`,
 `references/check.md`, `references/refresh.md`, `references/update.md`, `references/setup.md`,
-written against `<SKILL_ROOT>` — the directory holding `SKILL.md`,
+`references/flow.md`, written against `<SKILL_ROOT>` — the directory holding `SKILL.md`,
 `scripts/`, `templates/`. The judgment/mechanics split: procedures (LLM
 judgment) live in markdown; everything deterministic lives in the
 plugin-side tools `scripts/bootstrap.mjs` (init vendoring) and
 `scripts/update.mjs` (safe re-vendoring: regenerates pristine files, never
-overwrites local edits without `--force`) plus the four vendored checkers
-(see ADR-005).
+overwrites local edits without `--force`) plus the vendored checkers and the
+flow tooling (`wiki-flow-render.mjs` + `wiki-flow-check.mjs`; see ADR-005,
+and ADR-007 for the flow verification ladder).
 
 ## Self-referential quirk worth knowing
 

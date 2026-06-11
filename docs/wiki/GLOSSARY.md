@@ -13,6 +13,10 @@ deserves a `concepts/` page (link it).
 - **covers** — the frontmatter list of source files a page distils, each
   pinned to the git blob SHA it had when the page was verified
   (`scripts/lib.mjs` `parseCovers`).
+- **directional edge-citation** — a flow edge is `verified` only when it cites
+  the call site in the *caller's own code* (within a bounded span) and names the
+  callee token — proving the from→to hop, not just that bytes exist anywhere
+  (`scripts/wiki-flow-check.mjs`; see [adr-007](./decisions/adr-007-verification-ladder-placement.md)).
 - **finding** — a suspected code defect (a code ≠ intent claim) surfaced as
   a by-product of drafting/refresh; one `FINDINGS.md` line pointing at the
   page that carries the evidence — a claim to re-verify, never page content
@@ -20,6 +24,14 @@ deserves a `concepts/` page (link it).
 - **findings inbox** — the committed `FINDINGS.md` relay buffer beside a
   wiki: outside page semantics, consent-only writes, deletion-not-checkbox
   triage with four domain-exiting dispositions (`templates/AGENTS.md`).
+- **flow-meta** — the line-parseable `flow_*` frontmatter (steps, edges,
+  branches) a `flows/` page carries; the Mermaid diagram + tables are
+  *generated* from it, never hand-authored (`scripts/wiki-flow-render.mjs`;
+  schema in `references/flow.md`).
+- **flow verification ladder** — the computed tiers `structural → anchored →
+  edge-cited → branch-audited → set-validated` a flow page earns; the first four
+  are vendored stdlib, set-validated is an opt-in user-space extractor
+  (`scripts/wiki-flow-check.mjs`; see [adr-007](./decisions/adr-007-verification-ladder-placement.md)).
 - **manifest** — `.repolore/manifest.json` only: wiki location, scripts dir,
   `pluginVersion`, and every vendored file's blob SHA (`scripts/bootstrap.mjs`).
 - **page plan** — the `pages:` block of `wiki.config.yml`; the wiki's

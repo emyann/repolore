@@ -76,8 +76,8 @@ pages:
     summary: "Running the deterministic test suite and the agentic init-UX workflow."
     status: seeded
   - slug: flows/bootstrap-vendoring
-    summary: "How init's one-shot vendoring executes: config → bootstrap.mjs → verified scaffold. (Blocked on flow-meta v1 — see docs/RESEARCH-FLOWS.md.)"
-    status: planned
+    summary: "How init's one-shot vendoring executes: config → bootstrap.mjs → verified scaffold. The v1 dogfood flow page."
+    status: seeded
   - slug: flows/update-classification
     summary: "How the update workflow classifies and applies tooling changes from the (recorded, current, master) SHA triplet. (Blocked on flow-meta v1.)"
     status: planned
@@ -88,5 +88,5 @@ pages:
     summary: "How the refresh workflow brings stale pages back into line: diff-driven triage (re-stamp / targeted edit / rewrite), citation re-verification, re-stamp, reviewable commit. (Blocked on flow-meta v1.)"
     status: planned
   - slug: decisions/adr-007-verification-ladder-placement
-    summary: "Vendored stdlib owns structural→branch-audited flow checks; set-equality extractors live in user space. To accept before v0.4 code exists."
-    status: planned
+    summary: "Flows are generated from flow-meta; vendored stdlib owns structural→branch-audited with directional edge citations; set-equality lives in user space (proven non-vendorable)."
+    status: seeded

@@ -43,3 +43,5 @@ history.
 ## 2026-06-11 — re-stamped overview within the v0.3.8 release commit (plugin.json bump; no-op)
 ## 2026-06-11 — adr-009 consequence: v0.3.9 corrects the "zero scripts" claim (FINDINGS.md added to lib.mjs SKIP_FILES; surfaced by the first pipao migration); no-op re-stamps (freshness-model, adr-001, adr-003)
 ## 2026-06-11 — re-stamped overview within the v0.3.9 release commit (plugin.json bump; no-op)
+## 2026-06-11 — added flows/bootstrap-vendoring (the v1 dogfood flow page) + decisions/adr-007 (flow verification design + placement), from the flows-v1 design tournament
+## 2026-06-11 — refreshed for flows-v1: overview (flow tooling + references/flow.md), freshness-model (the flow verification tier), GLOSSARY (flow-meta, flow verification ladder, directional edge-citation); no-op re-stamps on adr-001/002/003/005/006/008 + howto (additive flow code in covered scripts)

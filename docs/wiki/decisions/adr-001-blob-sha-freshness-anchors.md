@@ -11,10 +11,10 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: scripts/wiki-check.mjs
-    sha: 9010753e72c1ad87d86a165f4f296cc7618d731c
+    sha: b2cf4eea1c245f35f1ec4003e2b7b217e890ec00
   - path: scripts/lib.mjs
-    sha: 88a27756a90fb4f02d32d28385be03712f8c1186
-generated_at_commit: f4ebce2
+    sha: 8d53936f8c23830fdae18a1187c171ab24ec8de9
+generated_at_commit: e9c2194
 last_refreshed: 2026-06-11
 related: [decisions/adr-002-computed-status, concepts/freshness-model]
 ---

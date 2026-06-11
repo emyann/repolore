@@ -11,10 +11,10 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: scripts/bootstrap.mjs
-    sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
+    sha: 42f64b261eb399c1de827b0485a126c325a70137
   - path: scripts/update.mjs
-    sha: 8dd492ba3f8cc3fd94676eea099c1de6a90dc2be
-generated_at_commit: 1e6d701
+    sha: 60051a3b366a7add3cd29be01f9677d73e534e6d
+generated_at_commit: e9c2194
 last_refreshed: 2026-06-11
 related: [decisions/adr-003-stdlib-only-vendored-scripts, decisions/adr-005-bootstrap-mechanical-vendoring, decisions/adr-004-umbrella-skill-plugin-shims]
 ---

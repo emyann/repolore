@@ -7,18 +7,18 @@ audience: [dev]
 read_when: "interpreting wiki-check or wiki-coverage output, or changing freshness/coverage semantics"
 covers:
   - path: scripts/wiki-check.mjs
-    sha: 9010753e72c1ad87d86a165f4f296cc7618d731c
+    sha: b2cf4eea1c245f35f1ec4003e2b7b217e890ec00
   - path: scripts/wiki-coverage.mjs
     sha: defc70c4060d7a2282cde9f4c209c19cae438070
   - path: scripts/wiki-stamp.mjs
     sha: 670c72deed77d68517c5a55951bf946627c32038
   - path: scripts/lib.mjs
-    sha: 88a27756a90fb4f02d32d28385be03712f8c1186
+    sha: 8d53936f8c23830fdae18a1187c171ab24ec8de9
   - path: scripts/wiki-hook.mjs
     sha: b8ea5b5dfff094a42bdae269558fa6f8b51c575a
   - path: scripts/wiki-install-hook.mjs
     sha: ec6892d6c8900675421ad1e39beddcdc88c9e135
-generated_at_commit: f4ebce2
+generated_at_commit: e9c2194
 last_refreshed: 2026-06-11
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status]
 ---
@@ -94,3 +94,10 @@ not cloned with repos, so each contributor opts in once.
 - **Wrongness behind unchanged bytes**: a claim that was never true stays
   "fresh" forever. That is a different drift class, owned by a future audit
   workflow — not by hashes.
+
+`flows/` pages add a second, orthogonal axis on top of fresh/stale: a computed
+**verification tier** (`structural → anchored → edge-cited → branch-audited →
+set-validated`) run by `wiki-flow-check.mjs` and folded into `wiki-check`. Same
+principle — computed per run, never committed (ADR-002) — but it grades whether
+a flow's *edges* are cited, not just whether covered files moved
+(see [adr-007](../decisions/adr-007-verification-ladder-placement.md)).
