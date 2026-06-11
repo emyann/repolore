@@ -57,6 +57,9 @@ pages:
   - slug: decisions/adr-005-bootstrap-mechanical-vendoring
     summary: "Init delegates all mechanical vendoring to config-driven bootstrap.mjs; the LLM keeps only judgment work."
     status: seeded
+  - slug: decisions/adr-006-vendored-tooling
+    summary: "Why generic scripts are committed into every repo instead of running from the plugin or npm."
+    status: seeded
   - slug: gotchas/cross-tool-depth-untested
     summary: "Wiki consumption depth varies by agent nudge strength; pointer-block-only teams (Copilot) are untested."
     status: seeded

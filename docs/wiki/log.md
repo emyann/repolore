@@ -24,3 +24,4 @@ history.
 ## 2026-06-11 — updated vendored tooling v0.2.2 → v0.3.0 via the new update workflow (its own first run)
 ## 2026-06-11 — updated vendored tooling v0.3.0 → v0.3.1 (AGENTS.md gained the glossary feeding rule)
 ## 2026-06-11 — backfilled GLOSSARY.md (11 terms) per the new feeding rule
+## 2026-06-11 — added decisions/adr-006-vendored-tooling (the "why is generated JS in my repo" answer)

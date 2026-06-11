@@ -32,4 +32,4 @@ deserves a `concepts/` page (link it).
   internals (`SKILL.md`; see [adr-004](./decisions/adr-004-umbrella-skill-plugin-shims.md)).
 - **vendored layer** — what init leaves committed inside a target repo:
   the wiki content plus `.repolore/` (scripts + manifest)
-  (`scripts/bootstrap.mjs`).
+  (`scripts/bootstrap.mjs`; why it exists: [adr-006](./decisions/adr-006-vendored-tooling.md)).

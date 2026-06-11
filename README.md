@@ -153,6 +153,17 @@ docs/wiki/                  # location configurable
 state is never committed** — freshness status is recomputed in under a second,
 so there is no `status:` field to dirty your tree or conflict in merges.
 
+**Why is tooling committed to my repo at all?** Because the wiki's promise —
+anyone can verify any page's freshness in under a second — has to hold for
+people and pipelines with *nothing* installed: teammates without the plugin,
+CI on a bare checkout, other agents (Cursor, Copilot, Codex), and future
+maintainers if this project ever dies. Vendoring also keeps the schema doc,
+its parser, and your pages in version lockstep — a plugin-side checker
+auto-updates, and "fresh" must never change meaning under your repo
+overnight. The cost is ~30KB of dependency-free files and an occasional
+one-command, consent-gated `/repolore:update`. Full reasoning:
+[ADR-006](./docs/wiki/decisions/adr-006-vendored-tooling.md).
+
 ## Design
 
 The design is the synthesis of a multi-angle research pass over the
