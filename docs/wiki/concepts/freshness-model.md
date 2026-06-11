@@ -13,12 +13,12 @@ covers:
   - path: scripts/wiki-stamp.mjs
     sha: 670c72deed77d68517c5a55951bf946627c32038
   - path: scripts/lib.mjs
-    sha: 8d53936f8c23830fdae18a1187c171ab24ec8de9
+    sha: e95973935e04c2cb9b3fac373f1f431fd7def616
   - path: scripts/wiki-hook.mjs
     sha: b8ea5b5dfff094a42bdae269558fa6f8b51c575a
   - path: scripts/wiki-install-hook.mjs
     sha: ec6892d6c8900675421ad1e39beddcdc88c9e135
-generated_at_commit: e9c2194
+generated_at_commit: 22ee06d
 last_refreshed: 2026-06-11
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status]
 ---

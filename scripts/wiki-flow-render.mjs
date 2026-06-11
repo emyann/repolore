@@ -43,7 +43,12 @@ function cell(s) {
   return String(s ?? '—').replace(/\|/g, '\\|');
 }
 
+/** Pick the diagram projection from flow_render (default flowchart). */
 export function renderMermaid(meta) {
+  return meta.render === 'sequence' ? renderSequence(meta) : renderFlowchart(meta);
+}
+
+export function renderFlowchart(meta) {
   const out = ['```mermaid', '%% generated from flow-meta — do not hand-edit', 'flowchart TD'];
   for (const s of meta.steps) out.push(`  ${nodeId(s.id)}["${label(s.action || s.id)}"]`);
   for (const e of meta.edges) {
@@ -54,6 +59,33 @@ export function renderMermaid(meta) {
   for (const b of meta.branches) {
     if (!b.at || !b.to) continue;
     out.push(`  ${nodeId(b.at)} -.->|"${label((b.kind || 'alt') + ': ' + (b.condition || ''))}"| ${nodeId(b.to)}`);
+  }
+  out.push('```');
+  return out.join('\n');
+}
+
+const seqId = (actor) => 'p_' + String(actor).replace(/[^A-Za-z0-9_]/g, '_');
+
+/** A sequence-diagram projection of the SAME flow-meta: actors are participants
+ *  (first-appearance order), edges are messages between the from/to steps'
+ *  actors, branches are dashed messages carrying their condition. Verification
+ *  is unchanged — this is a rendering choice, not a different model. */
+export function renderSequence(meta) {
+  const out = ['```mermaid', '%% generated from flow-meta — do not hand-edit', 'sequenceDiagram'];
+  const actorOf = new Map(meta.steps.map((s) => [s.id, s.actor || s.id]));
+  const actors = [];
+  for (const s of meta.steps) { const a = s.actor || s.id; if (!actors.includes(a)) actors.push(a); }
+  for (const a of actors) out.push(`  participant ${seqId(a)} as ${label(a)}`);
+  const stepById = new Map(meta.steps.map((s) => [s.id, s]));
+  for (const e of meta.edges) {
+    const arrow = EDGE_ARROW[e.kind] === '-.->' ? '-->>' : '->>';
+    const to = stepById.get(e.to);
+    const tag = e.evidence === 'inferred' ? ' (inferred)' : '';
+    out.push(`  ${seqId(actorOf.get(e.from))}${arrow}${seqId(actorOf.get(e.to))}: ${label((to && to.action) || e.kind || 'call')}${tag}`);
+  }
+  for (const b of meta.branches) {
+    if (!b.at || !b.to) continue;
+    out.push(`  ${seqId(actorOf.get(b.at))}-->>${seqId(actorOf.get(b.to))}: ${label((b.kind || 'alt') + ': ' + (b.condition || ''))}`);
   }
   out.push('```');
   return out.join('\n');

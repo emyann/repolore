@@ -11,6 +11,7 @@ flow_schema: flow-meta/v1
 flow_scenario: "<one named scenario — a request/job/sync/tool path, including error paths>"
 flow_trigger_kind: command        # http | command | cron | queue | event | call
 flow_trigger_anchor: <path/to/entrypoint>
+flow_render: flowchart            # flowchart (default) | sequence — the diagram projection (sequence suits multi-actor flows)
 flow_asserts_complete: false      # true only if a user-space set-equality extractor is registered
 flow_steps:
   - id: <step-id>

@@ -47,3 +47,4 @@ history.
 ## 2026-06-11 — refreshed for flows-v1: overview (flow tooling + references/flow.md), freshness-model (the flow verification tier), GLOSSARY (flow-meta, flow verification ladder, directional edge-citation); no-op re-stamps on adr-001/002/003/005/006/008 + howto (additive flow code in covered scripts)
 ## 2026-06-11 — re-stamped adr-009 (templates/AGENTS.md gained the flows subsection; findings decision unchanged, no-op)
 ## 2026-06-11 — updated vendored tooling v0.3.7 → v0.4.0 (flow scripts + _templates/flow.md vendored; AGENTS.md gains the flows rules); no-op re-stamps overview + adr-006
+## 2026-06-11 — re-stamped freshness-model + adr-001/003/007 after the sequence-diagram emitter (additive flow_render projection; no claims changed)

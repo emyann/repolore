@@ -214,6 +214,7 @@ export function parseFlowMeta(fm) {
     scenario: fmScalar(fm, 'flow_scenario'),
     trigger_kind: fmScalar(fm, 'flow_trigger_kind'),
     trigger_anchor: fmScalar(fm, 'flow_trigger_anchor'),
+    render: fmScalar(fm, 'flow_render'),     // flowchart (default) | sequence
     validator: fmScalar(fm, 'flow_validator'),
     asserts_complete: fmScalar(fm, 'flow_asserts_complete') === 'true',
     steps: listOfMaps(fm, 'flow_steps'),

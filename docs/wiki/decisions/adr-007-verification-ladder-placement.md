@@ -13,8 +13,8 @@ covers:
   - path: scripts/wiki-flow-check.mjs
     sha: ee1144be14eb6e8200a1d176e22ebeea5597c5fd
   - path: scripts/wiki-flow-render.mjs
-    sha: e9015d0a617236924a473518456fa6d24c4a0a6a
-generated_at_commit: e9c2194
+    sha: 96509d1e9704e938cc1a2790daef68fc599f82a2
+generated_at_commit: 22ee06d
 last_refreshed: 2026-06-11
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status, decisions/adr-003-stdlib-only-vendored-scripts, decisions/adr-006-vendored-tooling]
 ---

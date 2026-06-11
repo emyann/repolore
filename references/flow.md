@@ -13,7 +13,11 @@ behaviour*. To keep that claim honest:
 
 - The `flow_*` frontmatter is the **model**; `wiki-flow-render.mjs` emits the
   diagram + tables from it into a delimited `FLOW-RENDER` region. Editing inside
-  the region by hand is rejected (regenerate-and-diff).
+  the region by hand is rejected (regenerate-and-diff). `flow_render:` picks the
+  diagram **projection** of that one model — `flowchart` (default, good for
+  branching tool/job flows) or `sequence` (actors become participants, edges
+  become messages; good for multi-actor request flows). Verification is identical
+  either way — the projection is a view, not a different model.
 - Every claim is **anchored** to code by blob SHA (like any covered file), and a
   `verified` edge is anchored **directionally** — see below.
 - The page's **tier is computed** by `wiki-flow-check.mjs` on every run, never

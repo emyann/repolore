@@ -13,8 +13,8 @@ covers:
   - path: scripts/wiki-check.mjs
     sha: b2cf4eea1c245f35f1ec4003e2b7b217e890ec00
   - path: scripts/lib.mjs
-    sha: 8d53936f8c23830fdae18a1187c171ab24ec8de9
-generated_at_commit: e9c2194
+    sha: e95973935e04c2cb9b3fac373f1f431fd7def616
+generated_at_commit: 22ee06d
 last_refreshed: 2026-06-11
 related: [decisions/adr-002-computed-status, concepts/freshness-model]
 ---
