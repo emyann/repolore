@@ -28,3 +28,11 @@
 ## Howto
 
 - [Run the init-UX test harness](./howto/run-the-ux-harness.md): Running the deterministic test suite and the agentic init-UX workflow.
+
+## Planned (not yet written)
+
+- decisions/adr-007-verification-ladder-placement: Vendored stdlib owns structural→branch-audited flow checks; set-equality extractors live in user space. To accept before v0.4 code exists.
+- flows/bootstrap-vendoring: How init's one-shot vendoring executes: config → bootstrap.mjs → verified scaffold. (Blocked on flow-meta v1 — see docs/RESEARCH-FLOWS.md.)
+- flows/update-classification: How the update workflow classifies and applies tooling changes from the (recorded, current, master) SHA triplet. (Blocked on flow-meta v1.)
+
+> Backlog from the page plan (`pages:` in `wiki.config.yml`) — draft on demand: "draft `<slug>` from the wiki plan".

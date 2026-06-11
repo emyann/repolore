@@ -30,3 +30,4 @@ history.
 ## 2026-06-11 — refreshed 4 pages (init wording fixes; no-op re-stamps) — flagged by the post-commit nudge on its own release commit
 ## 2026-06-11 — re-stamped overview (plugin.json version bump; no-op)
 ## 2026-06-11 — refreshed overview + adr-004 (setup workflow added; gotcha no-op) — flagged by the nudge
+## 2026-06-11 — planned flows/bootstrap-vendoring, flows/update-classification, decisions/adr-007 (from RESEARCH-FLOWS §5.5/§6.5)

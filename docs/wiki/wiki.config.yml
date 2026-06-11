@@ -69,3 +69,12 @@ pages:
   - slug: howto/run-the-ux-harness
     summary: "Running the deterministic test suite and the agentic init-UX workflow."
     status: seeded
+  - slug: flows/bootstrap-vendoring
+    summary: "How init's one-shot vendoring executes: config → bootstrap.mjs → verified scaffold. (Blocked on flow-meta v1 — see docs/RESEARCH-FLOWS.md.)"
+    status: planned
+  - slug: flows/update-classification
+    summary: "How the update workflow classifies and applies tooling changes from the (recorded, current, master) SHA triplet. (Blocked on flow-meta v1.)"
+    status: planned
+  - slug: decisions/adr-007-verification-ladder-placement
+    summary: "Vendored stdlib owns structural→branch-audited flow checks; set-equality extractors live in user space. To accept before v0.4 code exists."
+    status: planned
