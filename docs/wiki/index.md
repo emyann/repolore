@@ -1,6 +1,6 @@
 # repolore — wiki index
 
-> GENERATED FILE — do not edit by hand. Regenerate with `node scripts/wiki-index.mjs`.
+> GENERATED FILE — do not edit by hand. Regenerate with `node .repolore/scripts/wiki-index.mjs`.
 > One line per page, taken verbatim from each page's frontmatter `title`/`summary`.
 > Schema and authoring rules: [AGENTS.md](./AGENTS.md).
 

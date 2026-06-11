@@ -238,15 +238,32 @@ old one.
 A flow page is **structured data** (`flow_*` frontmatter) from which the Mermaid
 diagram and step/edge/branch tables are *generated* by
 `.repolore/scripts/wiki-flow-render.mjs` into a delimited `FLOW-RENDER` region —
-**never hand-author the diagram**. Each step is anchored to code by blob SHA;
-each `verified` edge cites the **call site in the caller's own code** and names
-the callee (directional — it proves the from→to hop, not just that bytes exist);
-uncitable hops are honestly `inferred`. `wiki-flow-check.mjs` computes the page's
-tier (structural → anchored → edge-cited → branch-audited → set-validated) on
-every run — the tier is never written to the page. Start from `_templates/flow.md`
-and follow the authoring loop and the full schema in `references/flow.md`. Flows
-are never seeded at init (highest-risk artifact); a page is born only when
-explicitly drafted.
+**never hand-author the diagram**. `flow_render:` picks the projection of that
+one model: `flowchart` (default) or `sequence`. The tier (structural → anchored →
+edge-cited → branch-audited → set-validated) is computed by `wiki-flow-check.mjs`
+on every run, never written to the page.
+
+**Verified vs inferred — the honest line.** Mark an edge `verified` only when you
+can cite the **call site in the caller's own code** (`call_anchor_path` equals the
+from-step's `anchor_path`), within ≤40 lines, naming the callee (`callee_token`) —
+this proves the from→to hop, not just that bytes exist somewhere. When the hop is
+real but uncitable that way (dynamic dispatch, plain statement sequence,
+cross-file indirection), mark it `inferred` — an honest claim, like `> TODO-VERIFY:`.
+A sub-50% verified ratio caps the tier at `structural`.
+
+**Authoring loop** (one named scenario per page, schematic not exhaustive; flows
+are never seeded at init — born only when explicitly drafted):
+
+1. Copy `_templates/flow.md` (the full field schema lives there); write the
+   `flow_*` steps/edges/branches against real code, including error paths.
+2. `node .repolore/scripts/wiki-flow-render.mjs <page>` — fills the region + a JSON sidecar.
+3. `node .repolore/scripts/wiki-stamp.mjs <page>` — writes the blob SHAs.
+4. `node .repolore/scripts/wiki-flow-check.mjs <page>` — must reach at least `anchored`.
+5. Add the page to the plan (`pages:` in `wiki.config.yml`) and `log.md`.
+
+The deep reference — two-anchor `async`/`queue`/`event` edges, diff-scoped
+refresh, and the user-space set-equality extractor contract — is
+`references/flow.md` (not needed for basic authoring).
 
 ## `audience` and per-audience sections
 
