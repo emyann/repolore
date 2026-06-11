@@ -14,7 +14,7 @@ covers:
     sha: 26fcbd683df848e3fd8ac6b9a81da06f3d2cd1bd
   - path: references/refresh.md
     sha: bacff895383a46e0a45a7a0a54e6e1bb9b62e2d9
-generated_at_commit: 6cfaffa
+generated_at_commit: f4ebce2
 last_refreshed: 2026-06-11
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status, decisions/adr-006-vendored-tooling]
 ---
@@ -87,6 +87,14 @@ the page↔code relation, never code quality. v2 coins its own terms (e.g.
 
 ## Consequences
 
+- Correction (v0.3.9): the Decision's "zero scripts" claim was wrong by one
+  line. The first real migration (pipao's 28-item backlog → `docs/wiki/FINDINGS.md`)
+  immediately tripped `MALFORMED` because the vendored checker's page walk
+  (`scripts/lib.mjs` `SKIP_FILES`) did not exempt `FINDINGS.md` the way it
+  exempts `GLOSSARY.md`/`log.md`. v0.3.9 adds `FINDINGS.md` to `SKIP_FILES`
+  — one vendored-script line, propagated through the normal update flow. v1
+  is therefore convention + that single skip entry, not zero scripts. The
+  dogfood caught it before any external adopter could.
 - Cost accepted: until v2, the inbox has no mechanical freshness guard —
   only triage discipline plus a coarse free proxy (most cited files already
   sit in the linked page's `covers`, so page staleness co-flags its

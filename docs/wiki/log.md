@@ -41,3 +41,4 @@ history.
 ## 2026-06-11 — updated vendored tooling v0.3.2 → v0.3.7 (AGENTS.md gains the findings-inbox section)
 ## 2026-06-11 — re-stamped overview + adr-006 after the stale-plugin channel-refresh feat (report wording + workflow step; claims unchanged, no-op)
 ## 2026-06-11 — re-stamped overview within the v0.3.8 release commit (plugin.json bump; no-op)
+## 2026-06-11 — adr-009 consequence: v0.3.9 corrects the "zero scripts" claim (FINDINGS.md added to lib.mjs SKIP_FILES; surfaced by the first pipao migration); no-op re-stamps (freshness-model, adr-001, adr-003)
