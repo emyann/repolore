@@ -56,6 +56,47 @@ That installs the single `repolore` umbrella skill; invoke it in plain words
 — "set up a repolore wiki here", "run repolore's check", "refresh the wiki".
 Both forms run the same procedures and scripts (see *Packaging* below).
 
+## Updating
+
+Releases ship as version bumps of `plugin.json` (see the
+[releases page](https://github.com/emyann/repolore/releases)).
+
+**Claude Code plugin — manually:**
+
+```text
+/plugin marketplace update repolore     # refresh the catalog
+/plugin update repolore@repolore        # update the installed plugin
+```
+
+**Claude Code plugin — automatically.** Auto-update is off by default for
+third-party marketplaces; enable it once via `/plugin` → **Marketplaces** →
+repolore → **Enable auto-update**, and new versions install at startup.
+Better for teams: declare it in the project's `.claude/settings.json` and
+every teammate gets the plugin, pre-enabled and auto-updating, with zero
+setup:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "repolore": {
+      "source": { "source": "github", "repo": "emyann/repolore" },
+      "autoUpdate": true
+    }
+  },
+  "enabledPlugins": { "repolore@repolore": true }
+}
+```
+
+**Standalone skill:** `npx skills update` re-pulls installed skills from
+their source repos.
+
+**The vendored layer is updated separately, on purpose.** Updating the
+plugin/skill does not touch the `.repolore/scripts/` copies committed to your
+repos — your wiki tooling never changes under you silently. The check
+workflow compares the vendored SHAs against the installed version's masters
+and offers the re-vendor when something newer is available; a dedicated
+`update` workflow (hash-safe regeneration) is on the roadmap.
+
 ## Use
 
 | Command | What it does |
