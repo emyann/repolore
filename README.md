@@ -222,6 +222,10 @@ repos.
 v0.3.4 (this) — the setup workflow: available-but-inactive capabilities
 become one consented question (and update asks it directly when it ADDs new
 capability scripts); team-wide nudge recipes (husky dir, npm `prepare`).
+v0.3.5 (this) — check offers a clean tooling update interactively (a one-tap
+question when no local edits and no stale pages outrank it), not just a prose
+pointer; overview now covers the check/update procedures so edits to them trip
+the freshness nudge.
 v0.3.x — flows v1 per [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md):
 flow-meta/v1 (line-parseable) + flow template + honesty-gradient text +
 structural/anchored checks + `wiki-flow-render.mjs` + two dogfood flow pages;
