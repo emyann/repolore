@@ -14,7 +14,7 @@ covers:
     sha: dcdfade7114ae4ecf5571e5a0790346e738f1628
   - path: scripts/update.mjs
     sha: e35ecd77860900a9dc8ba6d0a5d5abce05d7c51e
-generated_at_commit: 0add012
+generated_at_commit: 9d33d38
 last_refreshed: 2026-06-11
 related: [decisions/adr-003-stdlib-only-vendored-scripts, decisions/adr-005-bootstrap-mechanical-vendoring, decisions/adr-004-umbrella-skill-plugin-shims]
 ---
@@ -63,7 +63,21 @@ explicit, consented update workflow (`scripts/update.mjs`,
   lockfile churn, no CVE treadmill) and by update's consent gate (local
   edits are never overwritten silently; manifest SHAs make all drift
   detectable).
+- Cost accepted — **inverted compatibility burden**: vendoring does not
+  remove the forever-backward-compat promise a registry approach would
+  rely on; it reverses its direction. New plugin versions must cope with
+  every old vendored script still in the wild, or migrate it through the
+  consent gate — which is why this project owns a bespoke
+  update-distribution subsystem (`scripts/update.mjs`, manifest blob SHAs,
+  the interactive update offer in check) that a package registry would
+  have provided for free.
 - Alternatives rejected: **plugin-side execution** (verification becomes
   private to plugin users; auto-update changes semantics under the repo);
   **npm package via npx** (puts a registry, the network, and a supply chain
   on the verification path — the one step that must be most trustworthy).
+- **Revisit trigger**: the calculus flips if agent skills/plugins gain
+  repo-side version pinning honored by a universal resolver — a
+  `skills.lock` that every harness and CI runner respects. "The repo
+  declares, the environment resolves" would then match vendoring on both
+  reach and version coherence; at that point, supersede this record rather
+  than defend it.

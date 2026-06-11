@@ -35,3 +35,4 @@ history.
 ## 2026-06-11 — re-stamped overview after the v0.3.5 version bump (plugin.json; no-op)
 ## 2026-06-11 — added decisions/adr-008-per-harness-entry-point-bridging (rung-3 wiring: AGENTS.md canonical, @import for Claude)
 ## 2026-06-11 — refreshed for v0.3.6 rung-3 wiring: targeted edits to adr-005 (symlink→import) + cross-tool-depth rung 3; no-op re-stamps (overview, adr-004, adr-006, run-the-ux-harness)
+## 2026-06-11 — amended adr-006 consequences: inverted-compat burden + skills.lock revisit trigger (costs surfaced by a vendoring-vs-dependency debate; decision unchanged)
