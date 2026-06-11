@@ -13,8 +13,8 @@ covers:
   - path: scripts/bootstrap.mjs
     sha: 42f64b261eb399c1de827b0485a126c325a70137
   - path: scripts/update.mjs
-    sha: 60051a3b366a7add3cd29be01f9677d73e534e6d
-generated_at_commit: e9c2194
+    sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+generated_at_commit: 95f270b
 last_refreshed: 2026-06-11
 related: [decisions/adr-003-stdlib-only-vendored-scripts, decisions/adr-005-bootstrap-mechanical-vendoring, decisions/adr-004-umbrella-skill-plugin-shims]
 ---

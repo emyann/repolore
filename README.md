@@ -248,16 +248,22 @@ v0.3.9 (this) — the findings inbox actually works: `wiki-check`/`-index`/the
 page budget now skip `FINDINGS.md` (added to `lib.mjs` `SKIP_FILES`), so the
 inbox stops being flagged `MALFORMED`. ADR-009's v1 "zero scripts" was wrong
 by one line — caught by the first real migration (pipao's 28-item backlog).
-v0.3.x — flows v1 per [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md):
-flow-meta/v1 (line-parseable) + flow template + honesty-gradient text +
-structural/anchored checks + `wiki-flow-render.mjs` + two dogfood flow pages;
-post-commit hook + `install-hook`; Copilot `applyTo` / Cursor `.mdc`
-emitter; read-side consumption eval; dangling-reference and link lints;
-`audit` workflow (LLM pass for wrongness/duplication — what hashes can't
-catch).
-v0.4+ — `wiki-index.json` connector contract + llms.txt emitter;
-flow-validator plugin harness; Quartz site + MCP connector recipes; GitHub
-Action recipe.
+v0.4.0 (this) — flows v1 (a new page category, [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md),
+design chosen by an adversarial 5-approach build-off): a flow is line-parseable
+`flow-meta` from which `wiki-flow-render.mjs` *generates* a GitHub-safe Mermaid
+diagram + anchored tables; `wiki-flow-check.mjs` computes the tier (structural →
+anchored → **directional** edge-cited → branch-audited → set-validated). The
+directional graft — a `verified` edge must cite the call site in the caller's
+own code and name the callee — closes the edge-existence hole that broke all
+five prototypes; set-equality is proven non-vendorable and lives in a user-space
+`validators:` seam (ADR-007). Folded into `wiki-check`; dogfood: `flows/bootstrap-vendoring`.
+v0.4.x — flows v2: the reference user-space extractors, the diff-scoped
+flow-refresh step, and the second dogfood flow page (`flows/update-classification`);
+the `audit` workflow (LLM pass for wrongness/duplication — what hashes can't
+catch) + findings-inbox v2 it feeds.
+v0.5+ — `wiki-index.json` connector contract + llms.txt emitter; Quartz site
+(renders flows from the flow-meta sidecars) + MCP connector recipes; GitHub
+Action recipe; Copilot `applyTo` / Cursor `.mdc` emitters.
 This section is the single roadmap home; the numbering in the report's §7 is
 the original point-in-time plan and has diverged (§7 says so too).
 
