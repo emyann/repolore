@@ -35,8 +35,19 @@
    because they *cover* tooling files (dogfood repos), follow the refresh
    workflow's triage. Append one line to `<wikiRoot>/log.md`:
    `## <date> — updated vendored tooling v<from> → v<to>`.
-7. Offer a single `chore(repolore): update vendored tooling to v<to>` commit
-   (respect the repo's commit conventions; never commit without consent).
+7. Commit etiquette — convention-aware:
+   - **First tooling update in this repo** (no prior
+     `chore(repolore): update vendored tooling` commit in git history AND no
+     tooling-update line in `<wikiRoot>/log.md`): OFFER the single
+     `chore(repolore): update vendored tooling to v<to>` commit — do not
+     commit without consent.
+   - **Convention established** (either signal present): commit directly and
+     say so plainly ("committed as `<sha>`, not pushed") — the user approved
+     this exact commit shape once; re-asking is ceremony that breaks flow.
+     An explicit "don't commit" from the user always overrides.
+   - Convention covers the local chore commit ONLY. Never push, never run
+     installers, never `--force`-overwrite locally-edited files without
+     explicit consent. Respect the repo's commit conventions either way.
 
 ## Guardrails
 
