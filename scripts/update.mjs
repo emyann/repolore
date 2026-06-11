@@ -159,6 +159,18 @@ for (const name of VENDORED_SCRIPTS) {
   report.added.push({ path: rel });
 }
 
+// Page templates this version vendors that the manifest predates (e.g. flow.md
+// added after a repo was initialized). Copied unmodified like the others.
+for (const name of ['page.md', 'decision.md', 'flow.md']) {
+  const rel = join(wikiRoot, '_templates', name);
+  if (manifest.generatedFiles.some((f) => f.path === rel)) continue;
+  const master = readFileSync(join(PLUGIN_TEMPLATES, name), 'utf8');
+  const sha = hashContent(master);
+  apply(rel, master);
+  if (!DRY) manifest.generatedFiles.push({ path: rel, sha });
+  report.added.push({ path: rel });
+}
+
 const changed = report.updated.length + report.restored.length + report.added.length + report.manifestFixed.length;
 const attention = report.skippedModified.length + report.needsReview.length;
 
