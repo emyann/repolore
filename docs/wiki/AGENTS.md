@@ -261,6 +261,13 @@ are never seeded at init — born only when explicitly drafted):
 4. `node .repolore/scripts/wiki-flow-check.mjs <page>` — must reach at least `anchored`.
 5. Add the page to the plan (`pages:` in `wiki.config.yml`) and `log.md`.
 
+**Stale flow pages refresh diff-scoped.** When a covered file moves, run
+`node .repolore/scripts/wiki-flow-refresh.mjs <page> --apply` first: it fixes
+every citation whose cited bytes are provably unchanged (identical or merely
+shifted) and leaves the rest at their old SHA, so `wiki-flow-check.mjs` then
+fails on exactly the citations that still need re-verification. Re-verify those
+against the diff, re-render, and only then stamp.
+
 The deep reference — two-anchor `async`/`queue`/`event` edges, diff-scoped
 refresh, and the user-space set-equality extractor contract — is
 `references/flow.md` (not needed for basic authoring).

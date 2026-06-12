@@ -1,14 +1,14 @@
 {
   "tool": "repolore",
   "schemaVersion": 1,
-  "pluginVersion": "0.4.3",
+  "pluginVersion": "0.4.4",
   "wikiRoot": "docs/wiki",
   "scriptsDir": ".repolore/scripts",
   "initializedAt": "2026-06-11",
   "generatedFiles": [
     {
       "path": ".repolore/scripts/lib.mjs",
-      "sha": "e95973935e04c2cb9b3fac373f1f431fd7def616"
+      "sha": "053e964cde406ab6b7b3d25c9f01cdc2da7ed6f6"
     },
     {
       "path": ".repolore/scripts/wiki-check.mjs",
@@ -28,7 +28,7 @@
     },
     {
       "path": "docs/wiki/AGENTS.md",
-      "sha": "1051175bf86bec07d5602d8dd4b2732211af94b9"
+      "sha": "08a7b8446cbab915c463f6724c65572bcd53c096"
     },
     {
       "path": "docs/wiki/_templates/page.md",
@@ -57,6 +57,10 @@
     {
       "path": "docs/wiki/_templates/flow.md",
       "sha": "845c2d1f6884c9a92f7353955f0abe5be8c98a19"
+    },
+    {
+      "path": ".repolore/scripts/wiki-flow-refresh.mjs",
+      "sha": "6cd5928a44fe430bdc32197706034f8b940efbfe"
     }
   ]
 }
