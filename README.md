@@ -193,92 +193,11 @@ end state, and grades the onboarding experience against a UX rubric.
 
 ## Roadmap
 
-v0.1 — init, check, refresh, stamp, generated index.
-v0.2 (this) — config-driven one-shot `bootstrap.mjs` (dry-run scope census,
-SHA-tracked vendoring, self-verification); init UX overhaul (seeded overview
-by default, up-front commit consent, in-scope count at the approval gate,
-interface-first report); single local-date source; plugin-update nudge in
-`check`; deterministic + agentic test harness.
-v0.2.1 (this) — standalone distribution via the skills CLI / skills.sh: root
-umbrella `SKILL.md`, single-source procedures in `references/`, plugin skills
-as shims; agent-portable wording in vendored script messages.
-v0.2.2 (this) — the page plan made visible: backlog section in the generated
-`index.md`, plan state + plan↔reality drift lints in `wiki-check`, and the
-"page manifest" terminology retired ("manifest" now only ever means
-`.repolore/manifest.json`).
-v0.2.3 (this) — init optionally wires team auto-update (the *Updating*
-settings recipe) into `.claude/settings.json`.
-v0.3.0 (this) — the `update` workflow: manifest-hash safe regeneration of the
-vendored layer (`scripts/update.mjs` + `/repolore:update`); fixed a latent
-bug it uncovered (unquoted config values kept trailing comments, so the
-page-budget warning could never fire).
-v0.3.1 (this) — the glossary feeding loop: init seeds 3–8 cited terms, the
-page-writing/refresh workflows must record every term they coin, check
-reports an empty glossary as a smell and offers a backfill.
-v0.3.2 (this) — the post-commit nudge: per-contributor, chaining-safe,
-never blocks (silent when green; stale pages + new-page-worthy files
-otherwise); installed by init (consented) and offered by update to existing
-repos.
-v0.3.4 (this) — the setup workflow: available-but-inactive capabilities
-become one consented question (and update asks it directly when it ADDs new
-capability scripts); team-wide nudge recipes (husky dir, npm `prepare`).
-v0.3.5 (this) — check offers a clean tooling update interactively (a one-tap
-question when no local edits and no stale pages outrank it), not just a prose
-pointer; overview now covers the check/update procedures so edits to them trip
-the freshness nudge.
-v0.3.6 (this) — Claude-aware entry-point wiring: `AGENTS.md` stays the one
-canonical pointer and each harness links to it by its native mechanism — an
-`@AGENTS.md` import for `CLAUDE.md` (Claude Code never auto-loads `AGENTS.md`),
-the literal block for Copilot. The in-wiki bridge switches from symlink to
-import (portable — no Windows/CI symlink caveat). See `adr-008`.
-v0.3.7 (this) — the findings inbox (v1, convention only): code-defect
-findings surfaced while drafting/refreshing pages get a `FINDINGS.md` relay
-buffer beside the wiki — outside page semantics, consent-only writes,
-deletion-not-checkbox triage with four domain-exiting dispositions; created
-on demand, never written by check/hooks, never gating. Tooling (per-item SHA
-anchors, triage workflow) deferred to the audit workflow. See `adr-009` +
-[docs/RESEARCH-FINDINGS.md](./docs/RESEARCH-FINDINGS.md).
-v0.3.8 (this) — update closes the stale-plugin loop: a repo can only sync to
-the *installed* plugin version, so "nothing to do" could mask a stale install.
-`update.mjs` now names the installed version in its report, and the workflow
-probes the marketplace clone on disk (zero network, best-effort) and offers
-the consented channel refresh (`claude plugin marketplace update` /
-`npx skills update`), ending with the user-only reload step.
-v0.3.9 (this) — the findings inbox actually works: `wiki-check`/`-index`/the
-page budget now skip `FINDINGS.md` (added to `lib.mjs` `SKIP_FILES`), so the
-inbox stops being flagged `MALFORMED`. ADR-009's v1 "zero scripts" was wrong
-by one line — caught by the first real migration (pipao's 28-item backlog).
-v0.4.0 (this) — flows v1 (a new page category, [docs/RESEARCH-FLOWS.md](./docs/RESEARCH-FLOWS.md),
-design chosen by an adversarial 5-approach build-off): a flow is line-parseable
-`flow-meta` from which `wiki-flow-render.mjs` *generates* a GitHub-safe Mermaid
-diagram + anchored tables; `wiki-flow-check.mjs` computes the tier (structural →
-anchored → **directional** edge-cited → branch-audited → set-validated). The
-directional graft — a `verified` edge must cite the call site in the caller's
-own code and name the callee — closes the edge-existence hole that broke all
-five prototypes; set-equality is proven non-vendorable and lives in a user-space
-`validators:` seam (ADR-007). Folded into `wiki-check`; dogfood: `flows/bootstrap-vendoring`.
-v0.4.1 (this) — flows v1 finished for every harness: a `sequence` diagram
-projection (`flow_render: sequence` — same flow-meta, actors→participants,
-edges→messages; verification unchanged), and the flow authoring loop +
-verified-vs-inferred rule folded into the vendored `AGENTS.md` so a target repo
-can draft a flow without the plugin-side `references/flow.md` (it becomes the
-optional deep reference).
-v0.4.2 (this) — the flow authoring loop, fixed end-to-end. `wiki-stamp.mjs` now
-fills every inline flow `*_sha` (`anchor_sha`/`call_anchor_sha`/`cite_sha`) from
-its sibling `*_path`, not just `covers` — the half v0.4.1's template +
-`references/flow.md` promised but never wrote, so a freshly authored flow page
-failed `wiki-flow-check` on the `WRITTEN-BY-wiki-stamp` placeholders (caught by
-two independent dogfood runs). Ships with the second dogfood flow page,
-[`flows/update-classification`](./docs/wiki/flows/update-classification.md):
-update's `(recorded, current, master)` SHA-triplet classification, branch-audited.
-v0.4.x — flows v2: the reference user-space extractors, the diff-scoped
-flow-refresh step; the `audit` workflow (LLM pass for wrongness/duplication —
-what hashes can't catch) + findings-inbox v2 it feeds.
-v0.5+ — `wiki-index.json` connector contract + llms.txt emitter; Quartz site
-(renders flows from the flow-meta sidecars) + MCP connector recipes; GitHub
-Action recipe; Copilot `applyTo` / Cursor `.mdc` emitters.
-This section is the single roadmap home; the numbering in the report's §7 is
-the original point-in-time plan and has diverged (§7 says so too).
+The roadmap lives in [docs/ROADMAP.md](./docs/ROADMAP.md) — what's in flight
+(flows v2: diff-scoped flow-refresh, the `audit` workflow + findings-inbox v2),
+the v0.5+ horizon (connector contract, llms.txt, Quartz site, per-harness
+emitters), and the full version history. Release notes per version are on the
+[GitHub Releases page](https://github.com/emyann/repolore/releases).
 
 ## License
 

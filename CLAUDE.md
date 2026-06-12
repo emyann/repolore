@@ -14,7 +14,9 @@ Publishing is **tag + push to `main`**: the marketplace tracks `main`, so its
 `.claude-plugin/plugin.json` version is what users get. The GitHub *Releases*
 page is separate and does **not** drive distribution.
 
-1. Bump `.claude-plugin/plugin.json` version + add a README changelog line.
+1. Bump `.claude-plugin/plugin.json` version + add a version-history entry at
+   the top of `docs/ROADMAP.md` §Version history (and tick/update its Now/Next
+   sections). The README only carries a pointer to that doc.
 2. Commit in order: `feat:` → `docs(wiki):` (absorb, re-stamp staled pages) →
    `chore(release): vX.Y.Z`.
 3. **If you built on a branch, fast-forward `main` to it BEFORE tagging.** Tags
