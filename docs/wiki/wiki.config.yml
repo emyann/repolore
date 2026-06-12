@@ -35,6 +35,15 @@ coverage:
   # prune_dirs: [.git, node_modules, dist]
   # noise_patterns: ['\.(test|spec)\.[jt]s$']
 
+# Flow set-equality extractors (the opt-in `set-validated` tier, ADR-007). Each
+# `cmd` rebuilds a flow's step/edge/branch set from code and prints JSON; when
+# the flow sets `flow_asserts_complete: true`, a mismatch is a hard fail. User
+# space, never vendored — see references/flow.md §set-validated.
+validators:
+  - flow: update-classification
+    cmd: "node .repolore/validators/update-classification-seteq.mjs"
+    kind: set-equality
+
 # Page plan — the pages the wiki *should* eventually have.
 # status: seeded = written | planned = not yet written.
 # The LLM may add pages not listed here; when it does, it adds them back.

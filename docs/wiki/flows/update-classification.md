@@ -10,7 +10,7 @@ flow_scenario: "update classifies each tracked file from its (recorded, current,
 flow_trigger_kind: command
 flow_trigger_anchor: references/update.md
 flow_render: flowchart
-flow_asserts_complete: false
+flow_asserts_complete: true
 flow_steps:
   - id: invoke
     actor: update-skill
@@ -134,8 +134,8 @@ covers:
     sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
   - path: references/update.md
     sha: ab8931adfd0da4955b530fc14d52850cac6e45f4
-generated_at_commit: 8873d80
-last_refreshed: 2026-06-11
+generated_at_commit: 8ecfc10
+last_refreshed: 2026-06-12
 related: [flows/bootstrap-vendoring, decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status]
 ---
 
@@ -246,9 +246,15 @@ add-vs-skip.
 
 ## Completeness
 
-`flow_asserts_complete: false` — the page documents the six classification
-outcomes but makes no machine-checked claim that they are *exhaustive*. The
-forks are enumerable from the `if/else` ladder, so this is a strong candidate for
-a user-space set-equality extractor (the opt-in `set-validated` tier, ADR-007 /
-`references/flow.md`); until one is registered, the page honestly tops out at
-`branch-audited`.
+`flow_asserts_complete: true` — this page reaches the top **`set-validated`**
+tier. Because `update.mjs` is a closed world (every disposition is a
+`report.<key>.push` call site), a user-space set-equality extractor rebuilds the
+outcome set straight from the code and `wiki-flow-check.mjs` set-compares it
+against the six branches above. The extractor is
+[`.repolore/validators/update-classification-seteq.mjs`](../../../.repolore/validators/update-classification-seteq.mjs),
+registered under `validators:` in `wiki.config.yml` (ADR-007 / `references/flow.md`).
+With `flow_asserts_complete: true`, a **new disposition added to `update.mjs`
+that nobody writes into this flow becomes a hard failure** — the only check that
+catches an omitted branch. This is repolore's reference extractor: the worked
+example a target repo copies for its own closed-world tool flows (open-world
+request/async flows honestly stay at `branch-audited`).

@@ -100,3 +100,14 @@ source-line membership), and apply guard-vs-fork significance filtering. Rules:
 - The extractor is **never vendored**: the bake-off proved every AST engine is
   unaffordable for the vendored layer (web-tree-sitter ~752KB WASM, a Rust binary
   ~800KB/platform vs the whole ~30KB readable-JS vendored surface).
+
+**Worked reference example.** repolore dogfoods this on
+`flows/update-classification` (a closed-world tool flow): the extractor
+`.repolore/validators/update-classification-seteq.mjs` scans `update.mjs` for its
+disposition set (every `report.<key>.push` call site), maps each to the flow step
+it folds into, and emits the JSON above — so a *new* disposition added to the code
+that nobody wrote into the flow surfaces as a hard fail. It is plain Node stdlib
+because that flow's outcomes are statically enumerable; copy it as the starting
+shape for your own closed-world flows, reaching for a real parser only when the
+enumeration needs one. The page sets `flow_asserts_complete: true` and reaches
+`set-validated` — the only flow that does.
