@@ -77,7 +77,7 @@ test('bootstrap vendors everything, verified, with no leftover placeholders', (t
   assert.equal(manifest.wikiRoot, 'docs/wiki');
   const pluginJson = JSON.parse(readFileSync(join(PLUGIN, '.claude-plugin', 'plugin.json'), 'utf8'));
   assert.equal(manifest.pluginVersion, pluginJson.version, 'manifest records the vendoring plugin version');
-  assert.equal(manifest.generatedFiles.length, 13, '9 scripts + AGENTS + 3 templates');
+  assert.equal(manifest.generatedFiles.length, 14, '10 scripts + AGENTS + 3 templates');
   for (const { path, sha } of manifest.generatedFiles) {
     assert.equal(git(dir, ['hash-object', path]), sha, `manifest sha drift for ${path}`);
   }

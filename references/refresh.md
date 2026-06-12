@@ -23,20 +23,28 @@ You are refreshing the repo's LLM-maintained wiki. Read
      `> TODO-VERIFY: <claim> — <what needs checking>`.
    - **Rewrite** — the feature changed shape: re-research from the code and
      rewrite the page body.
-3. Update `covers`: add files that became relevant, drop deleted ones. If a
+3. **Stale `flows/` pages get the diff-scoped path first**:
+   `node <scriptsDir>/wiki-flow-refresh.mjs <page> --apply` mechanically fixes
+   every citation whose cited bytes are provably unchanged (identical or merely
+   shifted) and leaves the rest at their old SHA — `wiki-flow-check.mjs` then
+   fails on exactly the citations that still need you. Re-verify those per
+   edge/branch against the diff (fix the span, the claim, or demote the edge
+   to `inferred`), re-render, and only then stamp. Never blind-regenerate a
+   flow page — the per-edge worklist is the point.
+4. Update `covers`: add files that became relevant, drop deleted ones. If a
    covered file was *moved*, `git log --follow` usually finds it — update the
    path rather than dropping the entry.
-4. `node <scriptsDir>/wiki-stamp.mjs <page> [...]` for every touched page —
+5. `node <scriptsDir>/wiki-stamp.mjs <page> [...]` for every touched page —
    never hand-compute SHAs, and never stamp a page you did not actually
    re-read against the diff ("refresh-by-rote" erodes citation trust).
-5. Fix MALFORMED pages (repair frontmatter to the schema).
-6. `node <scriptsDir>/wiki-index.mjs` if any title/summary changed (or
+6. Fix MALFORMED pages (repair frontmatter to the schema).
+7. `node <scriptsDir>/wiki-index.mjs` if any title/summary changed (or
    `--check` says so); append one line per refreshed page to `<wikiRoot>/log.md`;
    update `GLOSSARY.md` lines whose terms the refresh renamed or retired;
    append any defects the re-verification surfaced to `<wikiRoot>/FINDINGS.md`
    (one line each — see the inbox rules in `<wikiRoot>/AGENTS.md`).
-7. Re-run `wiki-check.mjs` — every page must report fresh.
-8. Present the refresh as a reviewable change; offer a single
+8. Re-run `wiki-check.mjs` — every page must report fresh.
+9. Present the refresh as a reviewable change; offer a single
    `docs(wiki): refresh N stale pages` commit (do not commit without consent).
 
 ## Guardrails

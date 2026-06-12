@@ -62,9 +62,24 @@ site) and a `handler_*` (registration) — there is no single call site to cite.
 ## Maintain diff-scoped
 
 When a covered blob moves, the page goes stale (and `*_sha` mismatches give
-"moved — re-verify"). Refresh **per edge**: re-read the diff, fix the affected
-step/edge/branch citation and line range, re-render, re-stamp. Never blind
-regeneration — the per-edge granularity is the precise re-verify worklist.
+"moved — re-verify") — but the checker's signal is per-file while the claim
+structure is per-span. `wiki-flow-refresh.mjs` computes the per-citation
+worklist by diffing the recorded blob against the working tree:
+
+```
+node .repolore/scripts/wiki-flow-refresh.mjs <page>            # plan
+node .repolore/scripts/wiki-flow-refresh.mjs <page> --apply    # fix the safe classes
+```
+
+Citations whose cited bytes are provably unchanged (`untouched`) or merely
+moved (`shifted`) are mechanically fixed on `--apply` — re-recording a SHA over
+byte-identical content is bookkeeping, not blessing. `touched` / `gone` /
+`unknown` citations are left at their old SHA on purpose: after an apply,
+`wiki-flow-check.mjs` fails on exactly the citations that still need a human.
+Re-verify those per edge/branch (fix the span, the claim, or demote to
+`inferred`), then re-render and stamp. Never blind regeneration — and note the
+honesty line: this proves *byte*-level safety only; a semantic change whose
+diff dodges every cited span is the audit workflow's territory.
 
 ## set-validated — the user-space extractor contract (v0.4)
 

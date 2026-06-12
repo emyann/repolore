@@ -27,6 +27,7 @@ export const DEFAULT_CATEGORIES = [
 export const VENDORED_SCRIPTS = [
   'lib.mjs', 'wiki-check.mjs', 'wiki-coverage.mjs', 'wiki-stamp.mjs', 'wiki-index.mjs',
   'wiki-hook.mjs', 'wiki-install-hook.mjs', 'wiki-flow-render.mjs', 'wiki-flow-check.mjs',
+  'wiki-flow-refresh.mjs',
 ];
 
 export function fail(msg) {
@@ -172,7 +173,7 @@ export const FLOW_TRIGGER_KINDS = new Set(['http', 'command', 'cron', 'queue', '
 export const FLOW_BRANCH_KINDS = new Set(['error', 'guard', 'alt', 'normal']);
 
 /** Strip a single matched pair of surrounding quotes (mismatched quotes kept). */
-function stripQuotes(v) {
+export function stripQuotes(v) {
   const t = v.trim();
   if (t.length >= 2 && ((t[0] === '"' && t.endsWith('"')) || (t[0] === "'" && t.endsWith("'")))) {
     return t.slice(1, -1);
