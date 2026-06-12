@@ -52,3 +52,4 @@ history.
 ## 2026-06-11 — added flows/update-classification (the second dogfood flow page: update's (recorded, current, master) SHA-triplet classification; 9 steps, 1 verified edge + 6 cited branches, tier branch-audited)
 ## 2026-06-11 — fixed wiki-stamp: it now fills inline flow *_sha (anchor/call/cite) from each field's sibling *_path, not just covers — the half-shipped v0.4.1 flow authoring loop; re-stamped freshness-model + adr-002
 ## 2026-06-11 — updated vendored tooling v0.4.1 → v0.4.2 (wiki-stamp flow-sha fix); no-op re-stamp overview
+## 2026-06-12 — flows/update-classification reached set-validated: added the reference user-space extractor .repolore/validators/update-classification-seteq.mjs + registered it (validators: in wiki.config.yml), flipped flow_asserts_complete: true; references/flow.md gained the worked example
