@@ -13,13 +13,13 @@ covers:
   - path: scripts/wiki-stamp.mjs
     sha: 51cdb749812f88969357d126eea3c63b01d3a2cc
   - path: scripts/lib.mjs
-    sha: e95973935e04c2cb9b3fac373f1f431fd7def616
+    sha: 053e964cde406ab6b7b3d25c9f01cdc2da7ed6f6
   - path: scripts/wiki-hook.mjs
     sha: b8ea5b5dfff094a42bdae269558fa6f8b51c575a
   - path: scripts/wiki-install-hook.mjs
     sha: ec6892d6c8900675421ad1e39beddcdc88c9e135
-generated_at_commit: 8873d80
-last_refreshed: 2026-06-11
+generated_at_commit: 592c44a
+last_refreshed: 2026-06-12
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status]
 ---
 
@@ -49,13 +49,17 @@ that drives refresh triage — no-op / targeted edit / rewrite.
 
 ## Stamping is blessing
 
-`wiki-stamp.mjs` is the only writer of SHAs — both `covers` blob SHAs and the
-inline flow `*_sha` anchors, the latter filled from each field's sibling
+`wiki-stamp.mjs` is the blessing writer of SHAs — both `covers` blob SHAs and
+the inline flow `*_sha` anchors, the latter filled from each field's sibling
 `*_path` (`scripts/wiki-stamp.mjs:86-104`) — plus `generated_at_commit` and
 `last_refreshed`. Stamping asserts "this prose reflects the code as it is
 right now" — its own header warns that `--all` re-blesses wholesale and is
 only safe after a full audit (`scripts/wiki-stamp.mjs:23-26`). Stamp after
-refreshing content, never instead of it.
+refreshing content, never instead of it. One scoped exception writes inline
+flow `*_sha` without blessing: `wiki-flow-refresh.mjs --apply` re-records a
+citation's SHA only when the cited bytes are provably unchanged against the
+recorded blob (bookkeeping, like update's manifest-fix — never new content;
+`covers` stays stamp-only).
 
 ## The coverage inversion
 

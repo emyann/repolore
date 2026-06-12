@@ -13,17 +13,17 @@ covers:
   - path: .claude/workflows/test-init-ux.js
     sha: 7a6700b750df1d3cb545185c83ce8ac3b800d955
   - path: tests/bootstrap.test.mjs
-    sha: 4f9723e06adc44171cbd484bd80ae1701b37569f
+    sha: 2ac18aaa8b23a89646805cbd52e7df9987f0a4af
   - path: tests/hook.test.mjs
     sha: 3f93d03728f73c844aa1aa27ea1052ac9fc04418
   - path: tests/update.test.mjs
-    sha: 0f41fe3d446f49f9dae2524c89eed99c0063974e
+    sha: 7eb9c5169ee054b5045a8723ab74579e16cd6902
   - path: tests/lib.test.mjs
     sha: 53a3786b7c17269e72e49cd2fe6c893712133d4b
   - path: tests/_helpers.mjs
     sha: 69761a14bf7edef781572eb0cbc239be38090a43
-generated_at_commit: e9c2194
-last_refreshed: 2026-06-11
+generated_at_commit: 592c44a
+last_refreshed: 2026-06-12
 related: [decisions/adr-005-bootstrap-mechanical-vendoring, architecture/overview]
 ---
 
