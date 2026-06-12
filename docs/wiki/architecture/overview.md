@@ -19,8 +19,8 @@ covers:
   - path: scripts/update.mjs
     sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
   - path: .claude-plugin/plugin.json
-    sha: ddcbdf6c5abcf393cae7e0a63e0a92093dd8574c
-generated_at_commit: a5c1683
+    sha: dd0a0c3347a082571c6605defba57ee619ef5b3a
+generated_at_commit: 671f10d
 last_refreshed: 2026-06-12
 related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-bootstrap-mechanical-vendoring, concepts/freshness-model]
 ---

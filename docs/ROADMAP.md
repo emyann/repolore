@@ -10,9 +10,9 @@
 - [x] **Reference set-equality extractor** — shipped v0.4.3.
       `flows/update-classification` reaches `set-validated`; the worked example
       target repos copy for their own closed-world tool flows.
-- [ ] **Diff-scoped flow-refresh** — when a covered blob moves, turn the per-edge
-      `*_sha` mismatches into a precise re-verify worklist instead of a whole-page
-      re-author (the contract is sketched in `references/flow.md` §Maintain).
+- [x] **Diff-scoped flow-refresh** — shipped v0.4.4. `wiki-flow-refresh.mjs`
+      turns a stale flow page into a precise per-citation worklist; `--apply`
+      fixes the provably-safe classes mechanically.
 - [ ] **The `audit` workflow + findings-inbox v2** — an LLM pass for the blind
       spot hashes admit to (*wrongness behind unchanged bytes*: a claim that was
       never true stays "fresh" forever), feeding findings v2 (per-item SHA
@@ -36,6 +36,15 @@
 
 Newest first. One entry per release; the `chore(release)` commit adds the line.
 
+- **v0.4.4** — diff-scoped flow refresh: the new vendored
+  `wiki-flow-refresh.mjs` diffs each recorded blob against the working tree and
+  classifies every flow citation (`current` / `untouched` / `shifted` /
+  `touched` / `gone` / `unknown`); `--apply` mechanically fixes only the
+  provably-safe classes (byte-identical spans — bookkeeping, not blessing) and
+  leaves the rest at their old SHA so `wiki-flow-check` fails on exactly the
+  citations that still need a human. The per-file stale signal becomes a
+  per-span worklist; `covers:` stays wiki-stamp's. Dogfood-proven: a mixed
+  shift+touch edit to `update.mjs` auto-fixed 13 citations and left exactly 1.
 - **v0.4.3** — flows v2 begins: the reference user-space set-equality extractor
   (`.repolore/validators/update-classification-seteq.mjs`, plain Node stdlib)
   rebuilds `update.mjs`'s disposition set from code;

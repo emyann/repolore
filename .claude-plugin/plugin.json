@@ -1,7 +1,7 @@
 {
   "name": "repolore",
   "displayName": "repolore",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Make your agent write down your repo's lore — a code-derived wiki with cited claims, blob-SHA drift checking, coverage auditing, and a generated index. Karpathy's llm-wiki pattern where the source layer is the codebase itself.",
   "author": {
     "name": "Yann Renaudin"
