@@ -30,6 +30,12 @@ coverage:
   # prune_dirs: [.git, node_modules, dist]
   # noise_patterns: ['\.(test|spec)\.[jt]s$']
 
+# Audit tunables — read by the audit workflow's LLM session only (no script
+# parses this block). Uncomment to override the defaults.
+# audit:
+#   horizon_days: 90         # a page audited longer ago than this is due
+#   pages_per_session: 5     # the session cap (K)
+
 # Page plan — the pages the wiki *should* eventually have.
 # status: seeded = written | planned = not yet written.
 # The LLM may add pages not listed here; when it does, it adds them back.

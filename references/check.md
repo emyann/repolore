@@ -29,7 +29,17 @@ Then summarize for the user, in this order of importance:
    draft-on-demand prompt ("draft `<slug>` from the wiki plan") so the user
    always knows what is waiting; the same list sits in the Planned section at
    the bottom of the generated `index.md`.
-4. **Hygiene** — malformed pages, unmanaged pages (no `covers:`), index drift
+4. **Audit dust + findings inbox** — two computed lines, derived here at
+   check time and written nowhere (ADR-002; the vendored script, its exit
+   codes, and the post-commit hook are untouched by this):
+   - Parse `<wikiRoot>/log.md` for `audited <category/slug>` lines: report
+     "P pages never audited, Q audited >90 days ago — consider the audit
+     workflow (`/repolore:audit` in the Claude Code plugin)". Skip the line
+     when everything is within horizon.
+   - If `<wikiRoot>/FINDINGS.md` exists (skip silently if absent): report
+     "Findings inbox: N item(s) awaiting triage" and point at the audit
+     workflow's triage phase. Never block on it.
+5. **Hygiene** — malformed pages, unmanaged pages (no `covers:`), index drift
    (regenerate with `wiki-index.mjs`), page-budget warnings, legacy fields.
    Also: an empty or near-empty `GLOSSARY.md` while written pages exist —
    terms are being coined without being recorded (the feeding rule in
@@ -38,7 +48,7 @@ Then summarize for the user, in this order of importance:
    capabilities are inactive (post-commit nudge not installed, etc.):
    point at the setup workflow (`/repolore:setup` in the Claude Code
    plugin) — point, don't re-ask.
-5. **Tooling updates** — run the deterministic classifier:
+6. **Tooling updates** — run the deterministic classifier:
    `node <SKILL_ROOT>/scripts/update.mjs --dry-run`. It compares every
    tracked vendored file against the installed masters (up-to-date /
    outdated-pristine / locally modified / missing / new) and prints the

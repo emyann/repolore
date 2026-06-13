@@ -44,8 +44,16 @@ You are refreshing the repo's LLM-maintained wiki. Read
    append any defects the re-verification surfaced to `<wikiRoot>/FINDINGS.md`
    (one line each — see the inbox rules in `<wikiRoot>/AGENTS.md`).
 8. Re-run `wiki-check.mjs` — every page must report fresh.
-9. Present the refresh as a reviewable change; offer a single
-   `docs(wiki): refresh N stale pages` commit (do not commit without consent).
+9. **Audit hooks** (see `references/audit.md`): a **rewrite**-path refresh
+   re-verifies every claim by construction — append the page's
+   `## <date> — audited <category/slug> (…)` log line too; targeted-edit and
+   no-op refreshes never count as audits. Then the escort offer: if the
+   check report's dust line showed overdue pages, OFFER to full-audit ONE —
+   the just-refreshed page if it is overdue (cheapest: the diff and page are
+   already in context), else the oldest due. An offer, never an obligation;
+   max one per session.
+10. Present the refresh as a reviewable change; offer a single
+    `docs(wiki): refresh N stale pages` commit (do not commit without consent).
 
 ## Guardrails
 
