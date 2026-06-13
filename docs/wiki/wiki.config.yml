@@ -7,7 +7,7 @@
 
 wiki:
   title: "repolore"
-  page_budget: 15          # soft cap — wiki-check warns above this, never blocks
+  page_budget: 18          # soft cap — wiki-check warns above this, never blocks
 
 # Category order for the generated index. Uncomment to override the default:
 # categories: [architecture, concepts, features, flows, decisions, gotchas, howto]
@@ -43,6 +43,12 @@ validators:
   - flow: update-classification
     cmd: "node .repolore/validators/update-classification-seteq.mjs"
     kind: set-equality
+
+# Audit tunables — read by the audit workflow's LLM session only (ADR-010);
+# no script parses this block.
+audit:
+  horizon_days: 90
+  pages_per_session: 5
 
 # Page plan — the pages the wiki *should* eventually have.
 # status: seeded = written | planned = not yet written.
@@ -96,6 +102,12 @@ pages:
   - slug: flows/refresh-triage
     summary: "How the refresh workflow brings stale pages back into line: diff-driven triage (re-stamp / targeted edit / rewrite), citation re-verification, re-stamp, reviewable commit. (Blocked on flow-meta v1.)"
     status: planned
+  - slug: howto/audit-the-wiki
+    summary: "Running the Journal-Clock Audit — per-claim verification of fresh pages, the strict audited log line, four-exit findings triage."
+    status: seeded
+  - slug: decisions/adr-010-audit-evidence-contract
+    summary: "The audit clock is a journal line; per-claim verification is a prompt contract (zero new scripts); findings v2 ships anchors+triage, defers the script."
+    status: seeded
   - slug: decisions/adr-007-verification-ladder-placement
     summary: "Flows are generated from flow-meta; vendored stdlib owns structural→branch-audited with directional edge citations; set-equality lives in user space (proven non-vendorable)."
     status: seeded

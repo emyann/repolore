@@ -7,11 +7,11 @@ audience: [dev]
 read_when: "touching packaging, distribution, the shims, or anything under references/"
 covers:
   - path: SKILL.md
-    sha: a5faeb26798f0011a46679aaa6c66237903d2c50
+    sha: a9eb60777158027891834bfc18d408c9db6598ac
   - path: references/init.md
     sha: 7b632f359b6b70b17b211f2da6687697ddcd7c3d
   - path: references/check.md
-    sha: 17cdc7931c2c93102b952c7a3418c95d135a6844
+    sha: 3c67380892e0cf3def888e3a4d50802d2d8d5ef0
   - path: references/update.md
     sha: ab8931adfd0da4955b530fc14d52850cac6e45f4
   - path: scripts/bootstrap.mjs
@@ -20,7 +20,7 @@ covers:
     sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
   - path: .claude-plugin/plugin.json
     sha: dd0a0c3347a082571c6605defba57ee619ef5b3a
-generated_at_commit: 8fc811d
+generated_at_commit: a68a358
 last_refreshed: 2026-06-12
 related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-bootstrap-mechanical-vendoring, concepts/freshness-model]
 ---
@@ -47,7 +47,8 @@ related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-boots
    `.repolore/manifest.json` tracking every vendored file by blob SHA.
 
 Both front doors execute the same procedures: `references/init.md`,
-`references/check.md`, `references/refresh.md`, `references/update.md`, `references/setup.md`,
+`references/check.md`, `references/refresh.md`, `references/audit.md`,
+`references/update.md`, `references/setup.md`,
 `references/flow.md`, written against `<SKILL_ROOT>` — the directory holding `SKILL.md`,
 `scripts/`, `templates/`. The judgment/mechanics split: procedures (LLM
 judgment) live in markdown; everything deterministic lives in the

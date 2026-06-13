@@ -14,8 +14,8 @@ covers:
     sha: b2cf4eea1c245f35f1ec4003e2b7b217e890ec00
   - path: scripts/wiki-stamp.mjs
     sha: 51cdb749812f88969357d126eea3c63b01d3a2cc
-generated_at_commit: 8873d80
-last_refreshed: 2026-06-11
+generated_at_commit: a68a358
+last_refreshed: 2026-06-12
 related: [decisions/adr-001-blob-sha-freshness-anchors, concepts/freshness-model]
 ---
 
@@ -35,7 +35,7 @@ carries no durable information worth versioning.
 No freshness state is ever written to tracked files. `wiki-check.mjs`
 recomputes fresh/stale/unmanaged/malformed from `covers` SHAs on every run
 and only prints; legacy `status: fresh|stale|unmanaged` or `last_checked:`
-fields are actively flagged for deletion (`scripts/wiki-check.mjs:50`). The
+fields are actively flagged for deletion (`scripts/wiki-check.mjs:55`). The
 durable, reader-visible signal is different and written at *refresh* time,
 not check time: `generated_at_commit` + `last_refreshed`, stamped by
 `wiki-stamp.mjs`.

@@ -11,13 +11,13 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: SKILL.md
-    sha: a5faeb26798f0011a46679aaa6c66237903d2c50
+    sha: a9eb60777158027891834bfc18d408c9db6598ac
   - path: skills/init/SKILL.md
     sha: 4df0069b899fb6f4281ffba524f828eba590dce7
   - path: references/init.md
     sha: 7b632f359b6b70b17b211f2da6687697ddcd7c3d
-generated_at_commit: 0add012
-last_refreshed: 2026-06-11
+generated_at_commit: a68a358
+last_refreshed: 2026-06-12
 related: [architecture/overview, gotchas/cross-tool-depth-untested]
 ---
 
@@ -45,6 +45,12 @@ keeping the namespaced `/repolore:*` commands and their frontmatter
 
 ## Consequences
 
+- Correction (2026-06-12, v0.4.5): the Decision's procedure enumeration
+  (`references/{init,check,refresh,update,setup}.md`) is a snapshot — the set
+  has since grown (`flow.md` in v0.4.0, `audit.md` in v0.4.5, each with a
+  shim + umbrella routing row). The single-source principle this record
+  decides is unchanged; treat the enumeration as illustrative, the routing
+  table in `SKILL.md` as the live list.
 - The two front doors cannot drift: there is nothing to drift.
 - Skill-format frontmatter on the umbrella stays spec-minimal
   (name/description/license) for cross-agent compatibility; Claude-specific

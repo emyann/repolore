@@ -28,6 +28,7 @@
 - [ADR-007: Flow verification — data-first, directional edges, vendored ladder + user-space set-equality](./decisions/adr-007-verification-ladder-placement.md): A flow is generated from structured flow-meta; the vendored stdlib owns structural→branch-audited with DIRECTIONAL edge citations, and set-equality completeness lives in user space (proven non-vendorable by a build-off).
 - [ADR-008: Bridge AGENTS.md into each harness by its native mechanism](./decisions/adr-008-per-harness-entry-point-bridging.md): AGENTS.md is the one canonical pointer; each harness links to it by the cheapest faithful means — @import for Claude, literal block for Copilot, emitters later.
 - [ADR-009: Findings live in a relay buffer beside the wiki — never in pages, never a tracker](./decisions/adr-009-findings-inbox-contract.md): Code-defect findings surfaced while drafting/refreshing get a FINDINGS.md inbox outside page semantics, with consented writes and deletion-not-checkbox triage; tooling is deferred to the audit workflow.
+- [ADR-010: The audit clock is a journal line — per-claim verification as a prompt contract, zero new scripts](./decisions/adr-010-audit-evidence-contract.md): The audit workflow's evidence is one strict `audited` line in log.md (committed at bless time, parsed per run); verification is a budgeted prompt contract, findings v2 ships anchors+triage but defers the script — ratifying the divergence from ADR-009's staging list.
 
 ## Gotchas
 
@@ -35,6 +36,7 @@
 
 ## Howto
 
+- [How to audit the wiki (and triage the findings inbox)](./howto/audit-the-wiki.md): Running the Journal-Clock Audit — per-claim verification of fresh pages against the code, the strict `audited` log line that is the only record, and the four-exit findings triage.
 - [Run the init-UX test harness](./howto/run-the-ux-harness.md): Running the deterministic test suite and the agentic init-UX workflow.
 
 ## Planned (not yet written)

@@ -11,10 +11,10 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: templates/AGENTS.md
-    sha: c969059a9d427175e45386f14478b9856cbc32a9
+    sha: 5349a0adb586b4c7ad65e65e348743e21afb0c2d
   - path: references/refresh.md
-    sha: 7e8984cec09cafe5810877f54fd151e3305e208f
-generated_at_commit: 592c44a
+    sha: 843b3a42e677bb2bf875ef974ab9ae37cfabe928
+generated_at_commit: a68a358
 last_refreshed: 2026-06-12
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status, decisions/adr-006-vendored-tooling]
 ---
@@ -87,6 +87,13 @@ the page↔code relation, never code quality. v2 coins its own terms (e.g.
 
 ## Consequences
 
+- Correction (2026-06-12, v0.4.5): the Staging paragraph's v2 list shipped
+  partially. The audit workflow (ADR-010) delivers the per-item blob-SHA
+  anchors, the triage workflow, and the check-report line — but **defers the
+  `findings-check` script**: triage replicates it with a `git hash-object`
+  loop at zero vendored cost, and this record's own revisit clause gates v2
+  tooling on a proven emptying loop, which has not run yet. The divergence
+  is ratified explicitly in ADR-010 rather than left as silent drift.
 - Correction (v0.3.9): the Decision's "zero scripts" claim was wrong by one
   line. The first real migration (pipao's 28-item backlog → `docs/wiki/FINDINGS.md`)
   immediately tripped `MALFORMED` because the vendored checker's page walk
