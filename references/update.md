@@ -68,6 +68,9 @@
    - **Bridge form:** if `<wikiRoot>/CLAUDE.md` is a *copy* of AGENTS.md
      rather than the one-line `@AGENTS.md` import, offer the import swap
      (copies silently diverge — the exact failure the bridge prevents).
+     ⚠ It may also be a SYMLINK (the pre-ADR-008 bridge): check with
+     `ls -la` and `rm` it before writing the import file — writing
+     "through" a symlink overwrites AGENTS.md itself.
    - **Reserved dirs:** a non-empty `<wikiRoot>/_audit/` is a pre-repolore
      artifact; offer to mine it for untriaged findings (→ `FINDINGS.md`,
      with consent) and archive the rest.

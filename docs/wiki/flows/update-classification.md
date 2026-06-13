@@ -16,7 +16,7 @@ flow_steps:
     actor: update-skill
     action: "The update workflow's apply step runs update.mjs (after the dry-run was shown and consented)"
     anchor_path: references/update.md
-    anchor_sha: fea4a0c689187b66660e71e07a4129d257792b12
+    anchor_sha: 247d07cecd3ddf60c908f9cd7cc4f9ac08575c9f
     anchor_match: "scripts/update.mjs"
   - id: classify
     actor: update
@@ -79,7 +79,7 @@ flow_edges:
     evidence: verified
     call_anchor_path: references/update.md
     call_anchor_lines: 41
-    call_anchor_sha: fea4a0c689187b66660e71e07a4129d257792b12
+    call_anchor_sha: 247d07cecd3ddf60c908f9cd7cc4f9ac08575c9f
     call_match: "scripts/update.mjs"
     callee_token: "update.mjs"
   - from: classify
@@ -147,8 +147,8 @@ covers:
   - path: scripts/update.mjs
     sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
   - path: references/update.md
-    sha: fea4a0c689187b66660e71e07a4129d257792b12
-generated_at_commit: 950898f
+    sha: 247d07cecd3ddf60c908f9cd7cc4f9ac08575c9f
+generated_at_commit: e5d17a5
 last_refreshed: 2026-06-12
 related: [flows/bootstrap-vendoring, decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status]
 ---
