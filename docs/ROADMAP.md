@@ -36,6 +36,19 @@ grammar lint) are tracked in RESEARCH-AUDIT §13 and ADR-010.
   manual step 5 of the release ritual (`CLAUDE.md`), which already lapsed once
   (Releases stuck at v0.3.4 while tags shipped to v0.4.1).
 
+## Considered & deferred
+
+- **Shipping orchestration workflows** (multi-agent fan-out for audit / draft /
+  flows-regen). Evaluated by a 12-agent adversarial workflow
+  ([docs/RESEARCH-WORKFLOWS.md](./RESEARCH-WORKFLOWS.md)). Verdict: **guidance
+  notes only (Option B), never shipped scripts (Option C)** — fan-out buys
+  wall-clock but costs ~1.4–2× tokens (against the ADR-010 frugality doctrine),
+  and a workflow script is non-vendorable (ADR-003/006) + plugin-only (breaks
+  ADR-004 parity). Even the notes are **held**: open question #1 is whether
+  large cold-start wikis recur often enough to justify them. Revisit if
+  real-world use shifts from steady-state maintenance to repeated cold
+  rotations on 40+ page wikis.
+
 ## Version history
 
 Newest first. One entry per release; the `chore(release)` commit adds the line.
