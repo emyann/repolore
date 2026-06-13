@@ -38,6 +38,14 @@ grammar lint) are tracked in RESEARCH-AUDIT §13 and ADR-010.
 
 ## Considered & deferred
 
+- **A consumption benchmark** — a repeatable harness that audits a fixed set of
+  repos across models (Fable 5 / Sonnet / Opus 4.8) and repo sizes, to decompose
+  the **model-independent floor** (covered-file bytes ÷ 4 — same tokenizer) from
+  the **model-dependent multiplier** R (reasoning output + cache re-serve). The
+  first production run (shopify-NL, Opus, ~100K tokens/page) changed model AND
+  file-size at once, so it can't separate them — a benchmark can, and would turn
+  cost-model claims into measured ones and drive optimization. Prompted by the
+  v0.4.7 cost correction.
 - **Shipping orchestration workflows** (multi-agent fan-out for audit / draft /
   flows-regen). Evaluated by a 12-agent adversarial workflow
   ([docs/RESEARCH-WORKFLOWS.md](./RESEARCH-WORKFLOWS.md)). Verdict: **guidance
@@ -53,6 +61,17 @@ grammar lint) are tracked in RESEARCH-AUDIT §13 and ADR-010.
 
 Newest first. One entry per release; the `chore(release)` commit adds the line.
 
+- **v0.4.7** — the audit's first production run (shopify-NL, 40-page wiki, 5
+  pages audited), and the cost correction it forced. The wild run **validated
+  the design** — due-list selection, covers-overlap clustering, the
+  negative-space rule, the invariant sweep, the SHA-vs-line-drift discipline,
+  and the strict journal grammar all executed correctly; 11 stale citations
+  fixed, clean consent. But it processed **~15× the modeled tokens**
+  (~100K/page, not ~5.1K) because the §7 model was calibrated on small files
+  and real audit cost is dominated by **covered-file bytes, not page count**.
+  Corrected: byte-aware budget model (model-independent floor + model-dependent
+  multiplier) in `references/audit.md` Phase 0, a §7 field correction, and a
+  dated ADR-010 Correction. Docs-only; no tooling change.
 - **v0.4.6** — the update census: drift the file loop can't see is now
   reported and healable. The live case (shopify-nl, the repo repolore was
   extracted from): a migrated wiki whose `AGENTS.md` was never

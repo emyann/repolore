@@ -37,6 +37,14 @@ You are auditing the repo's LLM-maintained wiki for wrongness. Read
    the oldest few candidates only. Take K pages (default 5, the session
    cap; the user may name pages or raise K). **Cluster the K picks by
    covers overlap** so shared evidence files are read once per session.
+   **Budget by covered-file BYTES, not page count.** Audit cost is dominated
+   by the bytes of evidence read, not the number of pages: a session token
+   bill is roughly `(Σ covered-file bytes read)/4 × 2-4` (the multiplier is
+   reasoning + per-turn re-serve; measured ~100K tokens/page on a repo whose
+   pages cover 2,000-line files, vs ~5K/page on small-file repos). If a
+   cluster's covered files are large (rough rule: total covered bytes
+   ≫ ~150KB), **lower K** (3, even 1) so the session stays bounded — K is a
+   cost dial, not a fixed 5.
 5. **GLOSSARY slot:** once per full rotation (or when the due-list is
    empty), audit `GLOSSARY.md`: for each entry citing a symbol or file,
    grep the symbol, read its span, verdict per Phase 1 rules.

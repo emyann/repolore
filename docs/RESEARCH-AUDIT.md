@@ -365,6 +365,36 @@ its ship commit.
 
 ## 7. Token cost model (honest)
 
+> **Field correction (2026-06-12, first production run — supersedes the per-page
+> figures below for large-file repos).** The first audit of a real wiki
+> (shopify-NL, 5 pages, Opus 4.8) processed **~500K net tokens (~100K/page,
+> ~$22)** plus 5.2M cache re-serves — **~15× the ~5.1K/page modeled here**. The
+> numbers below are not *wrong*, they are *mis-parameterised*: they were
+> calibrated on this repo's small covered files (largest 18.5KB), and audit cost
+> is dominated by **covered-file bytes, not page count**. shopify-NL pages cover
+> 2,000-line C# files; one covers 23 files. Corrected model:
+>
+> **session tokens ≈ (Σ covered-file bytes actually read)/4 × R**, where `R ≈ 2-4`
+> bundles per-turn cache re-serve + reasoning/thinking output + re-reads.
+>
+> The two factors are separable, and only one is model-dependent:
+> - **Floor — model-INDEPENDENT.** All Claude models share the tokenizer, so the
+>   bytes/4 evidence read is identical across Fable 5 / Sonnet / Opus 4.8. This is
+>   the dominant term on big-file repos.
+> - **Multiplier `R` — model-DEPENDENT.** Thinking-output volume (Opus 4.8
+>   extended thinking is heavy), tool-round-trip count, and cache re-serve vary by
+>   model — and a cheaper model that lowers `R` by *skipping* the negative-space
+>   enumeration buys a cheaper but less-sound audit. Dollars are a third axis
+>   (same tokens × per-model rate).
+>
+> Caveat on the originals: §7's own figures were *Fable-estimated* during the
+> tournament, then this run was *Opus-actual on larger files* — so model AND
+> file-size both changed at once and this single data point **cannot decompose
+> them**. A cross-model × repo-size benchmark is the only clean separator (see
+> ROADMAP, "Considered & deferred"). **Planning rule going forward: budget by
+> covered-file bytes, cluster by covers-overlap, and lower K when a cluster's
+> evidence is large — never by raw page count.**
+
 Accounting: tokens ≈ bytes/4 of everything read once, plus artifact output ("net-new").
 Disclosures the tournament forced: (a) agentic harnesses re-send context per turn —
 billed input runs ~2-3x net uncached, ~1.2-1.5x with prompt caching; the 5-page session
