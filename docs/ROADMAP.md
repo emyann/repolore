@@ -5,7 +5,7 @@
 > plan and has diverged (§7 says so too). Detailed notes for recent releases
 > live on the [GitHub Releases page](https://github.com/emyann/repolore/releases).
 
-## Now — flows v2 (v0.4.x)
+## Now — the v0.4.x line is complete ✦
 
 - [x] **Reference set-equality extractor** — shipped v0.4.3.
       `flows/update-classification` reaches `set-validated`; the worked example
@@ -13,10 +13,14 @@
 - [x] **Diff-scoped flow-refresh** — shipped v0.4.4. `wiki-flow-refresh.mjs`
       turns a stale flow page into a precise per-citation worklist; `--apply`
       fixes the provably-safe classes mechanically.
-- [ ] **The `audit` workflow + findings-inbox v2** — an LLM pass for the blind
-      spot hashes admit to (*wrongness behind unchanged bytes*: a claim that was
-      never true stays "fresh" forever), feeding findings v2 (per-item SHA
-      anchors + the triage workflow deferred since v0.3.7 / ADR-009).
+- [x] **The `audit` workflow + findings-inbox v2** — shipped v0.4.5 (the
+      Journal-Clock Audit, [RESEARCH-AUDIT.md](./RESEARCH-AUDIT.md) / ADR-010):
+      per-claim verification of fresh pages, the strict `audited` journal line
+      as the only record, findings v2 anchors + four-exit triage.
+
+Next focus comes from the v0.5+ list below; open audit questions
+(extractor-script vendoring gate, negative-space caps at scale, the `audited`
+grammar lint) are tracked in RESEARCH-AUDIT §13 and ADR-010.
 
 ## Next (v0.5+)
 
@@ -36,6 +40,18 @@
 
 Newest first. One entry per release; the `chore(release)` commit adds the line.
 
+- **v0.4.5** — the audit workflow + findings-inbox v2 (the **Journal-Clock
+  Audit**, design by a 23-agent adversarial tournament —
+  [RESEARCH-AUDIT.md](./RESEARCH-AUDIT.md), ratified in ADR-010): per-claim
+  verification of *fresh* pages against the code (the drift class hashes
+  can't see — found live twice in this repo's own wiki), with the strict
+  `## date — audited <page> (N claims: …)` journal line as the only
+  committed record; due-list and the check workflow's dust line computed
+  from it per run. Findings-inbox v2: invisible per-item blob-SHA anchors,
+  `unanchored` absence findings, recording-commit backfill, four deleting
+  triage exits. Zero new vendored scripts; ~65-70K tokens for a full
+  15-page audit. Ships with the first real audited page
+  (`decisions/adr-002-computed-status`, 10/10 claims confirmed).
 - **v0.4.4** — diff-scoped flow refresh: the new vendored
   `wiki-flow-refresh.mjs` diffs each recorded blob against the working tree and
   classifies every flow citation (`current` / `untouched` / `shifted` /
