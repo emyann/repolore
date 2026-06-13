@@ -40,6 +40,18 @@ grammar lint) are tracked in RESEARCH-AUDIT §13 and ADR-010.
 
 Newest first. One entry per release; the `chore(release)` commit adds the line.
 
+- **v0.4.6** — the update census: drift the file loop can't see is now
+  reported and healable. The live case (shopify-nl, the repo repolore was
+  extracted from): a migrated wiki whose `AGENTS.md` was never
+  manifest-tracked — the contract froze at migration and no workflow could
+  even see it. `update.mjs` reports untracked contract docs as `ADOPT`
+  (exit 1, never auto-adopts); `--adopt` records the clean-instantiation
+  sha so customized contracts stay locally-modified-protected forever; the
+  new-file add pass is no-clobber. `references/update.md` gains the drift
+  census (contract merge, bridge form, reserved dirs). Dogfood note: the
+  set-equality extractor hard-failed on the new dispositions before the
+  flow page was touched, and `wiki-flow-refresh` auto-fixed 14 shifted
+  citations — the v0.4.3–v0.4.5 toolchain catching v0.4.6 in the act.
 - **v0.4.5** — the audit workflow + findings-inbox v2 (the **Journal-Clock
   Audit**, design by a 23-agent adversarial tournament —
   [RESEARCH-AUDIT.md](./RESEARCH-AUDIT.md), ratified in ADR-010): per-claim
