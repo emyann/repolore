@@ -11,10 +11,10 @@ supersedes: ~
 superseded_by: ~
 covers:
   - path: references/audit.md
-    sha: c10867f734957b47751d09891507a111e711d78a
+    sha: 57ca379e0cb3bed127554a7e78bf43bfb6ff1410
   - path: templates/AGENTS.md
     sha: 5349a0adb586b4c7ad65e65e348743e21afb0c2d
-generated_at_commit: a68a358
+generated_at_commit: 8b4e9fb
 last_refreshed: 2026-06-12
 related: [decisions/adr-002-computed-status, decisions/adr-009-findings-inbox-contract, concepts/freshness-model]
 ---
@@ -94,6 +94,21 @@ the clock to the journal.
 - Honest cost (measured, `docs/RESEARCH-AUDIT.md` §7): ~65-70K tokens net
   for a full 15-page audit (~100K ceiling), ~45-55K/month steady-state at
   50 pages, linear scaling with K as the coverage dial.
+- **Correction (2026-06-12, first production run):** the cost figure above
+  understated reality ~15× on a large-file repo. The first audit of a
+  production wiki (shopify-NL, 5 pages, Opus 4.8) processed ~500K net tokens
+  (~100K/page), not ~5.1K/page. The §7 model was calibrated on this repo's
+  small covered files; audit cost is dominated by **covered-file bytes, not
+  page count** (shopify-NL pages cover 2,000-line C# files). Corrected model:
+  `session tokens ≈ (Σ covered-file bytes read)/4 × R`, R≈2-4, where the
+  bytes/4 floor is model-INDEPENDENT (shared tokenizer) and R (reasoning
+  output + cache re-serve) is model-DEPENDENT. The decision is unaffected —
+  the journal-clock + budgeted-prompt-contract design stands; only the
+  planning numbers move. Budget by covered bytes, not page count. See the
+  §7 field correction and ROADMAP. Validated-otherwise note: the same run
+  confirmed the design in the wild — due-list selection, covers-overlap
+  clustering, the negative-space rule, the invariant sweep, and the strict
+  journal grammar all executed correctly (`docs/RESEARCH-AUDIT.md` §7).
 - Rejected alternatives, each killed by a named attack: risk-score planner
   script (vendored surface + understated costs), claim-extraction tooling +
   ledger file (rewrite-conflict semantics, check-state-adjacent), full

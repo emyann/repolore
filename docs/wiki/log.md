@@ -62,3 +62,4 @@ history.
 ## 2026-06-12 — refreshed flows/update-classification for the census feature (new census-adopt step + branch, add-new re-cited after the addNew no-clobber refactor; extractor maps needsAdoption/adopted; wiki-flow-refresh auto-fixed 12+2 shifted citations across two passes); no-op re-stamps overview + adr-006
 ## 2026-06-12 — updated vendored tooling v0.4.5 → v0.4.6 (update census: ADOPT class + no-clobber + --adopt); no-op re-stamp overview
 ## 2026-06-12 — census prose gains the symlink-bridge gotcha (writing through a pre-ADR-008 CLAUDE.md symlink clobbers AGENTS.md — hit live during the shopify-nl heal); flow-refresh re-pointed the shifted update.md citations, no-op re-stamp overview
+## 2026-06-12 — audit cost model corrected after the first production run (shopify-NL, ~15x understated): byte-aware budget in references/audit.md Phase 0, §7 field correction in RESEARCH-AUDIT, dated Correction on adr-010; no-op re-stamp howto/audit-the-wiki

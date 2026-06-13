@@ -7,8 +7,8 @@ audience: [dev]
 read_when: "check's dust line reports never-audited or overdue pages, FINDINGS.md has items awaiting triage, or you suspect a fresh page is wrong"
 covers:
   - path: references/audit.md
-    sha: c10867f734957b47751d09891507a111e711d78a
-generated_at_commit: a68a358
+    sha: 57ca379e0cb3bed127554a7e78bf43bfb6ff1410
+generated_at_commit: 8b4e9fb
 last_refreshed: 2026-06-12
 related: [decisions/adr-010-audit-evidence-contract, decisions/adr-009-findings-inbox-contract, concepts/freshness-model]
 ---
