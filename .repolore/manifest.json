@@ -1,7 +1,7 @@
 {
   "tool": "repolore",
   "schemaVersion": 1,
-  "pluginVersion": "0.4.5",
+  "pluginVersion": "0.4.6",
   "wikiRoot": "docs/wiki",
   "scriptsDir": ".repolore/scripts",
   "initializedAt": "2026-06-11",

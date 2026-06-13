@@ -60,3 +60,4 @@ history.
 ## 2026-06-12 — audited decisions/adr-002-computed-status (10 claims: 10 confirmed; 0 findings)
 ## 2026-06-12 — updated vendored tooling v0.4.4 → v0.4.5 (AGENTS.md gains the findings v2 grammar + the audited journal verb); no-op re-stamp overview
 ## 2026-06-12 — refreshed flows/update-classification for the census feature (new census-adopt step + branch, add-new re-cited after the addNew no-clobber refactor; extractor maps needsAdoption/adopted; wiki-flow-refresh auto-fixed 12+2 shifted citations across two passes); no-op re-stamps overview + adr-006
+## 2026-06-12 — updated vendored tooling v0.4.5 → v0.4.6 (update census: ADOPT class + no-clobber + --adopt); no-op re-stamp overview
