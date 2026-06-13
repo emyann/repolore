@@ -17,12 +17,12 @@ covers:
   - path: tests/hook.test.mjs
     sha: 3f93d03728f73c844aa1aa27ea1052ac9fc04418
   - path: tests/update.test.mjs
-    sha: 7eb9c5169ee054b5045a8723ab74579e16cd6902
+    sha: 1af619010ef22348794bff494b7679649d5e3b9c
   - path: tests/lib.test.mjs
     sha: 53a3786b7c17269e72e49cd2fe6c893712133d4b
   - path: tests/_helpers.mjs
     sha: 69761a14bf7edef781572eb0cbc239be38090a43
-generated_at_commit: 592c44a
+generated_at_commit: 950898f
 last_refreshed: 2026-06-12
 related: [decisions/adr-005-bootstrap-mechanical-vendoring, architecture/overview]
 ---

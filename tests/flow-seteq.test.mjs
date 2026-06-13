@@ -23,9 +23,9 @@ const PAGE = join(REPO, 'docs/wiki/flows/update-classification.md');
 const BASE = readFileSync(PAGE, 'utf8');
 
 const EXPECTED_STEPS = ['invoke', 'classify', 'persist', 'up-to-date', 'restore',
-  'regenerate', 'skip-modified', 'needs-review', 'add-new'];
+  'regenerate', 'skip-modified', 'needs-review', 'add-new', 'census-adopt'];
 const EXPECTED_BRANCHES = ['classify->up-to-date', 'classify->restore', 'classify->regenerate',
-  'classify->skip-modified', 'classify->needs-review', 'classify->add-new'];
+  'classify->skip-modified', 'classify->needs-review', 'classify->add-new', 'classify->census-adopt'];
 
 /** Run the extractor (optionally over a substitute source file); return parsed JSON. */
 function extract(srcPath) {
@@ -52,15 +52,8 @@ function check(file) {
   }
 }
 
-const RESTORE_BRANCH = `  - at: classify
-    to: restore
-    condition: "file missing (!exists)"
-    kind: alt
-    cite_path: scripts/update.mjs
-    cite_lines: 137
-    cite_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
-    cite_match: "} else if (!exists) {"
-`;
+// extracted from the live page so sha/line churn never breaks the fixture
+const RESTORE_BRANCH = BASE.match(/  - at: classify\n    to: restore\n(?:    .+\n)+/)[0];
 
 test('extractor rebuilds the exact step + branch set from update.mjs', () => {
   const out = extract();

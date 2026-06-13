@@ -56,6 +56,8 @@ const DISPOSITION_TO_STEP = {
   needsReview: 'needs-review',
   unknown: 'needs-review',       // both null-master cases collapse into one step
   added: 'add-new',
+  needsAdoption: 'census-adopt', // the census: untracked contract doc reported for consent
+  adopted: 'census-adopt',       // --adopt records the manifest entry (same census outcome)
 };
 
 // The structural spine: asserted-present anchors, fixed ids (see HONESTY LINE).

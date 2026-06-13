@@ -16,55 +16,61 @@ flow_steps:
     actor: update-skill
     action: "The update workflow's apply step runs update.mjs (after the dry-run was shown and consented)"
     anchor_path: references/update.md
-    anchor_sha: ab8931adfd0da4955b530fc14d52850cac6e45f4
+    anchor_sha: fea4a0c689187b66660e71e07a4129d257792b12
     anchor_match: "scripts/update.mjs"
   - id: classify
     actor: update
     action: "Per tracked file: hash the master content (git hash-object) and compare the (recorded=entry.sha, current, master) SHA triplet"
     anchor_path: scripts/update.mjs
-    anchor_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    anchor_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     anchor_match: "if (current === masterSha)"
   - id: up-to-date
     actor: update
     action: "current == master: leave the file; if the manifest SHA lagged, fix only the record (no rewrite)"
     anchor_path: scripts/update.mjs
-    anchor_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    anchor_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     anchor_match: "report.manifestFixed.push"
   - id: restore
     actor: update
     action: "File missing: write the master and record its SHA"
     anchor_path: scripts/update.mjs
-    anchor_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    anchor_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     anchor_match: "report.restored.push"
   - id: regenerate
     actor: update
     action: "Pristine-but-outdated (current == recorded) or --force: overwrite with the master and re-record"
     anchor_path: scripts/update.mjs
-    anchor_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    anchor_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     anchor_match: "report.updated.push"
   - id: skip-modified
     actor: update
     action: "Locally modified (current != recorded and != master): skip and print the git diff / --force <path> hint"
     anchor_path: scripts/update.mjs
-    anchor_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    anchor_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     anchor_match: "report.skippedModified.push"
   - id: needs-review
     actor: update
     action: "master unavailable: AGENTS.md whose '## Scope' can't be located → REVIEW; a path this version no longer vendors → unknown (both skipped)"
     anchor_path: scripts/update.mjs
-    anchor_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    anchor_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     anchor_match: "report.needsReview.push"
   - id: add-new
     actor: update
-    action: "Second pass: vendor scripts/_templates this version adds that the manifest predates — write and append a manifest entry"
+    action: "Second pass (addNew): vendor scripts/_templates the manifest predates — no-clobber: an untracked-but-divergent file is reported, never overwritten"
     anchor_path: scripts/update.mjs
-    anchor_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    anchor_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     anchor_match: "report.added.push"
+  - id: census-adopt
+    actor: update
+    action: "Census: the contract doc (AGENTS.md) must be manifest-tracked — untracked is reported for consent (ADOPT); --adopt records the clean-instantiation sha so customized files stay locally-modified-protected"
+    anchor_path: scripts/update.mjs
+    anchor_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
+    anchor_match: "report.needsAdoption.push"
   - id: persist
     actor: update
     action: "Write the manifest (refreshed SHAs + pluginVersion); exit 1 if any skipped/needs-review items remain, else 0"
     anchor_path: scripts/update.mjs
-    anchor_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    anchor_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     anchor_match: "process.exit(attention"
 flow_edges:
   - from: invoke
@@ -73,7 +79,7 @@ flow_edges:
     evidence: verified
     call_anchor_path: references/update.md
     call_anchor_lines: 41
-    call_anchor_sha: ab8931adfd0da4955b530fc14d52850cac6e45f4
+    call_anchor_sha: fea4a0c689187b66660e71e07a4129d257792b12
     call_match: "scripts/update.mjs"
     callee_token: "update.mjs"
   - from: classify
@@ -82,59 +88,67 @@ flow_edges:
     evidence: inferred
 flow_branches:
   - at: classify
+    to: census-adopt
+    condition: "wikiRoot/AGENTS.md exists (or is missing) with no manifest entry — update cannot heal what it does not track"
+    kind: normal
+    cite_path: scripts/update.mjs
+    cite_lines: 197-199
+    cite_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
+    cite_match: "const tracked = manifest.generatedFiles.some"
+  - at: classify
     to: up-to-date
     condition: "current === masterSha (already the installed version)"
     kind: guard
     cite_path: scripts/update.mjs
-    cite_lines: 134
-    cite_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    cite_lines: 146
+    cite_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     cite_match: "if (current === masterSha)"
   - at: classify
     to: restore
     condition: "file missing (!exists)"
     kind: alt
     cite_path: scripts/update.mjs
-    cite_lines: 137
-    cite_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    cite_lines: 149
+    cite_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     cite_match: "} else if (!exists) {"
   - at: classify
     to: regenerate
     condition: "current === recorded sha, or --force <path>"
     kind: alt
     cite_path: scripts/update.mjs
-    cite_lines: 140
-    cite_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    cite_lines: 152
+    cite_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     cite_match: "current === entry.sha || forced.has(rel)"
   - at: classify
     to: skip-modified
     condition: "current != recorded and != master — a local edit (overwriting is never the default)"
     kind: error
     cite_path: scripts/update.mjs
-    cite_lines: 144-146
-    cite_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    cite_lines: 156-158
+    cite_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     cite_match: "locally modified"
   - at: classify
     to: needs-review
     condition: "masterContent is null — AGENTS.md scope unlocatable, or a path no longer vendored"
     kind: error
     cite_path: scripts/update.mjs
-    cite_lines: 127-129
-    cite_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    cite_lines: 139-141
+    cite_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
     cite_match: "if (master === null)"
   - at: classify
     to: add-new
     condition: "in VENDORED_SCRIPTS/_templates but no manifest entry — new in this version"
     kind: normal
     cite_path: scripts/update.mjs
-    cite_lines: 154
-    cite_sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
-    cite_match: "if (manifest.generatedFiles.some((f) => f.path === rel)) continue;"
+    cite_lines: 169
+    cite_sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
+    cite_match: "if (manifest.generatedFiles.some((f) => f.path === rel)) return;"
 covers:
   - path: scripts/update.mjs
-    sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
+    sha: ed6ebb55d8b2b36ece94279f7f53d79066770644
   - path: references/update.md
-    sha: ab8931adfd0da4955b530fc14d52850cac6e45f4
-generated_at_commit: 8ecfc10
+    sha: fea4a0c689187b66660e71e07a4129d257792b12
+generated_at_commit: 950898f
 last_refreshed: 2026-06-12
 related: [flows/bootstrap-vendoring, decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status]
 ---
@@ -179,10 +193,12 @@ flowchart TD
   n_regenerate["Pristine-but-outdated (current == recorded) or --force: overwrite with the master and re-record"]
   n_skip_modified["Locally modified (current != recorded and != master): skip and print the git diff / --force <path> hint"]
   n_needs_review["master unavailable: AGENTS.md whose '## Scope' can't be located → REVIEW; a path this version no longer vendors → unknown (both skipped)"]
-  n_add_new["Second pass: vendor scripts/_templates this version adds that the manifest predates — write and append a manifest entry"]
+  n_add_new["Second pass (addNew): vendor scripts/_templates the manifest predates — no-clobber: an untracked-but-divergent file is reported, never overwritten"]
+  n_census_adopt["Census: the contract doc (AGENTS.md) must be manifest-tracked — untracked is reported for consent (ADOPT); --adopt records the clean-instantiation sha so customized files stay locally-modified-protected"]
   n_persist["Write the manifest (refreshed SHAs + pluginVersion); exit 1 if any skipped/needs-review items remain, else 0"]
   n_invoke -->|"call"| n_classify
   n_classify -->|"call (inferred)"| n_persist
+  n_classify -.->|"normal: wikiRoot/AGENTS.md exists (or is missing) with no manifest entry — update cannot heal what it does not track"| n_census_adopt
   n_classify -.->|"guard: current === masterSha (already the installed version)"| n_up_to_date
   n_classify -.->|"alt: file missing (!exists)"| n_restore
   n_classify -.->|"alt: current === recorded sha, or --force <path>"| n_regenerate
@@ -199,8 +215,9 @@ flowchart TD
 | 5 | regenerate — Pristine-but-outdated (current == recorded) or --force: overwrite with the master and re-record | update | `scripts/update.mjs` — `report.updated.push` |
 | 6 | skip-modified — Locally modified (current != recorded and != master): skip and print the git diff / --force <path> hint | update | `scripts/update.mjs` — `report.skippedModified.push` |
 | 7 | needs-review — master unavailable: AGENTS.md whose '## Scope' can't be located → REVIEW; a path this version no longer vendors → unknown (both skipped) | update | `scripts/update.mjs` — `report.needsReview.push` |
-| 8 | add-new — Second pass: vendor scripts/_templates this version adds that the manifest predates — write and append a manifest entry | update | `scripts/update.mjs` — `report.added.push` |
-| 9 | persist — Write the manifest (refreshed SHAs + pluginVersion); exit 1 if any skipped/needs-review items remain, else 0 | update | `scripts/update.mjs` — `process.exit(attention` |
+| 8 | add-new — Second pass (addNew): vendor scripts/_templates the manifest predates — no-clobber: an untracked-but-divergent file is reported, never overwritten | update | `scripts/update.mjs` — `report.added.push` |
+| 9 | census-adopt — Census: the contract doc (AGENTS.md) must be manifest-tracked — untracked is reported for consent (ADOPT); --adopt records the clean-instantiation sha so customized files stay locally-modified-protected | update | `scripts/update.mjs` — `report.needsAdoption.push` |
+| 10 | persist — Write the manifest (refreshed SHAs + pluginVersion); exit 1 if any skipped/needs-review items remain, else 0 | update | `scripts/update.mjs` — `process.exit(attention` |
 
 **Edges** — each `verified` hop cites the call site in the caller and names the callee:
 
@@ -213,12 +230,13 @@ flowchart TD
 
 | At → To | Kind | Condition | Cited at |
 |---------|------|-----------|----------|
-| classify → up-to-date | guard | current === masterSha (already the installed version) | `scripts/update.mjs:134` — `if (current === masterSha)` |
-| classify → restore | alt | file missing (!exists) | `scripts/update.mjs:137` — `} else if (!exists) {` |
-| classify → regenerate | alt | current === recorded sha, or --force <path> | `scripts/update.mjs:140` — `current === entry.sha || forced.has(rel)` |
-| classify → skip-modified | error | current != recorded and != master — a local edit (overwriting is never the default) | `scripts/update.mjs:144-146` — `locally modified` |
-| classify → needs-review | error | masterContent is null — AGENTS.md scope unlocatable, or a path no longer vendored | `scripts/update.mjs:127-129` — `if (master === null)` |
-| classify → add-new | normal | in VENDORED_SCRIPTS/_templates but no manifest entry — new in this version | `scripts/update.mjs:154` — `if (manifest.generatedFiles.some((f) => f.path === rel)) continue;` |
+| classify → census-adopt | normal | wikiRoot/AGENTS.md exists (or is missing) with no manifest entry — update cannot heal what it does not track | `scripts/update.mjs:197-199` — `const tracked = manifest.generatedFiles.some` |
+| classify → up-to-date | guard | current === masterSha (already the installed version) | `scripts/update.mjs:146` — `if (current === masterSha)` |
+| classify → restore | alt | file missing (!exists) | `scripts/update.mjs:149` — `} else if (!exists) {` |
+| classify → regenerate | alt | current === recorded sha, or --force <path> | `scripts/update.mjs:152` — `current === entry.sha || forced.has(rel)` |
+| classify → skip-modified | error | current != recorded and != master — a local edit (overwriting is never the default) | `scripts/update.mjs:156-158` — `locally modified` |
+| classify → needs-review | error | masterContent is null — AGENTS.md scope unlocatable, or a path no longer vendored | `scripts/update.mjs:139-141` — `if (master === null)` |
+| classify → add-new | normal | in VENDORED_SCRIPTS/_templates but no manifest entry — new in this version | `scripts/update.mjs:169` — `if (manifest.generatedFiles.some((f) => f.path === rel)) return;` |
 
 <!-- FLOW-RENDER:END -->
 
