@@ -78,7 +78,7 @@ plan. That file is machine-read by the check scripts — keep it accurate.
 | `_templates/` | Page templates — not real pages, skipped by tooling |
 
 Trim categories you don't need; an empty folder is a standing invitation, not
-an obligation. A **soft page budget** (15 pages, tuned in
+an obligation. A **soft page budget** (18 pages, tuned in
 `wiki.config.yml`) keeps the wiki curated — `wiki-check.mjs` warns when you
 exceed it; merge or archive rather than sprawl.
 
@@ -177,7 +177,13 @@ Append one line per notable wiki operation, newest last:
 ```
 
 It gives future sessions recency awareness for free. Append-only; never
-rewrite history.
+rewrite history. Verbs: added / refreshed / superseded / archived /
+**audited** / triage departures. The `audited` verb is also a machine
+signal — the audit workflow's due-list and the check workflow's dust line
+parse `## YYYY-MM-DD — audited <category/slug> (N claims: …)` — so audited
+lines are strict: ONE page per line, never batched, and appending one
+asserts every claim on that page was individually verdicted (audit-by-rote
+erodes the same trust refresh-by-rote does).
 
 ### `GLOSSARY.md` — the vocabulary layer, and its feeding rule
 
@@ -200,16 +206,35 @@ ignored by freshness, coverage, the index and the page budget.
 
 A finding asserts something no page may assert: that the code is wrong
 relative to intent. Treat every item as a **claim to re-verify**, not a fact.
-One line per item:
+One line per item (the v2 grammar — a superset of v1; one regex,
+line-parseable):
 
 ```
-- [sec|bug|cleanup] **headline** — evidence `path:lines` (captured YYYY-MM-DD) → category/slug
+- [sec|bug|cleanup] **headline** — evidence `path:lines` <!-- repolore:sha=<blob7> captured=YYYY-MM-DD --> → category/slug
 ```
 
+- The HTML comment is the **per-item anchor**: the evidence file's short
+  blob SHA when the item was last affirmed, invisible on GitHub so the
+  10-second human jot survives — humans may omit it entirely; the next
+  triage backfills it (a lint, never a gate). `captured` means "last
+  affirmed against code", not "first observed" (first observation lives in
+  git history).
+- Backfill anchors from the **recording commit**
+  (`git rev-parse <commit>:<path>`), never from today's blob — a today-blob
+  backfill erases the source-moved triage signal.
+- **Absence findings** ("no X anywhere") carry
+  `<!-- repolore:unanchored captured=YYYY-MM-DD -->` — no file to hash is a
+  label, not a hole. Triage vocabulary for anchors: *source-moved /
+  anchor-intact / unanchored / legacy* (never fresh/stale/unmanaged — those
+  are page words). v1 lines and checkbox lines parse as *legacy*; triage
+  converts them.
 - The `→` backlink names the page that carries the full, cited context. The
   inbox line is a pointer; the page is the evidence — never duplicate.
 - Claims not verified in the code carry `(unverified — <what needs
   checking>)`, mirroring `> TODO-VERIFY:`.
+- Page≠code wrongness NEVER enters the inbox — the audit workflow fixes the
+  page, demotes the claim, or files the page into the page plan; the inbox
+  asserts code≠intent only.
 - **Writes are consented.** Agents append findings inside the same
   reviewable commit as the page work that surfaced them; humans jot
   one-liners anytime. Check scripts and hooks never write here, and nothing
