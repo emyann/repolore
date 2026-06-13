@@ -38,11 +38,26 @@ grammar lint) are tracked in RESEARCH-AUDIT §13 and ADR-010.
 
 ## Considered & deferred
 
+- **Wiki orientation ROI — measured once; the trigger is the weak link.** First
+  field read of whether the wiki is used *as designed* — orientation before
+  coding. Across two feature sessions on a large production wiki, it **earns its
+  keep when consulted** (one session read three pages before any code and
+  prevented a wrong "already-built" conclusion, verifying specifics against the
+  code) — but the orientation **trigger under-fires on build sessions**: the
+  other coded first and re-derived from code what an existing page already
+  documented. The prose pointer (CLAUDE.md / ADR-008) alone did not pull
+  orientation without a human saying "check the wiki." Rubric to judge it
+  (5 dims, 0–3: consultation-timing / coverage / influence / trust-calibration /
+  maintenance-loop) and the metric to track — **orientation hit-rate** = % of
+  build sessions that read a wiki page *before the first code edit* (baseline
+  ~50%, n=2, small). Candidate fix: a harder pre-feature nudge than the prose
+  pointer (a "starting a feature?" hook / `read_when`-driven retrieval cue).
+  Held — sample of two; revisit with more sessions before investing.
 - **A consumption benchmark** — a repeatable harness that audits a fixed set of
   repos across models (Fable 5 / Sonnet / Opus 4.8) and repo sizes, to decompose
   the **model-independent floor** (covered-file bytes ÷ 4 — same tokenizer) from
   the **model-dependent multiplier** R (reasoning output + cache re-serve). The
-  first production run (shopify-NL, Opus, ~100K tokens/page) changed model AND
+  first production run (a large production wiki, Opus, ~100K tokens/page) changed model AND
   file-size at once, so it can't separate them — a benchmark can, and would turn
   cost-model claims into measured ones and drive optimization. Prompted by the
   v0.4.7 cost correction.
@@ -61,7 +76,7 @@ grammar lint) are tracked in RESEARCH-AUDIT §13 and ADR-010.
 
 Newest first. One entry per release; the `chore(release)` commit adds the line.
 
-- **v0.4.7** — the audit's first production run (shopify-NL, 40-page wiki, 5
+- **v0.4.7** — the audit's first production run (a 40-page production wiki, 5
   pages audited), and the cost correction it forced. The wild run **validated
   the design** — due-list selection, covers-overlap clustering, the
   negative-space rule, the invariant sweep, the SHA-vs-line-drift discipline,
@@ -73,7 +88,7 @@ Newest first. One entry per release; the `chore(release)` commit adds the line.
   multiplier) in `references/audit.md` Phase 0, a §7 field correction, and a
   dated ADR-010 Correction. Docs-only; no tooling change.
 - **v0.4.6** — the update census: drift the file loop can't see is now
-  reported and healable. The live case (shopify-nl, the repo repolore was
+  reported and healable. The live case (the production project repolore was
   extracted from): a migrated wiki whose `AGENTS.md` was never
   manifest-tracked — the contract froze at migration and no workflow could
   even see it. `update.mjs` reports untracked contract docs as `ADOPT`

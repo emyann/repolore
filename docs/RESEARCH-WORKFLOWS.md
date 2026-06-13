@@ -25,7 +25,7 @@ repolore ships two KINDS of thing, and conflating them is the trap:
 
 The pattern is in **live ad-hoc use**, not hypothetical. A power user (Yann)
 hand-rolled three orchestration workflows totalling ~66KB in
-`/Users/yrenaudin/Documents/Projects/sword/shopify-nl/.claude/workflows/`
+the production project's `.claude/workflows/`
 (`wiki-completeness-audit.js` 36,577 B, `sync-flowcharts.js` 15,126 B,
 `subsystem-flowcharts.js` 14,014 B) for the exact 40-page wiki repolore now
 audits by hand. The question is whether to PRODUCTIZE this.
@@ -101,7 +101,7 @@ a latency claim, never a cost claim. The report does not let it smuggle in.
 | Cold-bootstrap / draft (init) | one agent/slug, barrier before index/budget/glossary/related-links | **+1.4-2x** | **8x** (~80-120→15-20 min, N=8) | **B** | Largest demonstrated win; coherence work deferred to barrier; non-obvious safe shape worth teaching |
 | Flow-family regen (flow) | gen+verify per flow, checker barrier | worse | **3-5x** | **B** | Payload (extractor/SLUG_META/PAGES) is user-space, non-vendorable (ADR-007) — ship the pattern, not the script |
 | Audit cold full-rotation | by COVERS-OVERLAP CLUSTER, barrier before bless/journal | **+1.5-2x** | days→minutes (cold only) | **B** | Per-page fan-out is worst case; verdict-cache ban (ADR-010) forbids distributed verdicts |
-| Coverage-gap → page-plan (check) | subsystem mappers, barrier before gap-matrix + config edit | worse | high | **B (optional)** | Exact shape of shopify-nl Phases 1-4; lower frequency |
+| Coverage-gap → page-plan (check) | subsystem mappers, barrier before gap-matrix + config edit | worse | high | **B (optional)** | Exact shape of the production project's Phases 1-4; lower frequency |
 | Refresh | per-page triage, barrier before index/log/glossary | **+20-40%** | neutral-to-marginal (1-5 pages) | **B-minimal / leans A** | Typical set 1-5 pages; crossover ~8-15; `wiki-flow-refresh.mjs` already covers the mechanical subset |
 | Findings Phase-T triage | parallel pre-reads only | neutral-to-worse | ~zero | **A** | Bottleneck is the sequential human consent gate (4 exits, ADR-009), not LLM latency |
 | Check (negative control) | none exists | worse | worse | **A** | 4 deterministic stdlib scripts (~100ms) + 1 summary; no LLM sub-task to fan out |
@@ -151,7 +151,7 @@ A shipped `.claude/workflows/*.js` fails on every relevant ADR at once:
 3. **Token-worse default** (ADR-010): institutionalizes the 1.4-2x regression
    the audit design was built to avoid; covers-overlap dedup lost across agents.
 4. **Forever-maintenance tax**: tracks a moving, unowned harness API. The
-   shopify-nl scripts already carry comment-level workarounds for runtime churn
+   the production project's scripts already carry comment-level workarounds for runtime churn
    ("workflow scripts cannot call Date.now()... would break resume";
    "args.today is not always plumbed through"). A vendored stdlib script is
    byte-stable forever (ADR-006 survivability); an orchestration script is not.

@@ -2,7 +2,7 @@
 title: "Findings capture in repolore: feasibility & go/no-go"
 date: 2026-06-11
 status: research-complete
-provenance: "findings-inbox-feasibility workflow: 7 session-archaeology agents over pipao + sword-shopify-nl Claude Code transcripts, 1 artifact analysis of pipao FINDINGS.md + its wiki backlinks, 1 vision-principles extraction → advocate vs skeptic vs design-options panel; this document is the synthesis"
+provenance: "findings-inbox-feasibility workflow: 7 session-archaeology agents over pipao + a production project's Claude Code transcripts, 1 artifact analysis of pipao FINDINGS.md + its wiki backlinks, 1 vision-principles extraction → advocate vs skeptic vs design-options panel; this document is the synthesis"
 ---
 
 # Findings capture — should repolore own the by-product?
@@ -19,7 +19,7 @@ provenance: "findings-inbox-feasibility workflow: 7 session-archaeology agents o
 Across every pipao session that drafted pages from code (4 of 4), findings
 emerged **spontaneously** — never user-prompted audits, always mid-distillation
 ("this batch surfaced findings that go well beyond documentation"). The two
-sessions that only did wiki maintenance (sword-shopify-nl check/update/glossary)
+sessions that only did wiki maintenance (a production project's check/update/glossary)
 produced **zero** code findings. The signal is real, repeatable, and
 concentrated in exactly the stage repolore owns: attentive whole-repo reading.
 

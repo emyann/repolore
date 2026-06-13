@@ -367,11 +367,11 @@ its ship commit.
 
 > **Field correction (2026-06-12, first production run — supersedes the per-page
 > figures below for large-file repos).** The first audit of a real wiki
-> (shopify-NL, 5 pages, Opus 4.8) processed **~500K net tokens (~100K/page,
+> (a large production wiki, 5 pages, Opus 4.8) processed **~500K net tokens (~100K/page,
 > ~$22)** plus 5.2M cache re-serves — **~15× the ~5.1K/page modeled here**. The
 > numbers below are not *wrong*, they are *mis-parameterised*: they were
 > calibrated on this repo's small covered files (largest 18.5KB), and audit cost
-> is dominated by **covered-file bytes, not page count**. shopify-NL pages cover
+> is dominated by **covered-file bytes, not page count**. the production project's pages cover
 > 2,000-line C# files; one covers 23 files. Corrected model:
 >
 > **session tokens ≈ (Σ covered-file bytes actually read)/4 × R**, where `R ≈ 2-4`

@@ -96,10 +96,10 @@ the clock to the journal.
   50 pages, linear scaling with K as the coverage dial.
 - **Correction (2026-06-12, first production run):** the cost figure above
   understated reality ~15× on a large-file repo. The first audit of a
-  production wiki (shopify-NL, 5 pages, Opus 4.8) processed ~500K net tokens
+  production wiki (5 pages, Opus 4.8) processed ~500K net tokens
   (~100K/page), not ~5.1K/page. The §7 model was calibrated on this repo's
   small covered files; audit cost is dominated by **covered-file bytes, not
-  page count** (shopify-NL pages cover 2,000-line C# files). Corrected model:
+  page count** (its pages cover 2,000-line C# files). Corrected model:
   `session tokens ≈ (Σ covered-file bytes read)/4 × R`, R≈2-4, where the
   bytes/4 floor is model-INDEPENDENT (shared tokenizer) and R (reasoning
   output + cache re-serve) is model-DEPENDENT. The decision is unaffected —
