@@ -11,8 +11,8 @@ covers:
   - path: SKILL.md
     sha: a9eb60777158027891834bfc18d408c9db6598ac
   - path: docs/RESEARCH.md
-    sha: 3650c9099507e8a36574ece1b812b53860d56462
-generated_at_commit: a68a358
+    sha: 0584d276bab41cfa3724238b5283d1c2c339dd40
+generated_at_commit: c3bf387
 last_refreshed: 2026-06-12
 related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-008-per-harness-entry-point-bridging, architecture/overview]
 ---
