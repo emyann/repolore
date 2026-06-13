@@ -18,7 +18,7 @@ covers:
     sha: b8ea5b5dfff094a42bdae269558fa6f8b51c575a
   - path: scripts/wiki-install-hook.mjs
     sha: ec6892d6c8900675421ad1e39beddcdc88c9e135
-generated_at_commit: 592c44a
+generated_at_commit: 8fc811d
 last_refreshed: 2026-06-12
 related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-computed-status]
 ---
@@ -34,11 +34,11 @@ related: [decisions/adr-001-blob-sha-freshness-anchors, decisions/adr-002-comput
 committed — see ADR-002):
 
 - **fresh** — every `covers` entry's recorded blob SHA still matches
-  `git hash-object` of the file today (`scripts/wiki-check.mjs:52-62`).
+  `git hash-object` of the file today (`scripts/wiki-check.mjs:60-67`).
 - **stale** — at least one covered file changed, was deleted, or carries no
   recorded SHA. The report names *which* file and why.
 - **unmanaged** — the page has no `covers` list at all
-  (`scripts/wiki-check.mjs:53`): its staleness cannot be detected, which
+  (`scripts/wiki-check.mjs:58`): its staleness cannot be detected, which
   defeats the point. An honest third state, not an error.
 - **malformed** — frontmatter won't parse; the page is excluded from the
   index until repaired.

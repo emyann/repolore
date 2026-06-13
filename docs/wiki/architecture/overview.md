@@ -20,7 +20,7 @@ covers:
     sha: fc40aa31135e5138253eb1cff3172dd021bc31d1
   - path: .claude-plugin/plugin.json
     sha: dd0a0c3347a082571c6605defba57ee619ef5b3a
-generated_at_commit: 671f10d
+generated_at_commit: 8fc811d
 last_refreshed: 2026-06-12
 related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-bootstrap-mechanical-vendoring, concepts/freshness-model]
 ---
@@ -42,9 +42,9 @@ related: [decisions/adr-004-umbrella-skill-plugin-shims, decisions/adr-005-boots
    discovery means the skills CLI sees exactly one skill and the plugin
    internals stay hidden (see ADR-004).
 3. **Vendored per-repo layer** — what init leaves inside a *target* repo:
-   `docs/wiki/` content + `.repolore/scripts/` (copies of the five masters in
-   `scripts/`) + `.repolore/manifest.json` tracking every vendored file by
-   blob SHA.
+   `docs/wiki/` content + `.repolore/scripts/` (copies of the masters in
+   `scripts/` — the list is `VENDORED_SCRIPTS` in `scripts/lib.mjs`) +
+   `.repolore/manifest.json` tracking every vendored file by blob SHA.
 
 Both front doors execute the same procedures: `references/init.md`,
 `references/check.md`, `references/refresh.md`, `references/update.md`, `references/setup.md`,
