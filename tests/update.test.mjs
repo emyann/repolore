@@ -101,6 +101,62 @@ test('update: AGENTS.md regenerates from the template, preserving the scope summ
   assert.ok(!/\{\{[A-Z_]+\}\}/.test(text), 'no leftover placeholders');
 });
 
+test('census: an untracked AGENTS.md is reported for adoption, never auto-healed', (t) => {
+  const dir = bootstrapped(t);
+  const rel = 'docs/wiki/AGENTS.md';
+  // Simulate the migrated-repo case: the file exists, the manifest never knew it.
+  const m = manifestOf(dir);
+  m.generatedFiles = m.generatedFiles.filter((f) => f.path !== rel);
+  writeFileSync(join(dir, '.repolore/manifest.json'), JSON.stringify(m, null, 2) + '\n');
+
+  const r = nodeFail(dir, [UPDATE]);
+  assert.equal(r.status, 1, 'untracked contract doc is an attention item');
+  assert.match(r.stdout, /ADOPT\s+docs\/wiki\/AGENTS\.md/);
+  assert.match(r.stdout, /--adopt/);
+  assert.ok(!manifestOf(dir).generatedFiles.some((f) => f.path === rel), 'reporting never adopts by itself');
+});
+
+test('census: --adopt records the CLEAN-instantiation sha, so a customized contract stays protected', (t) => {
+  const dir = bootstrapped(t);
+  const rel = 'docs/wiki/AGENTS.md';
+  const m = manifestOf(dir);
+  m.generatedFiles = m.generatedFiles.filter((f) => f.path !== rel);
+  writeFileSync(join(dir, '.repolore/manifest.json'), JSON.stringify(m, null, 2) + '\n');
+  // customize beyond the template (a legacy section the merge preserved)
+  writeFileSync(join(dir, rel), readFileSync(join(dir, rel), 'utf8') + '\n## Legacy flow extractors\n\nlocal rules\n');
+
+  const r1 = nodeFail(dir, [UPDATE, '--adopt', rel]);
+  assert.match(r1.stdout, /ADOPTED\s+docs\/wiki\/AGENTS\.md\s+\(customized/);
+  const entry = manifestOf(dir).generatedFiles.find((f) => f.path === rel);
+  assert.ok(entry, 'manifest entry recorded');
+  assert.notEqual(entry.sha, git(dir, ['hash-object', rel]), 'recorded sha is the clean instantiation, not the customized file');
+
+  // the very next run must classify it locally-modified — visible, protected
+  const r2 = nodeFail(dir, [UPDATE]);
+  assert.equal(r2.status, 1);
+  assert.match(r2.stdout, /SKIP\s+docs\/wiki\/AGENTS\.md/);
+  assert.match(readFileSync(join(dir, rel), 'utf8'), /Legacy flow extractors/, 'custom content untouched');
+});
+
+test('no-clobber: an untracked file that differs from the master is never overwritten by the add pass', (t) => {
+  const dir = bootstrapped(t);
+  const rel = '.repolore/scripts/wiki-check.mjs';
+  const m = manifestOf(dir);
+  m.generatedFiles = m.generatedFiles.filter((f) => f.path !== rel);
+  writeFileSync(join(dir, '.repolore/manifest.json'), JSON.stringify(m, null, 2) + '\n');
+  writeFileSync(join(dir, rel), '// somebody hand-rolled this untracked file\n');
+
+  const r = nodeFail(dir, [UPDATE]);
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /SKIP\s+\.repolore\/scripts\/wiki-check\.mjs/);
+  assert.equal(readFileSync(join(dir, rel), 'utf8'), '// somebody hand-rolled this untracked file\n', 'not clobbered');
+
+  // identical untracked content is adopted record-only (manifest fixed)
+  writeFileSync(join(dir, rel), masterOf('wiki-check.mjs'));
+  const r2 = JSON.parse(node(dir, [UPDATE, '--json']));
+  assert.deepEqual(r2.manifestFixed.map((f) => f.path), [rel]);
+});
+
 test('update: records the installed pluginVersion', (t) => {
   const dir = bootstrapped(t);
   const m = manifestOf(dir);

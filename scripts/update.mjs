@@ -16,7 +16,17 @@
  *   node update.mjs --dry-run         # classify only, write nothing
  *   node update.mjs                   # apply safe updates
  *   node update.mjs --force <path>    # also overwrite a locally-modified file
+ *   node update.mjs --adopt <path>    # track an existing untracked owned file
  *   node update.mjs ... --json        # machine-readable
+ *
+ * Census: a tool-owned file that exists but is NOT manifest-tracked (a
+ * migrated repo's AGENTS.md is the live case) can never be healed by the
+ * loop above — update reports it as ADOPT and exits 1. Adoption is
+ * consented (the update workflow drives the contract merge first), then
+ * `--adopt` records the manifest entry. For a customized AGENTS.md the
+ * recorded sha is the clean template instantiation, NOT the file's own —
+ * so it classifies locally-modified forever after: visible on every run,
+ * never silently regenerated over (the same protection edited files get).
  *
  * Scripts and `_templates/*` are copied unmodified from the masters.
  * `<wikiRoot>/AGENTS.md` is re-instantiated from the template: WIKI_DIR /
@@ -50,6 +60,8 @@ const DRY = argv.includes('--dry-run');
 const JSON_OUT = argv.includes('--json');
 const forced = new Set();
 for (let i = 0; i < argv.length; i++) if (argv[i] === '--force' && argv[i + 1]) forced.add(argv[++i]);
+const adopt = new Set();
+for (let i = 0; i < argv.length; i++) if (argv[i] === '--adopt' && argv[i + 1]) adopt.add(argv[++i]);
 
 const root = repoRoot();
 const manifestPath = join(root, '.repolore', 'manifest.json');
@@ -106,7 +118,7 @@ const report = {
   fromVersion: manifest.pluginVersion ?? null,
   toVersion: installedVersion,
   upToDate: [], updated: [], restored: [], added: [], manifestFixed: [],
-  skippedModified: [], needsReview: [], unknown: [],
+  skippedModified: [], needsReview: [], unknown: [], needsAdoption: [], adopted: [],
 };
 
 const apply = (rel, content) => {
@@ -148,31 +160,68 @@ for (const entry of manifest.generatedFiles) {
   }
 }
 
-// Scripts this version vendors that the manifest predates entirely.
-for (const name of VENDORED_SCRIPTS) {
-  const rel = join(scriptsDir, name);
-  if (manifest.generatedFiles.some((f) => f.path === rel)) continue;
-  const master = readFileSync(join(PLUGIN_SCRIPTS, name), 'utf8');
+// Files this version vendors that the manifest predates entirely (new
+// scripts, or templates like flow.md added after a repo was initialized).
+// NO-CLOBBER: if an untracked file already exists on disk and differs from
+// the master, adding it would silently destroy unknown content — report it
+// instead (identical content is adopted record-only, like manifestFixed).
+const addNew = (rel, master) => {
+  if (manifest.generatedFiles.some((f) => f.path === rel)) return;
   const sha = hashContent(master);
+  if (existsSync(join(root, rel))) {
+    const current = blobSha(root, rel);
+    if (current === sha) {
+      if (!DRY) manifest.generatedFiles.push({ path: rel, sha });
+      report.manifestFixed.push({ path: rel });
+    } else {
+      report.skippedModified.push({
+        path: rel,
+        reason: `exists untracked and differs from the master — review, then --adopt ${rel} to track it (or --force ${rel} to overwrite)`,
+      });
+    }
+    return;
+  }
   apply(rel, master);
   if (!DRY) manifest.generatedFiles.push({ path: rel, sha });
   report.added.push({ path: rel });
+};
+for (const name of VENDORED_SCRIPTS) addNew(join(scriptsDir, name), readFileSync(join(PLUGIN_SCRIPTS, name), 'utf8'));
+for (const name of ['page.md', 'decision.md', 'flow.md']) addNew(join(wikiRoot, '_templates', name), readFileSync(join(PLUGIN_TEMPLATES, name), 'utf8'));
+
+// Census: the wiki's contract doc must be manifest-tracked or update can
+// never heal it (the live case: a migrated repo whose AGENTS.md predates
+// repolore). Adoption is judgment work (the workflow merges the current
+// contract in first), so the script only reports — until --adopt consents.
+{
+  const rel = join(wikiRoot, 'AGENTS.md');
+  const tracked = manifest.generatedFiles.some((f) => f.path === rel);
+  const onDisk = existsSync(join(root, rel));
+  if (!tracked && adopt.has(rel)) {
+    if (!onDisk) {
+      report.needsReview.push({ path: rel, reason: 'cannot adopt — file does not exist' });
+    } else {
+      const currentText = readFileSync(join(root, rel), 'utf8');
+      const master = regenerateAgents(currentText);
+      // Record the CLEAN instantiation's sha when the Scope section is
+      // locatable: a customized file then classifies locally-modified on
+      // every future run (visible, protected). Fall back to the file's own
+      // sha only when regeneration is impossible (REVIEW path owns it).
+      const sha = master !== null ? hashContent(master) : blobSha(root, rel);
+      if (!DRY) manifest.generatedFiles.push({ path: rel, sha });
+      report.adopted.push({ path: rel, pristine: master !== null && hashContent(currentText) === hashContent(master) });
+    }
+  } else if (!tracked) {
+    report.needsAdoption.push({
+      path: rel,
+      reason: onDisk
+        ? 'exists but is not manifest-tracked — update cannot heal it; merge the current contract (see the update workflow), then: node update.mjs --adopt <path>'
+        : 'missing entirely — the wiki has no contract doc; re-instantiate from templates/AGENTS.md, then --adopt it',
+    });
+  }
 }
 
-// Page templates this version vendors that the manifest predates (e.g. flow.md
-// added after a repo was initialized). Copied unmodified like the others.
-for (const name of ['page.md', 'decision.md', 'flow.md']) {
-  const rel = join(wikiRoot, '_templates', name);
-  if (manifest.generatedFiles.some((f) => f.path === rel)) continue;
-  const master = readFileSync(join(PLUGIN_TEMPLATES, name), 'utf8');
-  const sha = hashContent(master);
-  apply(rel, master);
-  if (!DRY) manifest.generatedFiles.push({ path: rel, sha });
-  report.added.push({ path: rel });
-}
-
-const changed = report.updated.length + report.restored.length + report.added.length + report.manifestFixed.length;
-const attention = report.skippedModified.length + report.needsReview.length;
+const changed = report.updated.length + report.restored.length + report.added.length + report.manifestFixed.length + report.adopted.length;
+const attention = report.skippedModified.length + report.needsReview.length + report.needsAdoption.length;
 
 if (!DRY && (changed || manifest.pluginVersion !== installedVersion)) {
   if (installedVersion) manifest.pluginVersion = installedVersion;
@@ -189,8 +238,10 @@ if (JSON_OUT) {
   for (const f of report.restored) console.log(`  RESTORE  ${f.path}  (was missing)`);
   for (const f of report.added) console.log(`  ADD      ${f.path}  (new in this version)`);
   for (const f of report.manifestFixed) console.log(`  FIXED    manifest sha for ${f.path}  (file already matched the master)`);
+  for (const f of report.adopted) console.log(`  ADOPTED  ${f.path}  (${f.pristine ? 'pristine — tracked as tool-written' : 'customized — will classify locally-modified, never overwritten without --force'})`);
   for (const f of report.skippedModified) console.log(`  SKIP     ${f.path}\n           ${f.reason}`);
   for (const f of report.needsReview) console.log(`  REVIEW   ${f.path}\n           ${f.reason}`);
+  for (const f of report.needsAdoption) console.log(`  ADOPT    ${f.path}\n           ${f.reason}`);
   if (!DRY && changed) console.log(`\n  Now: regenerate the index (node ${scriptsDir}/wiki-index.mjs), re-run wiki-check, and commit.`);
   if (DRY && (changed || attention)) console.log(`\n  Apply with: node <SKILL_ROOT>/scripts/update.mjs`);
   if (!changed && !attention) console.log(`\n  Nothing to do — vendored layer matches the installed plugin (v${report.toVersion ?? 'unknown'}).\n  Expected a newer release? The plugin/skill itself may be outdated — refresh\n  it first (claude plugin marketplace update <name> / npx skills update), then re-run.`);

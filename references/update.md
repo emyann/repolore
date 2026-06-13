@@ -47,13 +47,37 @@
    (`<SKILL_ROOT>/references/setup.md`) — one simple accept/decline. Never
    run installers without that consent; never make the user discover the
    capability from a report.
-7. Finish the loop: regenerate the index
+7. **Drift census** — update's file loop can only heal what the manifest
+   tracks; migrated repos (wikis that predate repolore) drift structurally.
+   Handle each census finding the script reports, plus three prose checks:
+   - **`ADOPT <wikiRoot>/AGENTS.md`** (untracked contract doc): this is THE
+     migrated-repo signature — the contract froze at migration, so newer
+     conventions (findings inbox, flows, the audited journal verb) never
+     reached it. With consent: MERGE the current `templates/AGENTS.md`
+     contract into the existing file — bring in the missing sections,
+     PRESERVE the repo's scope and any custom sections (legacy tooling
+     rules are content, not cruft) — then record it:
+     `node <SKILL_ROOT>/scripts/update.mjs --adopt "<wikiRoot>/AGENTS.md"`.
+     A customized contract is recorded against the clean instantiation, so
+     it classifies locally-modified forever after — visible, never
+     silently regenerated over.
+   - **Category dirs vs the contract:** if the AGENTS.md table names
+     categories (`decisions/`, `howto/`) that don't exist on disk, say so —
+     git drops empty dirs, so this is normal; the dir materializes with its
+     first page. No action beyond awareness.
+   - **Bridge form:** if `<wikiRoot>/CLAUDE.md` is a *copy* of AGENTS.md
+     rather than the one-line `@AGENTS.md` import, offer the import swap
+     (copies silently diverge — the exact failure the bridge prevents).
+   - **Reserved dirs:** a non-empty `<wikiRoot>/_audit/` is a pre-repolore
+     artifact; offer to mine it for untriaged findings (→ `FINDINGS.md`,
+     with consent) and archive the rest.
+8. Finish the loop: regenerate the index
    (`node <scriptsDir>/wiki-index.mjs` — newer tooling may change the index
    format), then `node <scriptsDir>/wiki-check.mjs`. If pages went stale
    because they *cover* tooling files (dogfood repos), follow the refresh
    workflow's triage. Append one line to `<wikiRoot>/log.md`:
    `## <date> — updated vendored tooling v<from> → v<to>`.
-8. Commit etiquette — convention-aware:
+9. Commit etiquette — convention-aware:
    - **First tooling update in this repo** (no prior
      `chore(repolore): update vendored tooling` commit in git history AND no
      tooling-update line in `<wikiRoot>/log.md`): OFFER the single
