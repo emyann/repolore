@@ -38,6 +38,34 @@ grammar lint) are tracked in RESEARCH-AUDIT §13 and ADR-010.
 
 ## Considered & deferred
 
+- **Learnings inbox — capture esoteric *operational* knowledge the moment it's
+  earned the hard way.** *Proposed (field-prompted); not yet scheduled.* A
+  FINDINGS-sibling relay buffer for **operational** orientation facts — who holds
+  which credential/permission, and what the *only* working path is when the direct
+  one is blocked. That class is the most expensive to rediscover and the one the
+  "what IS this" extraction pass tends to drop. Distinct from FINDINGS (code≠intent
+  defects); these are durable how-it-actually-works nuggets that graduate to a
+  `gotchas/` / `howto/` page. **Detection signal — the *dead-end → workaround*
+  episode:** a blocked attempt followed by a working alternative ("tried to pull a
+  SAS key → `AuthorizationFailed` → went through the component's managed identity
+  instead") is the fingerprint — far sharper than classifying "is this esoteric?"
+  in the abstract. Harvest candidates from the agent transcript (a failed tool call
+  + a later success on the same goal), git/PR history ("X didn't work, so Y"), or a
+  lightweight session-end reflection. **Trust model:** propose-only / consent-gated,
+  exactly like findings v2 — never auto-write (it infers intent from a trace, so the
+  "repolore doesn't invent" invariant must hold). **Why now:** a field session
+  watched an agent fail to inject a Service Bus message — it chased its *own* SB
+  credential through two RBAC walls instead of routing through the DMZ gateway,
+  whose managed identity already holds Send — even though the atomic facts were
+  documented across two pages (deployment-topology: "MI, not secrets";
+  order-roundtrip: "gateway publishes to the order queue") and the agent had read
+  `serviceBus.ts`. So it was a **capture-synthesis + surfacing** miss, not a missing
+  fact. Pairs with the **Wiki orientation ROI** entry below — that's the *surfacing*
+  half (the trigger under-fires mid-task); the candidate complement is `triggers:`
+  frontmatter on gotchas + a tiny always-resident gotcha digest keyed to the
+  *situation* an agent lands in, so the nugget arrives at the decision point, not
+  just at orientation. **Risk:** auto-detecting "esoteric" is noisy — keep it firmly
+  proposal-only and size it against the orientation-trigger work before investing.
 - **Wiki orientation ROI — measured once; the trigger is the weak link.** First
   field read of whether the wiki is used *as designed* — orientation before
   coding. Across two feature sessions on a large production wiki, it **earns its
